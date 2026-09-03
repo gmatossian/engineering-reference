@@ -4,8 +4,10 @@
 
 This document defines the accepted content-domain model for the MVP. The source
 and generated representations are defined separately in
-[MVP Content Storage and File Representation](content-storage.md); application
-architecture and implementation remain separate decisions.
+[MVP Content Storage and File Representation](content-storage.md), and the
+accepted browsing behavior is defined in the
+[MVP Navigation and Responsive Interaction Model](interaction-model.md).
+Application architecture and implementation remain separate decisions.
 
 ## Model Overview
 
@@ -167,8 +169,7 @@ A valid MVP catalog satisfies all of the following:
 
 This model does not decide:
 
-- URL structure or routing;
-- desktop, tablet, or mobile navigation interactions;
+- exact URL syntax and Angular routing implementation;
 - specific authoring, validation, and migration tooling; or
 - post-MVP relationships such as related Topics, tags, and facets.
 
