@@ -2,9 +2,11 @@
 
 ## Status
 
-The product direction, MVP boundary, content model, and content representation
-are defined. Detailed architecture, interaction, implementation, and deployment
-decisions remain in discovery.
+The product direction, MVP boundary, content model, content representation, and
+navigation interaction are defined. Detailed architecture, visual design,
+implementation, and deployment decisions remain in discovery. The accepted
+interaction behavior is documented in the
+[MVP Navigation and Responsive Interaction Model](interaction-model.md).
 
 ## Product Purpose
 
@@ -166,7 +168,7 @@ not change the application's ownership of its concise reference content.
 
 The following remain possibilities rather than commitments:
 
-- global search and direct access to a known concept or section;
+- global search and finer-grained links to sections within a Topic;
 - recent items, favorites, or other explicitly justified personal state;
 - a broader catalog beyond the initial Java topics;
 - richer Topic relationships and recommendations; and
@@ -177,8 +179,8 @@ The following remain possibilities rather than commitments:
 
 The product brief does not settle:
 
-- detailed taxonomy, breadcrumbs, tags, and facets;
-- detailed page structure and interaction behavior;
+- post-MVP taxonomy aids such as breadcrumbs, tags, and facets;
+- detailed visual design and responsive styling;
 - search indexing and ranking;
 - application runtime packaging and deployment details;
 - personal-state storage, if personal state is later justified;
