@@ -3,8 +3,10 @@
 ## Status
 
 This document defines the accepted source and generated representations for
-MVP content. It does not select the implementation libraries, Angular
-architecture, deployment platform, or final authoring toolchain.
+MVP content. The tools and application integration that implement this
+representation are defined in the
+[application architecture](application-architecture.md). The deployment
+platform and any future authoring interface remain separate decisions.
 
 ## Decision Summary
 
@@ -19,6 +21,7 @@ and redeployed when it changes.
 - A build-time generator validates the complete catalog, converts Markdown to
   sanitized semantic HTML, copies referenced assets, and emits one runtime JSON
   catalog.
+- Angular imports the generated catalog into its application bundle.
 - The generated JSON is build output and is not committed.
 - The Angular application uses a generic renderer; Topics do not require
   Topic-specific templates or components.
@@ -196,15 +199,21 @@ The MVP permits SVG, PNG, and WebP assets. Each image:
 - is checked into version control;
 - has meaningful, non-empty alternative text;
 - is referenced by a relative path from that Topic; and
-- is copied or processed into the application assets during generation.
+- is copied into the application assets during generation.
 
 Remote images and base64-encoded image data are not allowed. Text-based diagram
 languages and diagram rendering are also excluded from the MVP; a completed
 diagram can instead be committed as an ordinary supported image.
 
-The generator rewrites image references to their deployed asset locations.
-Exact asset hashing and optimization behavior belong to the later build and
-application implementation decisions.
+Committed SVG files are trusted, reviewable project source rather than
+sanitized user content. If a future authoring path accepts untrusted content,
+SVG must be properly sanitized or rasterized, or removed from the supported
+formats; partial string checks are not a sufficient security boundary.
+
+The generator copies images unchanged for the MVP and rewrites references to
+`/assets/topics/<topic-uuid>/<readable-name>.<content-hash>.<extension>`. The
+deterministic short SHA-256 content hash provides cache busting. Image resizing
+and optimization are not part of the MVP pipeline.
 
 ## Generated Runtime Catalog
 
@@ -256,9 +265,11 @@ Every generated Topic contains `title`, `mainContentHtml`, and
 `childTopicIds`. `mainContentHtml` is explicitly `null` for a navigation-only
 Topic; an empty string is invalid.
 
-The single-file runtime representation minimizes MVP requests, loading states,
-and caching behavior. The generator can later emit a manifest and per-Topic
-files without changing any authored source.
+The single-file runtime representation is emitted as
+`.generated/catalog.json` and imported into the Angular bundle. It therefore
+introduces no separate catalog request or runtime loading state. The generator
+can later emit a manifest and per-Topic files without changing any authored
+source.
 
 ## Build-Time Processing
 
@@ -272,7 +283,8 @@ built:
 5. Validate links and local image references.
 6. Convert supported Markdown to semantic HTML.
 7. Sanitize the generated HTML.
-8. Copy or process referenced images and rewrite their output paths.
+8. Copy referenced images with content-hashed names and rewrite their output
+   paths.
 9. Emit the deterministic runtime JSON catalog.
 
 The same generator and validation path runs locally, in CI, and as a required
@@ -301,15 +313,20 @@ Generation fails when it encounters:
 - an unsupported or unsafe link protocol;
 - a missing image, unsupported image type, or image without alternative text;
   or
-- non-deterministic or unsuccessful content generation.
+- unsuccessful content generation.
 
 External HTTPS link syntax and protocol are validated without making network
 requests. Third-party availability must not determine whether the application
 can be built.
 
-The specific schema library, Markdown processor, sanitizer, and test framework
-remain implementation choices. Whatever tools are selected must enforce this
-same policy in local development, CI, and production builds.
+Determinism is a generator verification concern rather than an authored-content
+validation error. Automated tests generate twice from the same source and
+compare the complete output trees under the canonical ordering, serialization,
+and hashing rules defined by the application architecture.
+
+The application architecture selects the schema, Markdown, sanitization, and
+test tool families. Those tools must enforce this same policy in local
+development, CI, and production builds.
 
 ## Alternatives Considered
 
@@ -368,14 +385,10 @@ build. Deterministic on-demand generation provides stronger consistency.
 
 This decision does not select:
 
-- the implementation language or libraries for parsing, conversion,
-  sanitization, and validation;
-- the exact generated-file or deployed-asset paths;
-- image optimization or cache-busting behavior;
-- Angular data-loading, state-management, routing, or rendering details;
 - deployment infrastructure;
 - a graphical or in-application authoring interface; or
 - post-MVP content relationships and capabilities.
 
-Those choices can be made without changing the accepted source representation
-or content semantics.
+The application architecture records the resolved implementation choices.
+Remaining choices can be made without changing the accepted source
+representation or content semantics.

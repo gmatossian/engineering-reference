@@ -2,11 +2,13 @@
 
 ## Status
 
-The product direction, MVP boundary, content model, content representation, and
-navigation interaction are defined. Detailed architecture, visual design,
-implementation, and deployment decisions remain in discovery. The accepted
+The product direction, MVP boundary, content model, content representation,
+navigation interaction, and application architecture are defined. Detailed
+visual design, implementation, and deployment decisions remain. The accepted
 interaction behavior is documented in the
-[MVP Navigation and Responsive Interaction Model](interaction-model.md).
+[MVP Navigation and Responsive Interaction Model](interaction-model.md), and
+the technical boundary is documented in the
+[MVP Application Architecture and Build Pipeline](application-architecture.md).
 
 ## Product Purpose
 
@@ -124,9 +126,9 @@ and mobile layouts.
 
 Accessibility is a product requirement, not a final polishing step. Content and
 hierarchical navigation must remain understandable and operable for keyboard
-and assistive-technology users. The exact conformance target, validation tools,
-and automated accessibility gates remain to be selected before implementation
-is considered complete.
+and assistive-technology users. The interaction model establishes WCAG 2.2
+Level AA as the target, and the application architecture defines the automated
+checks and manual verification expected for the MVP.
 
 ### Other quality expectations
 
@@ -182,13 +184,10 @@ The product brief does not settle:
 - post-MVP taxonomy aids such as breadcrumbs, tags, and facets;
 - detailed visual design and responsive styling;
 - search indexing and ranking;
-- application runtime packaging and deployment details;
+- deployment packaging and hosting details;
 - personal-state storage, if personal state is later justified;
-- specific authoring, schema-validation, and link-validation tooling;
 - migration and rollout sequencing beyond the initial catalog;
-- implementation framework and detailed application architecture;
 - deployment approach and environments;
-- exact automated engineering and accessibility gates; and
 - the criteria for making the repository and its delivery project public.
 
 These decisions should be made in dependency order and recorded explicitly.
