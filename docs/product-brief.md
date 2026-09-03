@@ -11,9 +11,10 @@ Engineering Reference is a responsive, read-only web application for quickly
 finding and exploring practical software-engineering knowledge.
 
 It addresses a common limitation of compact reference material: showing too
-little leaves important operations unclear, while showing every detail at once
-makes the reference slow to scan. Engineering Reference presents the smallest
-useful answer first and makes deeper material available progressively.
+little leaves important operations unclear, while putting every related topic
+on one page makes the reference slow to scan. Engineering Reference presents
+concise content for the selected topic and makes narrower topics available
+through hierarchical navigation.
 
 ## Intended User
 
@@ -25,8 +26,8 @@ implementation, method, trade-off, or pitfall they need.
 ## Primary Job
 
 > Help a software engineer quickly find or explore technical reference
-> knowledge, beginning with a concise useful answer and allowing progressively
-> deeper detail.
+> knowledge, moving from broad subject areas to concise, increasingly specific
+> topics.
 
 The product is a reference browser. It is not a content-management system,
 course platform, or learning-progress tracker.
@@ -46,10 +47,10 @@ The navigation model must support a deliberately sparse catalog. Adding a
 resource should not require special-case routes, menus, or relationship logic
 in application code.
 
-### Concise first
+### Concise and focused
 
-A concept page initially exposes only the information needed for ordinary use.
-For example, a Queue reference can lead with:
+A content-bearing Topic presents all of its concise main content. For example,
+a Queue reference can include:
 
 ```text
 Interface:       Queue<E>
@@ -57,17 +58,20 @@ Implementation:  ArrayDeque<E>
 Core methods:    offer, peek, poll
 ```
 
-Equivalent APIs, alternative implementations, complexity, examples, warnings,
-and related concepts belong in deeper sections rather than competing with the
-initial answer.
+When material deserves its own focused resource, it can be represented as an
+immediate child Topic. A Queue Topic might therefore link to a separate
+Complexity Topic rather than accumulating every adjacent topic in one
+document.
 
 ### Progressive disclosure
 
-A concept page shows essential information first and lets users reveal
-additional sections—such as examples, alternatives, and complexity—on the same
-page. A concept is the smallest independently navigable content resource; its
-deeper material is organized into named sections that can be displayed
-progressively.
+A Topic displays its main content in full and provides an ordered list of its
+immediate children. Progressive disclosure happens by navigating to those
+increasingly specific Topics, not by hiding sections of the current Topic's
+main content.
+
+Some broad Topics, such as Java, may exist only to organize immediate children.
+Other Topics may contain main content, children, or both.
 
 ### Read-only presentation
 
@@ -81,26 +85,30 @@ provide content authoring or editing controls.
 The MVP will provide:
 
 - hierarchical browsing from broad categories to individual concepts;
-- concise-first concept pages with progressively disclosed detail;
+- fully displayed, formatted main content for content-bearing Topics;
+- ordered navigation to immediate child Topics;
 - generic rendering driven by content rather than resource-specific UI code;
-- navigation between parent and child resources; and
-- links to related resources when those relationships are present in the
-  content model.
+- stable identity for every Topic; and
+- support for broad navigational Topics that do not require main content.
 
 The MVP must remain useful through browsing alone. Search is intentionally not
 required for the first release.
 
 ### Initial content catalog
 
-The initial catalog is deliberately small and Java-focused:
+The initial catalog is deliberately small. Java is a landing Topic with
+immediate children that include:
 
-- collections;
-- concurrency; and
-- array operations.
+- Arrays;
+- Collections;
+- Concurrency; and
+- JPA.
 
-Queue and List are the first concrete collection concepts used to validate the
-content and presentation model. The catalog will grow incrementally in response
-to real reference needs; completeness is not an MVP requirement.
+Queue and List are the first concrete children of Collections used to validate
+the content and presentation model. The landing page can later include other
+broad subject areas such as System Design and Algorithms. The catalog will grow
+incrementally in response to real reference needs; completeness is not an MVP
+requirement.
 
 Each UI resource is authoritative for its own concise reference content. The
 content is purpose-built for this product rather than copied from another
@@ -111,8 +119,8 @@ artifact.
 The same core browsing and reference experience must work on desktop, tablet,
 and mobile layouts.
 
-Accessibility is a product requirement, not a final polishing step. Navigation
-and progressive disclosure must remain understandable and operable for keyboard
+Accessibility is a product requirement, not a final polishing step. Content and
+hierarchical navigation must remain understandable and operable for keyboard
 and assistive-technology users. The exact conformance target, validation tools,
 and automated accessibility gates remain to be selected before implementation
 is considered complete.
@@ -170,10 +178,8 @@ The following remain possibilities rather than commitments:
 
 The product brief does not settle:
 
-- stable resource identity;
-- the complete resource schema and supported content-entry types;
 - content storage and file representation;
-- taxonomy rules, multiple parents, breadcrumbs, tags, and facets;
+- detailed taxonomy, breadcrumbs, tags, and facets;
 - detailed page structure and interaction behavior;
 - search indexing and ranking;
 - explicit versus derived relationships;
@@ -191,8 +197,9 @@ They must not be inferred from exploratory implementation.
 
 ## MVP Success
 
-The MVP succeeds when a user can browse from a broad Java category to a concept,
-understand its ordinary-use essentials quickly, reveal deeper information when
-needed, and do so through an accessible, coherent experience on desktop,
-tablet, and mobile. It must demonstrate that new content can be added through
-the generic model without resource-specific application behavior.
+The MVP succeeds when a user can browse from a broad landing Topic such as Java
+to a specific concept, understand its ordinary-use essentials quickly, navigate
+to narrower child Topics when needed, and do so through an accessible,
+coherent experience on desktop, tablet, and mobile. It must demonstrate that
+new content can be added through the generic model without resource-specific
+application behavior.
