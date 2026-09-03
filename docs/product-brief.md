@@ -2,8 +2,9 @@
 
 ## Status
 
-The product direction and MVP boundary are defined. Detailed content modeling,
-architecture, implementation, and deployment decisions remain in discovery.
+The product direction, MVP boundary, content model, and content representation
+are defined. Detailed architecture, interaction, implementation, and deployment
+decisions remain in discovery.
 
 ## Product Purpose
 
@@ -44,7 +45,7 @@ Java -> Collections -> Queue
 ```
 
 The navigation model must support a deliberately sparse catalog. Adding a
-resource should not require special-case routes, menus, or relationship logic
+Topic should not require special-case routes, menus, or relationship logic
 in application code.
 
 ### Concise and focused
@@ -58,7 +59,7 @@ Implementation:  ArrayDeque<E>
 Core methods:    offer, peek, poll
 ```
 
-When material deserves its own focused resource, it can be represented as an
+When material deserves its own focused Topic, it can be represented as an
 immediate child Topic. A Queue Topic might therefore link to a separate
 Complexity Topic rather than accumulating every adjacent topic in one
 document.
@@ -87,7 +88,7 @@ The MVP will provide:
 - hierarchical browsing from broad categories to individual concepts;
 - fully displayed, formatted main content for content-bearing Topics;
 - ordered navigation to immediate child Topics;
-- generic rendering driven by content rather than resource-specific UI code;
+- generic rendering driven by content rather than Topic-specific UI code;
 - stable identity for every Topic; and
 - support for broad navigational Topics that do not require main content.
 
@@ -110,7 +111,7 @@ broad subject areas such as System Design and Algorithms. The catalog will grow
 incrementally in response to real reference needs; completeness is not an MVP
 requirement.
 
-Each UI resource is authoritative for its own concise reference content. The
+Each Topic is authoritative for its own concise reference content. The
 content is purpose-built for this product rather than copied from another
 artifact.
 
@@ -158,9 +159,8 @@ Engineering Reference owns purpose-built, concise content maintained for the
 application. It does not depend on importing or synchronizing content from
 other reference formats.
 
-A future resource may link outward to deeper reading, but such links are not
-required for the MVP and do not change the application's ownership of its
-concise reference content.
+A Topic may link outward to deeper reading, but such links are optional and do
+not change the application's ownership of its concise reference content.
 
 ## Possible Post-MVP Capabilities
 
@@ -168,9 +168,8 @@ The following remain possibilities rather than commitments:
 
 - global search and direct access to a known concept or section;
 - recent items, favorites, or other explicitly justified personal state;
-- optional outbound references to deeper material;
 - a broader catalog beyond the initial Java topics;
-- richer resource relationships and recommendations; and
+- richer Topic relationships and recommendations; and
 - usage-informed features, only after their purpose, privacy, and persistence
   have been deliberately decided.
 
@@ -178,14 +177,12 @@ The following remain possibilities rather than commitments:
 
 The product brief does not settle:
 
-- content storage and file representation;
 - detailed taxonomy, breadcrumbs, tags, and facets;
 - detailed page structure and interaction behavior;
 - search indexing and ranking;
-- explicit versus derived relationships;
-- runtime and distribution model;
+- application runtime packaging and deployment details;
 - personal-state storage, if personal state is later justified;
-- authoring, schema-validation, and link-validation workflow;
+- specific authoring, schema-validation, and link-validation tooling;
 - migration and rollout sequencing beyond the initial catalog;
 - implementation framework and detailed application architecture;
 - deployment approach and environments;
@@ -201,5 +198,5 @@ The MVP succeeds when a user can browse from a broad landing Topic such as Java
 to a specific concept, understand its ordinary-use essentials quickly, navigate
 to narrower child Topics when needed, and do so through an accessible,
 coherent experience on desktop, tablet, and mobile. It must demonstrate that
-new content can be added through the generic model without resource-specific
+new content can be added through the generic model without Topic-specific
 application behavior.
