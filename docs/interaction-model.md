@@ -5,10 +5,11 @@
 This document defines the accepted navigation and responsive interaction model
 for the MVP. It builds on the [product brief](product-brief.md), the
 [content model](content-model.md), and the
-[content storage representation](content-storage.md).
+[content storage representation](content-storage.md). Its implementation
+boundaries are defined in the
+[application architecture](application-architecture.md).
 
-It does not select Angular libraries, component architecture, detailed visual
-design, or deployment infrastructure.
+It does not define detailed visual design or deployment infrastructure.
 
 ## Interaction Summary
 
@@ -93,8 +94,11 @@ Back performs the browser's actual backward-history action. It means
 - a page outside Engineering Reference.
 
 When no previous browser-history entry exists, Back has no destination and is
-presented as unavailable. The application does not construct a separate
-history stack or reinterpret Back using the Topic graph.
+presented as unavailable. For the MVP, `window.history.length <= 1` is the
+practical test for this condition. It is a browser-history approximation rather
+than a guarantee about the identity of a preceding destination. The application
+does not construct a separate history stack or reinterpret Back using the Topic
+graph.
 
 The MVP does not display breadcrumbs. Because a Topic may have multiple
 parents, a breadcrumb would describe a particular route taken rather than a
@@ -102,9 +106,8 @@ canonical Topic hierarchy.
 
 ## URLs and Browser Behavior
 
-The landing view has a root URL and every Topic has its own directly
-addressable URL. The exact URL syntax remains an architecture decision, but the
-chosen scheme must support:
+The landing view uses `/`. Every Topic uses `/topics/<uuid>`, where the UUID is
+its stable identity. This scheme supports:
 
 - opening a Topic directly;
 - refreshing without losing the selected Topic;
@@ -127,9 +130,10 @@ and moves keyboard focus to its main heading. This makes the change of view
 apparent to keyboard and assistive-technology users.
 
 Back restores the preceding view's prior scroll position where the browser
-supports restoration. Focus returns to the link or control that opened the
-Topic when that element is available. If it is unavailable, focus moves to the
-returned view's main heading.
+supports restoration. Focus moves to the returned view's main heading using
+`preventScroll`, so the focus change does not replace the restored scroll
+position. The MVP does not store the previously activated link solely to
+restore focus to that exact element.
 
 Focus is never deliberately left on an element removed by navigation.
 
@@ -158,33 +162,22 @@ current browsing context by default. The application does not force a new tab
 or window. Users retain normal browser mechanisms for choosing another
 context.
 
-## Loading and Failure States
+## Catalog and Failure States
 
-### Initial catalog loading
+The generated catalog is imported into the Angular application at build time.
+There is no separate runtime catalog request, initial catalog-loading state,
+catalog-unavailable state, or Retry action. Invalid or missing catalog output
+fails generation or the application build rather than becoming a user-facing
+runtime condition.
 
-The application has one content-loading state while the generated runtime
-catalog is initially loaded. The loading state exposes an accessible status
-instead of presenting an empty landing or Topic view.
-
-After the catalog is loaded, Topic navigation is local. The MVP does not show
-per-Topic loading indicators.
-
-### Catalog unavailable
-
-If the runtime catalog cannot be loaded, the application displays a distinct
-application-level error with a Retry action. It does not render an empty
-landing page, because that would incorrectly imply that the catalog contains
-no Topics.
-
-Retry attempts to load the catalog again and, on success, displays the view
-identified by the current URL.
+Topic navigation is local and does not show per-Topic loading indicators.
 
 ### Topic not found
 
-If a directly addressed Topic identifier does not resolve in a successfully
-loaded catalog, the application displays an explicit Topic-not-found view. It
-does not silently redirect to the landing page. Home remains available, and
-Back retains its normal browser-history meaning.
+If a directly addressed Topic identifier does not resolve in the bundled
+catalog, the application displays an explicit Topic-not-found view. It does not
+silently redirect to the landing page. The wildcard route uses the same view.
+Home remains available, and Back retains its normal browser-history meaning.
 
 The not-found view uses a clear main heading and the document title
 `Topic not found | Engineering Reference`.
@@ -202,7 +195,7 @@ At minimum, the interaction must provide:
 - native links for Topic and external-link navigation;
 - visible focus indicators;
 - programmatic focus movement after view replacement;
-- accessible loading and error status communication;
+- an accessible Topic-not-found presentation;
 - meaningful alternative text for content images, as required by the content
   representation;
 - usable zoom and reflow behavior; and
@@ -237,22 +230,19 @@ visit.
 
 ### Load an invalid Topic URL
 
-After the catalog loads successfully, an unknown Topic identifier displays the
-Topic-not-found view without changing the URL or pretending the failure is an
-empty catalog.
+An unknown Topic identifier displays the Topic-not-found view without changing
+the URL or pretending the failure is an empty catalog.
 
 ## Deliberately Unresolved
 
 This interaction model does not decide:
 
-- the exact Topic URL syntax;
-- Angular routing, component, data-loading, or state-management architecture;
 - exact responsive breakpoints or page composition;
 - visual styling, branding, animation, or transition design;
-- specific automated accessibility tools and CI gates; or
 - deployment infrastructure.
 
-Those choices must preserve the interaction and accessibility behavior defined
-above. Breadcrumbs, modal Topic navigation, custom swipe navigation, and an
-application-specific history stack are outside the MVP unless a later product
-decision explicitly introduces them.
+The resolved implementation choices are recorded in the application
+architecture. Remaining choices must preserve the interaction and
+accessibility behavior defined above. Breadcrumbs, modal Topic navigation,
+custom swipe navigation, and an application-specific history stack are outside
+the MVP unless a later product decision explicitly introduces them.
