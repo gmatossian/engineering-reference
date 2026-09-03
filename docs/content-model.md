@@ -2,9 +2,10 @@
 
 ## Status
 
-This document defines the accepted content-domain model for the MVP. It does
-not select a storage format, serialization format, application architecture, or
-authoring workflow.
+This document defines the accepted content-domain model for the MVP. The source
+and generated representations are defined separately in
+[MVP Content Storage and File Representation](content-storage.md); application
+architecture and implementation remain separate decisions.
 
 ## Model Overview
 
@@ -40,7 +41,7 @@ Each Topic receives a UUID when it is created. That UUID:
 - is not reused after the Topic is deleted.
 
 The Topic's content has the same meaning regardless of the path used to reach
-it. For example, a `ConcurrentHashMap` Topic remains the same resource whether
+it. For example, `ConcurrentHashMap` remains one canonical Topic whether
 the user reaches it through Collections or Concurrency. Navigation history and
 the current path are temporary UI state rather than Topic data.
 
@@ -59,8 +60,9 @@ non-empty and may use:
 - paragraphs and headings;
 - inline code and code blocks;
 - ordered and unordered lists;
-- links; and
-- tables.
+- links;
+- tables; and
+- locally stored images with alternative text.
 
 The content supplies semantic structure; the UI controls its visual
 presentation, including placement, typography, alignment, sizing, overflow,
@@ -165,12 +167,9 @@ A valid MVP catalog satisfies all of the following:
 
 This model does not decide:
 
-- whether content is stored as Markdown, HTML, structured data, or another
-  representation;
-- how catalog files are organized and validated;
 - URL structure or routing;
 - desktop, tablet, or mobile navigation interactions;
-- authoring and migration tooling; or
+- specific authoring, validation, and migration tooling; or
 - post-MVP relationships such as related Topics, tags, and facets.
 
 Those decisions can be made separately without changing the accepted domain
