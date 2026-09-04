@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { LoadedContentSource } from './load-content-source.ts';
@@ -406,6 +406,48 @@ describe('transformContent', () => {
     ).resolves.toBe(svg);
   });
 
+  it('reports the Topic source when a generated image cannot be written', async () => {
+    const topicId = '11111111-1111-4111-8111-111111111111';
+
+    generatedRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-generated-'));
+
+    const topicDirectory = join(generatedRoot, 'content', 'topics', 'queue');
+    const sourcePath = join('content', 'topics', 'queue', 'topic.md');
+    const outputRoot = join(generatedRoot, 'blocked-output');
+
+    await mkdir(topicDirectory, { recursive: true });
+    await writeFile(
+      join(topicDirectory, 'queue-operations.svg'),
+      '<svg xmlns="http://www.w3.org/2000/svg"></svg>\n',
+    );
+    await writeFile(outputRoot, 'not a directory');
+
+    const contentSource: LoadedContentSource = {
+      catalog: {
+        sourcePath: 'content/catalog.yaml',
+        landingTopicIds: [topicId],
+      },
+      topics: [
+        {
+          sourcePath,
+          id: topicId,
+          title: 'Queue',
+          childTopicIds: [],
+          markdownBody: '![Queue operations](./queue-operations.svg)',
+        },
+      ],
+    };
+
+    const error = await captureAggregateError(() =>
+      transformContent(contentSource, generatedRoot!, outputRoot),
+    );
+
+    expect(error.errors).toHaveLength(1);
+    expect((error.errors[0] as Error).message).toBe(
+      `${sourcePath}: Image could not be written to generated output: ./queue-operations.svg`,
+    );
+  });
+
   it('rejects an image without meaningful alternative text', async () => {
     const topicId = '11111111-1111-4111-8111-111111111111';
 
@@ -683,6 +725,45 @@ describe('transformContent', () => {
     expect(error.errors).toHaveLength(1);
     expect((error.errors[0] as Error).message).toBe(
       `${sourcePath}: Image source file does not exist: ./missing.svg`,
+    );
+  });
+
+  it('rejects a symbolic-link image source', async () => {
+    const topicId = '11111111-1111-4111-8111-111111111111';
+
+    generatedRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-generated-'));
+
+    const topicDirectory = join(generatedRoot, 'content', 'topics', 'queue');
+    const sourcePath = join('content', 'topics', 'queue', 'topic.md');
+    const outsideImagePath = join(generatedRoot, 'outside.svg');
+
+    await mkdir(topicDirectory, { recursive: true });
+    await writeFile(outsideImagePath, '<svg xmlns="http://www.w3.org/2000/svg"></svg>\n');
+    await symlink(outsideImagePath, join(topicDirectory, 'queue-operations.svg'));
+
+    const contentSource: LoadedContentSource = {
+      catalog: {
+        sourcePath: 'content/catalog.yaml',
+        landingTopicIds: [topicId],
+      },
+      topics: [
+        {
+          sourcePath,
+          id: topicId,
+          title: 'Queue',
+          childTopicIds: [],
+          markdownBody: '![Queue operations](./queue-operations.svg)',
+        },
+      ],
+    };
+
+    const error = await captureAggregateError(() =>
+      transformContent(contentSource, generatedRoot!, join(generatedRoot!, '.generated')),
+    );
+
+    expect(error.errors).toHaveLength(1);
+    expect((error.errors[0] as Error).message).toBe(
+      `${sourcePath}: Image source path must not be a symbolic link: ./queue-operations.svg`,
     );
   });
 

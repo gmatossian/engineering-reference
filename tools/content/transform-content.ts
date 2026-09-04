@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { lstat, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, dirname, extname, join, resolve } from 'node:path';
 import { URL } from 'node:url';
 import rehypeSanitize, { type Options as SanitizationSchema } from 'rehype-sanitize';
@@ -234,7 +234,7 @@ async function renderMarkdown(
     let sourceImageStats;
 
     try {
-      sourceImageStats = await stat(sourceImagePath);
+      sourceImageStats = await lstat(sourceImagePath);
     } catch (error: unknown) {
       if (isErrorWithCode(error, 'ENOENT')) {
         throw new Error(`${sourcePath}: Image source file does not exist: ${imageNode.url}`, {
@@ -245,6 +245,12 @@ async function renderMarkdown(
       throw new Error(`${sourcePath}: Image source file could not be accessed: ${imageNode.url}`, {
         cause: error,
       });
+    }
+
+    if (sourceImageStats.isSymbolicLink()) {
+      throw new Error(
+        `${sourcePath}: Image source path must not be a symbolic link: ${imageNode.url}`,
+      );
     }
 
     if (!sourceImageStats.isFile()) {
@@ -265,8 +271,15 @@ async function renderMarkdown(
     const outputFilename = `${readableName}.${contentHash}${outputExtension}`;
     const outputDirectory = join(generatedRoot, 'assets', 'topics', topicId);
 
-    await mkdir(outputDirectory, { recursive: true });
-    await writeFile(join(outputDirectory, outputFilename), imageBytes);
+    try {
+      await mkdir(outputDirectory, { recursive: true });
+      await writeFile(join(outputDirectory, outputFilename), imageBytes);
+    } catch (error: unknown) {
+      throw new Error(
+        `${sourcePath}: Image could not be written to generated output: ${imageNode.url}`,
+        { cause: error },
+      );
+    }
 
     imageNode.url = `/assets/topics/${topicId}/${outputFilename}`;
   }
