@@ -32,7 +32,10 @@ export async function loadContentSource(sourceRoot: string): Promise<LoadedConte
   let topicPaths: string[] = [];
 
   try {
-    topicPaths = await discoverTopicSourcePaths(sourceRoot);
+    const discovered = await discoverTopicSourcePaths(sourceRoot);
+
+    topicPaths = discovered.topicSourcePaths;
+    errors.push(...discovered.errors);
   } catch (error: unknown) {
     errors.push(toError(error));
   }

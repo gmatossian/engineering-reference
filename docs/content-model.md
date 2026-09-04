@@ -107,9 +107,9 @@ changing Topic identity.
 
 ## Landing Topics
 
-The catalog owns an ordered list of Topic UUIDs to display on the landing page.
-Being included in this list is not an intrinsic property of a Topic, so there
-is no `isRoot` field.
+The catalog owns a non-empty ordered list of Topic UUIDs to display on the
+landing page. Being included in this list is not an intrinsic property of a
+Topic, so there is no `isRoot` field.
 
 A landing Topic may also appear as another Topic's child. The terms *landing
 Topic* and *top-level Topic* therefore describe placement on the landing page,
@@ -158,6 +158,7 @@ navigation, or both.
 
 A valid MVP catalog satisfies all of the following:
 
+- at least one landing Topic is declared;
 - every Topic has a UUID and a non-empty title;
 - every Topic has non-empty main content, at least one child, or both;
 - every landing and child UUID resolves to an existing Topic;

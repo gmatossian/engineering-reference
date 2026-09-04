@@ -17,7 +17,14 @@ function compareInCodePointOrder(left: string, right: string): number {
   return leftCodePoints.length - rightCodePoints.length;
 }
 
-export async function discoverTopicSourcePaths(sourceRoot: string): Promise<string[]> {
+export interface DiscoveredTopicSources {
+  topicSourcePaths: string[];
+  errors: Error[];
+}
+
+export async function discoverTopicSourcePaths(
+  sourceRoot: string,
+): Promise<DiscoveredTopicSources> {
   const topicsRoot = join(sourceRoot, 'topics');
   const entries = await readdir(topicsRoot, {
     withFileTypes: true,
@@ -29,6 +36,7 @@ export async function discoverTopicSourcePaths(sourceRoot: string): Promise<stri
     .sort(compareInCodePointOrder);
 
   const topicSourcePaths: string[] = [];
+  const errors: Error[] = [];
 
   for (const directoryName of directoryNames) {
     const topicDirectory = join(topicsRoot, directoryName);
@@ -42,8 +50,16 @@ export async function discoverTopicSourcePaths(sourceRoot: string): Promise<stri
 
     if (containsTopicSource) {
       topicSourcePaths.push(join(topicDirectory, 'topic.md'));
+    } else {
+      // Every directory under content/topics is a Topic. Reporting the omission here
+      // keeps the diagnostic on the directory rather than surfacing later as an
+      // unresolved reference from some other Topic.
+      errors.push(new Error(`${topicDirectory}: Topic directory does not contain topic.md`));
     }
   }
 
-  return topicSourcePaths;
+  return {
+    topicSourcePaths,
+    errors,
+  };
 }

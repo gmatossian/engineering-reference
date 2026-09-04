@@ -48,9 +48,10 @@ content/
         └── topic.md
 ```
 
-The build discovers `content/topics/*/topic.md`. Topic directories are peers;
-they do not mirror the navigation hierarchy because the content model permits
-a Topic to have multiple parents.
+The build inspects every direct directory under `content/topics/`, and each one
+must contain a `topic.md` file. Topic directories are peers; they do not mirror
+the navigation hierarchy because the content model permits a Topic to have
+multiple parents.
 
 Directory names are unique, human-readable storage labels. They are not Topic
 identifiers, do not appear in relationships, and do not need to change when a
@@ -71,8 +72,9 @@ The file does not list every Topic. Topic discovery supplies the complete
 collection, avoiding a duplicated registry that would need to be maintained
 for every content change.
 
-The array order is significant and controls landing-page presentation. Every
-UUID must resolve to a discovered Topic.
+`landingTopicIds` must contain at least one UUID. Its order is significant and
+controls landing-page presentation. Every UUID must resolve to a discovered
+Topic.
 
 ## Topic Source
 
@@ -179,6 +181,10 @@ Raw HTML is not an authoring escape hatch. It is rejected so that the source
 format retains a bounded semantic contract. The generated HTML is sanitized as
 a defense-in-depth measure before it reaches the application.
 
+An authored external link must begin with the canonical lowercase `https://`
+scheme. Other spellings and protocols are rejected so that the validated HTML
+can pass through the sanitizer without its meaning changing.
+
 Inline navigation to another Topic is also excluded. Internal Topic navigation
 is represented only by `childTopicIds`, preserving the accepted ordered,
 broad-to-specific navigation model. Relative links to Topic files and
@@ -198,6 +204,9 @@ The MVP permits SVG, PNG, and WebP assets. Each image:
 - is stored in the same directory as its `topic.md`;
 - is checked into version control;
 - has meaningful, non-empty alternative text;
+- has a readable filename before the extension that begins with an ASCII letter
+  or digit and otherwise contains only ASCII letters, digits, dots, hyphens, and
+  underscores;
 - is referenced by a relative path from that Topic; and
 - is copied into the application assets during generation.
 
@@ -302,6 +311,8 @@ file and the artifact produced by the actual build.
 Generation fails when it encounters:
 
 - missing, unknown, or malformed catalog or Topic properties;
+- an empty `landingTopicIds` array;
+- a direct Topic directory without a `topic.md` file;
 - an invalid or duplicate UUID;
 - a missing or blank title;
 - a missing or non-array `childTopicIds` value;
@@ -310,8 +321,9 @@ Generation fails when it encounters:
 - a duplicate child reference, self-reference, or indirect cycle;
 - a Topic unreachable from every landing Topic;
 - raw HTML or an internal file, route, or Topic link;
-- an unsupported or unsafe link protocol;
-- a missing image, unsupported image type, or image without alternative text;
+- a noncanonical external link or an unsupported or unsafe link protocol;
+- a missing image, unsupported image type, unsafe image filename, or image
+  without alternative text;
   or
 - unsuccessful content generation.
 
