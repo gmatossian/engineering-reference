@@ -2,15 +2,19 @@ import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 
 function compareInCodePointOrder(left: string, right: string): number {
-  if (left < right) {
-    return -1;
+  const leftCodePoints = Array.from(left, (character) => character.codePointAt(0) ?? -1);
+  const rightCodePoints = Array.from(right, (character) => character.codePointAt(0) ?? -1);
+  const sharedLength = Math.min(leftCodePoints.length, rightCodePoints.length);
+
+  for (let index = 0; index < sharedLength; index += 1) {
+    const difference = leftCodePoints[index] - rightCodePoints[index];
+
+    if (difference !== 0) {
+      return difference;
+    }
   }
 
-  if (left > right) {
-    return 1;
-  }
-
-  return 0;
+  return leftCodePoints.length - rightCodePoints.length;
 }
 
 export async function discoverTopicSourcePaths(sourceRoot: string): Promise<string[]> {

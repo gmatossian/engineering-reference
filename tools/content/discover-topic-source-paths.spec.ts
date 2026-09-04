@@ -17,6 +17,10 @@ describe('discoverTopicSourcePaths', () => {
   });
 
   it('discovers Topic files in deterministic code-point order', async () => {
+    // UTF-16 comparison reverses these two relative to Unicode code-point order.
+    const privateUseDirectory = '\uE000';
+    const supplementaryDirectory = '\u{10000}';
+
     temporaryRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-content-'));
 
     await mkdir(join(temporaryRoot, 'topics', 'zeta'), {
@@ -25,14 +29,24 @@ describe('discoverTopicSourcePaths', () => {
     await mkdir(join(temporaryRoot, 'topics', 'alpha'), {
       recursive: true,
     });
+    await mkdir(join(temporaryRoot, 'topics', privateUseDirectory), {
+      recursive: true,
+    });
+    await mkdir(join(temporaryRoot, 'topics', supplementaryDirectory), {
+      recursive: true,
+    });
 
     await writeFile(join(temporaryRoot, 'topics', 'zeta', 'topic.md'), '');
     await writeFile(join(temporaryRoot, 'topics', 'alpha', 'topic.md'), '');
+    await writeFile(join(temporaryRoot, 'topics', privateUseDirectory, 'topic.md'), '');
+    await writeFile(join(temporaryRoot, 'topics', supplementaryDirectory, 'topic.md'), '');
     await writeFile(join(temporaryRoot, 'topics', 'README.md'), '');
 
     await expect(discoverTopicSourcePaths(temporaryRoot)).resolves.toEqual([
       join(temporaryRoot, 'topics', 'alpha', 'topic.md'),
       join(temporaryRoot, 'topics', 'zeta', 'topic.md'),
+      join(temporaryRoot, 'topics', privateUseDirectory, 'topic.md'),
+      join(temporaryRoot, 'topics', supplementaryDirectory, 'topic.md'),
     ]);
   });
 });
