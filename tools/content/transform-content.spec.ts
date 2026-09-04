@@ -2,8 +2,13 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { mkdir, mkdtemp, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import rehypeSanitize from 'rehype-sanitize';
+import rehypeStringify from 'rehype-stringify';
+import remarkParse from 'remark-parse';
+import remarkRehype from 'remark-rehype';
+import { unified } from 'unified';
 import type { LoadedContentSource } from './load-content-source.ts';
-import { transformContent } from './transform-content.ts';
+import { HTML_SANITIZATION_SCHEMA, transformContent } from './transform-content.ts';
 
 async function captureAggregateError(action: () => Promise<unknown>): Promise<AggregateError> {
   try {
@@ -50,7 +55,7 @@ describe('transformContent', () => {
       ],
     };
 
-    await expect(transformContent(contentSource, generatedRoot, generatedRoot)).resolves.toEqual([
+    await expect(transformContent(contentSource, generatedRoot)).resolves.toEqual([
       {
         id: topicId,
         mainContentHtml: '<p>Queue content.</p>',
@@ -78,7 +83,7 @@ describe('transformContent', () => {
           markdownBody: '\n',
         },
         {
-          sourcePath: 'content/topics/java/collections/topic.md',
+          sourcePath: 'content/topics/collections/topic.md',
           id: childTopicId,
           title: 'Collections',
           childTopicIds: [],
@@ -87,7 +92,7 @@ describe('transformContent', () => {
       ],
     };
 
-    await expect(transformContent(contentSource, generatedRoot, generatedRoot)).resolves.toEqual([
+    await expect(transformContent(contentSource, generatedRoot)).resolves.toEqual([
       {
         id: parentTopicId,
         mainContentHtml: null,
@@ -122,7 +127,7 @@ describe('transformContent', () => {
       ],
     };
 
-    await expect(transformContent(contentSource, generatedRoot, generatedRoot)).resolves.toEqual([
+    await expect(transformContent(contentSource, generatedRoot)).resolves.toEqual([
       {
         id: topicId,
         mainContentHtml: [
@@ -168,7 +173,7 @@ describe('transformContent', () => {
     };
 
     const error = await captureAggregateError(() =>
-      transformContent(contentSource, generatedRoot!, generatedRoot!),
+      transformContent(contentSource, generatedRoot!),
     );
 
     expect(error.message).toBe('Content transformation failed with 1 error(s)');
@@ -199,7 +204,7 @@ describe('transformContent', () => {
     };
 
     const error = await captureAggregateError(() =>
-      transformContent(contentSource, generatedRoot!, generatedRoot!),
+      transformContent(contentSource, generatedRoot!),
     );
 
     expect(error.errors).toHaveLength(1);
@@ -229,7 +234,7 @@ describe('transformContent', () => {
     };
 
     const error = await captureAggregateError(() =>
-      transformContent(contentSource, generatedRoot!, generatedRoot!),
+      transformContent(contentSource, generatedRoot!),
     );
 
     expect(error.errors).toHaveLength(1);
@@ -265,7 +270,7 @@ describe('transformContent', () => {
     };
 
     const error = await captureAggregateError(() =>
-      transformContent(contentSource, generatedRoot!, generatedRoot!),
+      transformContent(contentSource, generatedRoot!),
     );
 
     expect(error.errors).toHaveLength(1);
@@ -295,7 +300,7 @@ describe('transformContent', () => {
     };
 
     const error = await captureAggregateError(() =>
-      transformContent(contentSource, generatedRoot!, generatedRoot!),
+      transformContent(contentSource, generatedRoot!),
     );
 
     expect(error.errors).toHaveLength(1);
@@ -327,7 +332,7 @@ describe('transformContent', () => {
     };
 
     const error = await captureAggregateError(() =>
-      transformContent(contentSource, generatedRoot!, generatedRoot!),
+      transformContent(contentSource, generatedRoot!),
     );
 
     expect(error.errors).toHaveLength(1);
@@ -357,7 +362,7 @@ describe('transformContent', () => {
       ],
     };
 
-    await expect(transformContent(contentSource, generatedRoot, generatedRoot)).resolves.toEqual([
+    await expect(transformContent(contentSource, generatedRoot)).resolves.toEqual([
       {
         id: topicId,
         mainContentHtml: '<p><a href="https://example.com/queue">Queue reference</a></p>',
@@ -394,7 +399,7 @@ describe('transformContent', () => {
       ],
     };
 
-    await expect(transformContent(contentSource, generatedRoot, outputRoot)).resolves.toEqual([
+    await expect(transformContent(contentSource, outputRoot)).resolves.toEqual([
       {
         id: topicId,
         mainContentHtml: `<p><img src="/assets/topics/${topicId}/${expectedFilename}" alt="Elements entering and leaving a queue"></p>`,
@@ -412,7 +417,7 @@ describe('transformContent', () => {
     generatedRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-generated-'));
 
     const topicDirectory = join(generatedRoot, 'content', 'topics', 'queue');
-    const sourcePath = join('content', 'topics', 'queue', 'topic.md');
+    const sourcePath = join(topicDirectory, 'topic.md');
     const outputRoot = join(generatedRoot, 'blocked-output');
 
     await mkdir(topicDirectory, { recursive: true });
@@ -438,9 +443,7 @@ describe('transformContent', () => {
       ],
     };
 
-    const error = await captureAggregateError(() =>
-      transformContent(contentSource, generatedRoot!, outputRoot),
-    );
+    const error = await captureAggregateError(() => transformContent(contentSource, outputRoot));
 
     expect(error.errors).toHaveLength(1);
     expect((error.errors[0] as Error).message).toBe(
@@ -479,9 +482,7 @@ describe('transformContent', () => {
       ],
     };
 
-    const error = await captureAggregateError(() =>
-      transformContent(contentSource, generatedRoot!, outputRoot),
-    );
+    const error = await captureAggregateError(() => transformContent(contentSource, outputRoot));
 
     expect(error.errors).toHaveLength(1);
     expect((error.errors[0] as Error).message).toBe(
@@ -512,7 +513,7 @@ describe('transformContent', () => {
     };
 
     const error = await captureAggregateError(() =>
-      transformContent(contentSource, generatedRoot!, generatedRoot!),
+      transformContent(contentSource, generatedRoot!),
     );
 
     expect(error.errors).toHaveLength(1);
@@ -556,7 +557,7 @@ describe('transformContent', () => {
       ],
     };
 
-    await expect(transformContent(contentSource, generatedRoot, generatedRoot)).resolves.toEqual([
+    await expect(transformContent(contentSource, generatedRoot)).resolves.toEqual([
       {
         id: topicId,
         mainContentHtml: [
@@ -608,7 +609,7 @@ describe('transformContent', () => {
       };
 
       const error = await captureAggregateError(() =>
-        transformContent(contentSource, generatedRoot!, generatedRoot!),
+        transformContent(contentSource, generatedRoot!),
       );
 
       expect(error.errors).toHaveLength(1);
@@ -648,7 +649,7 @@ describe('transformContent', () => {
       };
 
       const error = await captureAggregateError(() =>
-        transformContent(contentSource, generatedRoot!, generatedRoot!),
+        transformContent(contentSource, generatedRoot!),
       );
 
       expect(error.errors).toHaveLength(1);
@@ -664,7 +665,7 @@ describe('transformContent', () => {
     generatedRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-generated-'));
 
     const topicDirectory = join(generatedRoot, 'content', 'topics', 'queue');
-    const sourcePath = join('content', 'topics', 'queue', 'topic.md');
+    const sourcePath = join(topicDirectory, 'topic.md');
     const outputRoot = join(generatedRoot, '.generated');
 
     await mkdir(topicDirectory, { recursive: true });
@@ -686,9 +687,7 @@ describe('transformContent', () => {
       ],
     };
 
-    const error = await captureAggregateError(() =>
-      transformContent(contentSource, generatedRoot!, outputRoot),
-    );
+    const error = await captureAggregateError(() => transformContent(contentSource, outputRoot));
 
     expect(error.errors).toHaveLength(1);
     expect((error.errors[0] as Error).message).toBe(
@@ -698,9 +697,13 @@ describe('transformContent', () => {
 
   it('rejects an image whose source file does not exist', async () => {
     const topicId = '11111111-1111-4111-8111-111111111111';
-    const sourcePath = join('content', 'topics', 'queue', 'topic.md');
 
     generatedRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-generated-'));
+
+    const topicDirectory = join(generatedRoot, 'content', 'topics', 'queue');
+    const sourcePath = join(topicDirectory, 'topic.md');
+
+    await mkdir(topicDirectory, { recursive: true });
 
     const contentSource: LoadedContentSource = {
       catalog: {
@@ -719,7 +722,7 @@ describe('transformContent', () => {
     };
 
     const error = await captureAggregateError(() =>
-      transformContent(contentSource, generatedRoot!, join(generatedRoot!, '.generated')),
+      transformContent(contentSource, join(generatedRoot!, '.generated')),
     );
 
     expect(error.errors).toHaveLength(1);
@@ -734,7 +737,7 @@ describe('transformContent', () => {
     generatedRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-generated-'));
 
     const topicDirectory = join(generatedRoot, 'content', 'topics', 'queue');
-    const sourcePath = join('content', 'topics', 'queue', 'topic.md');
+    const sourcePath = join(topicDirectory, 'topic.md');
     const outsideImagePath = join(generatedRoot, 'outside.svg');
 
     await mkdir(topicDirectory, { recursive: true });
@@ -758,7 +761,7 @@ describe('transformContent', () => {
     };
 
     const error = await captureAggregateError(() =>
-      transformContent(contentSource, generatedRoot!, join(generatedRoot!, '.generated')),
+      transformContent(contentSource, join(generatedRoot!, '.generated')),
     );
 
     expect(error.errors).toHaveLength(1);
@@ -777,7 +780,7 @@ describe('transformContent', () => {
     generatedRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-generated-'));
 
     const topicDirectory = join(generatedRoot, 'content', 'topics', 'queue');
-    const sourcePath = join('content', 'topics', 'queue', 'topic.md');
+    const sourcePath = join(topicDirectory, 'topic.md');
     const outputRoot = join(generatedRoot, '.generated');
 
     await mkdir(topicDirectory, { recursive: true });
@@ -804,7 +807,7 @@ describe('transformContent', () => {
         ],
       };
 
-      await expect(transformContent(contentSource, generatedRoot, outputRoot)).resolves.toEqual([
+      await expect(transformContent(contentSource, outputRoot)).resolves.toEqual([
         {
           id: topicId,
           mainContentHtml: `<p><img src="/assets/topics/${topicId}/${outputFilename}" alt="Queue operations"></p>`,
@@ -849,7 +852,7 @@ describe('transformContent', () => {
     };
 
     const error = await captureAggregateError(() =>
-      transformContent(contentSource, generatedRoot!, generatedRoot!),
+      transformContent(contentSource, generatedRoot!),
     );
 
     expect(error.message).toBe('Content transformation failed with 2 error(s)');
@@ -861,6 +864,122 @@ describe('transformContent', () => {
     ]);
   });
 
+  it('rejects a link whose scheme is not lowercase https', async () => {
+    const topicId = '11111111-1111-4111-8111-111111111111';
+    const sourcePath = 'content/topics/queue/topic.md';
+
+    generatedRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-generated-'));
+
+    const contentSource: LoadedContentSource = {
+      catalog: {
+        sourcePath: 'content/catalog.yaml',
+        landingTopicIds: [topicId],
+      },
+      topics: [
+        {
+          sourcePath,
+          id: topicId,
+          title: 'Queue',
+          childTopicIds: [],
+          markdownBody: '[Queue reference](HTTPS://EXAMPLE.COM/queue)',
+        },
+      ],
+    };
+
+    const error = await captureAggregateError(() =>
+      transformContent(contentSource, generatedRoot!),
+    );
+
+    expect(error.errors).toHaveLength(1);
+    expect((error.errors[0] as Error).message).toBe(
+      `${sourcePath}: Link must use an absolute HTTPS URL: HTTPS://EXAMPLE.COM/queue`,
+    );
+  });
+
+  it('rejects an image file name that would not survive URL interpolation', async () => {
+    const topicId = '11111111-1111-4111-8111-111111111111';
+    const unsafeNames = ['queue#operations.svg', 'queue?operations.svg', 'queue operations.svg'];
+
+    generatedRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-generated-'));
+
+    const topicDirectory = join(generatedRoot, 'content', 'topics', 'queue');
+    const sourcePath = join(topicDirectory, 'topic.md');
+    const outputRoot = join(generatedRoot, '.generated');
+
+    await mkdir(topicDirectory, { recursive: true });
+
+    for (const unsafeName of unsafeNames) {
+      await writeFile(
+        join(topicDirectory, unsafeName),
+        '<svg xmlns="http://www.w3.org/2000/svg"></svg>\n',
+      );
+
+      const contentSource: LoadedContentSource = {
+        catalog: {
+          sourcePath: 'content/catalog.yaml',
+          landingTopicIds: [topicId],
+        },
+        topics: [
+          {
+            sourcePath,
+            id: topicId,
+            title: 'Queue',
+            childTopicIds: [],
+            markdownBody: `![Queue operations](<./${unsafeName}>)`,
+          },
+        ],
+      };
+
+      const error = await captureAggregateError(() => transformContent(contentSource, outputRoot));
+
+      expect(error.errors).toHaveLength(1);
+      expect((error.errors[0] as Error).message).toBe(
+        `${sourcePath}: Image file name must begin with an ASCII letter or digit and contain only ASCII letters, digits, dots, hyphens, and underscores: ./${unsafeName}`,
+      );
+    }
+  });
+
+  it('accepts a readable image name containing dots, hyphens, and underscores', async () => {
+    const topicId = '11111111-1111-4111-8111-111111111111';
+    const sourceFilename = 'queue-operations.dark_mode.svg';
+    const outputFilename = 'queue-operations.dark_mode.7b3bba3ed45b.svg';
+
+    generatedRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-generated-'));
+
+    const topicDirectory = join(generatedRoot, 'content', 'topics', 'queue');
+    const sourcePath = join(topicDirectory, 'topic.md');
+    const outputRoot = join(generatedRoot, '.generated');
+
+    await mkdir(topicDirectory, { recursive: true });
+    await writeFile(
+      join(topicDirectory, sourceFilename),
+      '<svg xmlns="http://www.w3.org/2000/svg"></svg>\n',
+    );
+
+    const contentSource: LoadedContentSource = {
+      catalog: {
+        sourcePath: 'content/catalog.yaml',
+        landingTopicIds: [topicId],
+      },
+      topics: [
+        {
+          sourcePath,
+          id: topicId,
+          title: 'Queue',
+          childTopicIds: [],
+          markdownBody: `![Queue operations](./${sourceFilename})`,
+        },
+      ],
+    };
+
+    await expect(transformContent(contentSource, outputRoot)).resolves.toEqual([
+      {
+        id: topicId,
+        mainContentHtml: `<p><img src="/assets/topics/${topicId}/${outputFilename}" alt="Queue operations"></p>`,
+      },
+    ]);
+  });
+
   it('produces identical HTML and asset output on repeated transformation', async () => {
     const topicId = '11111111-1111-4111-8111-111111111111';
     const svg = '<svg xmlns="http://www.w3.org/2000/svg"></svg>\n';
@@ -869,7 +988,7 @@ describe('transformContent', () => {
     generatedRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-generated-'));
 
     const topicDirectory = join(generatedRoot, 'content', 'topics', 'queue');
-    const sourcePath = join('content', 'topics', 'queue', 'topic.md');
+    const sourcePath = join(topicDirectory, 'topic.md');
     const firstOutputRoot = join(generatedRoot, 'first-output');
     const secondOutputRoot = join(generatedRoot, 'second-output');
 
@@ -892,8 +1011,8 @@ describe('transformContent', () => {
       ],
     };
 
-    const firstResult = await transformContent(contentSource, generatedRoot, firstOutputRoot);
-    const secondResult = await transformContent(contentSource, generatedRoot, secondOutputRoot);
+    const firstResult = await transformContent(contentSource, firstOutputRoot);
+    const secondResult = await transformContent(contentSource, secondOutputRoot);
     const firstAssetDirectory = join(firstOutputRoot, 'assets', 'topics', topicId);
     const secondAssetDirectory = join(secondOutputRoot, 'assets', 'topics', topicId);
 
@@ -903,5 +1022,49 @@ describe('transformContent', () => {
     await expect(readFile(join(firstAssetDirectory, expectedFilename))).resolves.toEqual(
       await readFile(join(secondAssetDirectory, expectedFilename)),
     );
+  });
+});
+
+describe('HTML_SANITIZATION_SCHEMA', () => {
+  // Markdown validation normally rejects these documents before conversion. This
+  // exercises the sanitization boundary on its own, so it keeps protecting the
+  // generated HTML even if an upstream check is changed.
+  function sanitize(markdown: string): string {
+    return String(
+      unified()
+        .use(remarkParse)
+        .use(remarkRehype)
+        .use(rehypeSanitize, HTML_SANITIZATION_SCHEMA)
+        .use(rehypeStringify)
+        .processSync(markdown),
+    );
+  }
+
+  it('keeps a generated site-relative image source', () => {
+    expect(sanitize('![Queue operations](/assets/topics/queue/diagram.abc123def456.svg)')).toBe(
+      '<p><img src="/assets/topics/queue/diagram.abc123def456.svg" alt="Queue operations"></p>',
+    );
+  });
+
+  it.each([
+    { protocol: 'data', url: 'data:image/svg+xml;base64,PHN2Zz48L3N2Zz4=' },
+    { protocol: 'javascript', url: 'javascript:alert(1)' },
+  ])('removes a $protocol image source', ({ url }) => {
+    expect(sanitize(`![Queue operations](${url})`)).toBe('<p><img alt="Queue operations"></p>');
+  });
+
+  it('keeps an absolute HTTPS link', () => {
+    expect(sanitize('[Queue reference](https://example.com/queue)')).toBe(
+      '<p><a href="https://example.com/queue">Queue reference</a></p>',
+    );
+  });
+
+  it.each([
+    { protocol: 'javascript', url: 'javascript:alert(1)' },
+    // The protocol comparison is case-sensitive, which is why Markdown validation
+    // rejects an uppercase scheme rather than emitting an anchor with no destination.
+    { protocol: 'uppercase HTTPS', url: 'HTTPS://EXAMPLE.COM/queue' },
+  ])('removes a $protocol link destination', ({ url }) => {
+    expect(sanitize(`[Queue reference](${url})`)).toBe('<p><a>Queue reference</a></p>');
   });
 });

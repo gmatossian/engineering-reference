@@ -389,6 +389,27 @@ describe('validateContentGraph', () => {
     expect((errors[0] as Error).message).toContain(unreachableSourcePath);
   });
 
+  it('rejects a catalog that lists no landing Topic', () => {
+    const catalogPath = 'content/catalog.yaml';
+
+    const contentSource: LoadedContentSource = {
+      catalog: {
+        sourcePath: catalogPath,
+        landingTopicIds: [],
+      },
+      topics: [],
+    };
+
+    const error = captureAggregateError(() => validateContentGraph(contentSource));
+    const errors = error.errors;
+
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toBeInstanceOf(Error);
+    expect((errors[0] as Error).message).toBe(
+      `${catalogPath}: Catalog must list at least one landing Topic`,
+    );
+  });
+
   it('reports independent graph errors together', () => {
     const rootId = '11111111-1111-4111-8111-111111111111';
     const missingLandingId = '22222222-2222-4222-8222-222222222222';

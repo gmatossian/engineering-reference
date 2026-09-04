@@ -34,7 +34,11 @@ const SUPPORTED_MARKDOWN_NODE_TYPES = new Set([
 
 const SUPPORTED_IMAGE_EXTENSIONS = new Set(['.png', '.svg', '.webp']);
 
-const HTML_SANITIZATION_SCHEMA: SanitizationSchema = {
+// The readable name is interpolated into a generated URL path, so it is restricted to
+// characters that carry no meaning in a URL and need no percent-encoding.
+const SUPPORTED_IMAGE_NAME_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
+
+export const HTML_SANITIZATION_SCHEMA: SanitizationSchema = {
   allowComments: false,
   allowDoctypes: false,
   ancestors: {
@@ -54,9 +58,11 @@ const HTML_SANITIZATION_SCHEMA: SanitizationSchema = {
   },
   clobber: ['id', 'name'],
   clobberPrefix: 'user-content-',
+  // An empty protocol list means "unchecked" rather than "none permitted", so both
+  // attributes name the only protocol an authored document may reach.
   protocols: {
     href: ['https'],
-    src: [],
+    src: ['https'],
   },
   required: {},
   strip: ['script', 'style'],
@@ -93,6 +99,13 @@ function isErrorWithCode(error: unknown, code: string): boolean {
 }
 
 function isAbsoluteHttpsUrl(value: string): boolean {
+  // HTML sanitization matches the protocol case-sensitively and drops a mismatching
+  // href without reporting it, so an uppercase scheme is rejected here instead of
+  // becoming an anchor with no destination.
+  if (!value.startsWith('https://')) {
+    return false;
+  }
+
   try {
     const url = new URL(value);
 
@@ -120,7 +133,6 @@ function isSameDirectoryRelativePath(value: string): boolean {
 
 async function renderMarkdown(
   sourcePath: string,
-  resolvedSourcePath: string,
   topicId: string,
   markdownBody: string,
   generatedRoot: string,
@@ -230,7 +242,16 @@ async function renderMarkdown(
       throw new Error(`${sourcePath}: Image type is not supported: ${imageNode.url}`);
     }
 
-    const sourceImagePath = resolve(dirname(resolvedSourcePath), imageNode.url);
+    if (!SUPPORTED_IMAGE_NAME_PATTERN.test(readableName)) {
+      throw new Error(
+        `${sourcePath}: Image file name must begin with an ASCII letter or digit and contain only ASCII letters, digits, dots, hyphens, and underscores: ${imageNode.url}`,
+      );
+    }
+
+    // The recorded Topic path is already qualified, so a colocated image resolves
+    // from that path alone: absolute paths as given, relative ones against the
+    // working directory.
+    const sourceImagePath = resolve(dirname(sourcePath), imageNode.url);
     let sourceImageStats;
 
     try {
@@ -291,7 +312,6 @@ async function renderMarkdown(
 
 export async function transformContent(
   contentSource: LoadedContentSource,
-  sourceRoot: string,
   generatedRoot: string,
 ): Promise<TransformedTopicContent[]> {
   const transformedTopics: TransformedTopicContent[] = [];
@@ -312,7 +332,6 @@ export async function transformContent(
         id: topic.id,
         mainContentHtml: await renderMarkdown(
           topic.sourcePath,
-          resolve(sourceRoot, topic.sourcePath),
           topic.id,
           topic.markdownBody,
           generatedRoot,

@@ -124,6 +124,14 @@ export function validateContentGraph(contentSource: LoadedContentSource): Loaded
     }
   }
 
+  if (contentSource.catalog.landingTopicIds.length === 0) {
+    errors.push(
+      new Error(
+        `${contentSource.catalog.sourcePath}: Catalog must list at least one landing Topic`,
+      ),
+    );
+  }
+
   const seenLandingTopicIds = new Set<string>();
   const duplicateLandingTopicIds = new Set<string>();
 
