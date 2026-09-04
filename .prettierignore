@@ -1,0 +1,11 @@
+.angular/
+.generated/
+.local-notes/
+coverage/
+dist/
+node_modules/
+playwright-report/
+test-results/
+
+README.md
+docs/
