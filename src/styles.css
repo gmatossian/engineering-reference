@@ -34,20 +34,22 @@ button {
   max-width: 100%;
 }
 
-.topic-content pre,
-.topic-content table {
+.topic-content-overflow {
   max-width: 100%;
   overflow-x: auto;
 }
 
 .topic-content pre {
   background: #f4f5f6;
+  margin: 0;
+  min-width: 100%;
   padding: 1rem;
+  width: max-content;
 }
 
 .topic-content table {
   border-collapse: collapse;
-  display: block;
+  min-width: 100%;
   width: max-content;
 }
 

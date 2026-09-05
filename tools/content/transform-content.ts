@@ -7,6 +7,7 @@ import rehypeStringify from 'rehype-stringify';
 import remarkGfm from 'remark-gfm';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
+import type { Element, Root } from 'hast';
 import { unified } from 'unified';
 import { visit } from 'unist-util-visit';
 import type { LoadedContentSource } from './load-content-source.ts';
@@ -38,6 +39,40 @@ const SUPPORTED_IMAGE_EXTENSIONS = new Set(['.png', '.svg', '.webp']);
 // characters that carry no meaning in a URL and need no percent-encoding.
 const SUPPORTED_IMAGE_NAME_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
 
+const OVERFLOW_REGION_CLASS = 'topic-content-overflow';
+
+function wrapOverflowContent() {
+  return (tree: Root) => {
+    const targets: { index: number; node: Element; parent: Root | Element }[] = [];
+
+    visit(tree, 'element', (node, index, parent) => {
+      if (
+        (node.tagName === 'pre' || node.tagName === 'table') &&
+        index !== undefined &&
+        parent !== undefined
+      ) {
+        targets.push({ index, node, parent });
+      }
+    });
+
+    for (const { index, node, parent } of targets) {
+      const accessibleLabel = node.tagName === 'pre' ? 'Scrollable code block' : 'Scrollable table';
+
+      parent.children[index] = {
+        type: 'element',
+        tagName: 'div',
+        properties: {
+          ariaLabel: accessibleLabel,
+          className: [OVERFLOW_REGION_CLASS],
+          role: 'region',
+          tabIndex: 0,
+        },
+        children: [node],
+      };
+    }
+  };
+}
+
 export const HTML_SANITIZATION_SCHEMA: SanitizationSchema = {
   allowComments: false,
   allowDoctypes: false,
@@ -51,6 +86,12 @@ export const HTML_SANITIZATION_SCHEMA: SanitizationSchema = {
   attributes: {
     a: ['href'],
     code: [['className', /^language-.+$/]],
+    div: [
+      ['className', OVERFLOW_REGION_CLASS],
+      ['role', 'region'],
+      ['ariaLabel', /^Scrollable (?:code block|table)$/],
+      ['tabIndex', 0],
+    ],
     img: ['alt', 'src'],
     ol: ['start'],
     td: ['align'],
@@ -69,6 +110,7 @@ export const HTML_SANITIZATION_SCHEMA: SanitizationSchema = {
   tagNames: [
     'a',
     'code',
+    'div',
     'h1',
     'h2',
     'h3',
@@ -141,6 +183,7 @@ async function renderMarkdown(
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkRehype)
+    .use(wrapOverflowContent)
     .use(rehypeSanitize, HTML_SANITIZATION_SCHEMA)
     .use(rehypeStringify);
 

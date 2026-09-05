@@ -181,6 +181,11 @@ Raw HTML is not an authoring escape hatch. It is rejected so that the source
 format retains a bounded semantic contract. The generated HTML is sanitized as
 a defense-in-depth measure before it reaches the application.
 
+During generation, fenced code blocks and tables are placed inside predictable
+`topic-content-overflow` presentation wrappers. Each wrapper is a labelled,
+keyboard-focusable region that owns horizontal scrolling; the semantic `pre`,
+`code`, and `table` elements remain intact inside it.
+
 An authored external link must begin with the canonical lowercase `https://`
 scheme. Other spellings and protocols are rejected so that the validated HTML
 can pass through the sanitizer without its meaning changing.
@@ -258,7 +263,7 @@ catalog. Its conceptual shape is:
     },
     "44444444-4444-4444-8444-444444444444": {
       "title": "Complexity",
-      "mainContentHtml": "<table>...</table>",
+      "mainContentHtml": "<div class=\"topic-content-overflow\" ...><table>...</table></div>",
       "childTopicIds": []
     }
   }
