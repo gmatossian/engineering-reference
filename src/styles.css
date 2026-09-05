@@ -1,5 +1,12 @@
 html {
+  box-sizing: border-box;
   font-family: system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
 }
 
 body {
@@ -14,4 +21,39 @@ button {
 :focus-visible {
   outline: 3px solid currentColor;
   outline-offset: 3px;
+}
+
+.topic-content {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.topic-content img {
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
+
+.topic-content pre,
+.topic-content table {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.topic-content pre {
+  background: #f4f5f6;
+  padding: 1rem;
+}
+
+.topic-content table {
+  border-collapse: collapse;
+  display: block;
+  width: max-content;
+}
+
+.topic-content th,
+.topic-content td {
+  border: 1px solid #d6d9dc;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
 }
