@@ -28,6 +28,7 @@ replacement for all the others.
 | Authored and generated content representation | [`docs/content-storage.md`](content-storage.md) |
 | Navigation, browser behavior, responsive behavior, and accessibility expectations | [`docs/interaction-model.md`](interaction-model.md) |
 | Application architecture, build pipeline, and technical boundaries | [`docs/application-architecture.md`](application-architecture.md) |
+| Visual direction, presentation rules, and accepted design references | [`docs/visual-design.md`](visual-design.md) |
 | Current task contract | The GitHub issue body and explicit accepted amendments |
 | Current task lifecycle position | The issue's status in the Engineering Reference GitHub Project |
 | Proposed implementation and evidence | The task branch, pull request, and CI results |
