@@ -9,7 +9,10 @@ for the MVP. It builds on the [product brief](product-brief.md), the
 boundaries are defined in the
 [application architecture](application-architecture.md).
 
-It does not define detailed visual design or deployment infrastructure.
+Detailed presentation decisions are defined separately in the
+[MVP Visual Design](visual-design.md). This document remains authoritative for
+navigation behavior, responsive semantics, and accessibility expectations. It
+does not define deployment infrastructure.
 
 ## Interaction Summary
 
@@ -152,8 +155,9 @@ remain complete and readable.
 The MVP does not implement custom swipe-left or swipe-right navigation.
 Platform and browser-native gestures remain unaffected.
 
-Exact breakpoints, spacing, typography, maximum content width, and visual
-layout are deliberately left to later design and implementation decisions.
+The visual design defines the accepted layout direction, spacing, typography,
+and content-width principles. Exact implementation thresholds should follow
+content fit while preserving the behavior defined here.
 
 ## External Links
 
@@ -237,8 +241,8 @@ the URL or pretending the failure is an empty catalog.
 
 This interaction model does not decide:
 
-- exact responsive breakpoints or page composition;
-- visual styling, branding, animation, or transition design;
+- exact responsive breakpoints and font-delivery strategy;
+- implementation details for the accepted visual direction;
 - deployment infrastructure.
 
 The resolved implementation choices are recorded in the application

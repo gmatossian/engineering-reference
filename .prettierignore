@@ -1,10 +1,12 @@
 .angular/
 .generated/
+.local/
 .local-notes/
 coverage/
 dist/
 node_modules/
 playwright-report/
+stitch-export/
 test-results/
 
 README.md

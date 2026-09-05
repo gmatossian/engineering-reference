@@ -3,12 +3,14 @@
 ## Status
 
 The product direction, MVP boundary, content model, content representation,
-navigation interaction, and application architecture are defined. Detailed
-visual design, implementation, and deployment decisions remain. The accepted
-interaction behavior is documented in the
+navigation interaction, application architecture, and initial visual direction
+are defined. Visual implementation and deployment decisions remain. The
+accepted interaction behavior is documented in the
 [MVP Navigation and Responsive Interaction Model](interaction-model.md), and
 the technical boundary is documented in the
 [MVP Application Architecture and Build Pipeline](application-architecture.md).
+The accepted presentation direction is documented in the
+[MVP Visual Design](visual-design.md).
 
 ## Product Purpose
 
@@ -182,7 +184,8 @@ The following remain possibilities rather than commitments:
 The product brief does not settle:
 
 - post-MVP taxonomy aids such as breadcrumbs, tags, and facets;
-- detailed visual design and responsive styling;
+- implementation details and content-model changes required by the accepted
+  visual direction;
 - search indexing and ranking;
 - deployment packaging and hosting details;
 - personal-state storage, if personal state is later justified;

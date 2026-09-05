@@ -8,8 +8,9 @@ for the MVP. It implements the decisions in the
 [content storage representation](content-storage.md), and
 [navigation interaction model](interaction-model.md).
 
-It does not define detailed visual design, select a deployment provider, or
-implement the application and content generator.
+Detailed presentation rules are defined separately in the
+[MVP Visual Design](visual-design.md). This document does not select a
+deployment provider or implement the application and content generator.
 
 ## Decision Summary
 

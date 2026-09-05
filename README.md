@@ -2,6 +2,10 @@
 
 A responsive, progressively disclosed reference for practical software engineering concepts.
 
+The accepted product, interaction, architecture, content, and
+[visual-design direction](docs/visual-design.md) are maintained as
+version-controlled project documentation.
+
 ## Development
 
 ### Requirements
