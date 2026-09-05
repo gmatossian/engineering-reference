@@ -1,8 +1,12 @@
-<main>
-  <h1>Engineering Reference</h1>
-  <p>
-    A responsive, progressively disclosed reference for practical software engineering concepts.
-  </p>
+<header class="application-header">
+  <a class="application-name" routerLink="/">Engineering Reference</a>
 
+  <nav aria-label="Application navigation">
+    <button type="button" [disabled]="backUnavailable" (click)="goBack()">Back</button>
+    <a routerLink="/">Home</a>
+  </nav>
+</header>
+
+<main class="application-main">
   <router-outlet />
 </main>

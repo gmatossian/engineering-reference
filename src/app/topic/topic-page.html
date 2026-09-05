@@ -1,0 +1,7 @@
+@if (topic(); as resolvedTopic) {
+  <article>
+    <h1>{{ resolvedTopic.title }}</h1>
+  </article>
+} @else {
+  <app-topic-not-found />
+}

@@ -1,0 +1,14 @@
+<section aria-labelledby="landing-heading">
+  <h1 id="landing-heading">Engineering Reference</h1>
+  <p>Select a topic to begin.</p>
+
+  <nav aria-label="Topics">
+    <ul>
+      @for (topic of topics; track topic.id) {
+        <li>
+          <a [routerLink]="['/topics', topic.id]">{{ topic.title }}</a>
+        </li>
+      }
+    </ul>
+  </nav>
+</section>
