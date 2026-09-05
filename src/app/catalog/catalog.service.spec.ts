@@ -12,7 +12,14 @@ describe('CatalogService', () => {
   });
 
   it('resolves landing Topics in their declared order', () => {
-    expect(service.getLandingTopics()).toEqual([{ id: JAVA_TOPIC_ID, title: 'Java' }]);
+    expect(service.getLandingTopics()).toEqual([
+      {
+        id: JAVA_TOPIC_ID,
+        title: 'Java',
+        summary: 'Core language, collections, concurrency, and persistence concepts.',
+        iconKey: 'java',
+      },
+    ]);
   });
 
   it('looks up a Topic by UUID', () => {
@@ -24,7 +31,12 @@ describe('CatalogService', () => {
 
     expect(javaTopic).toBeDefined();
     expect(service.getChildTopics(javaTopic!)).toEqual([
-      { id: COLLECTIONS_TOPIC_ID, title: 'Collections' },
+      {
+        id: COLLECTIONS_TOPIC_ID,
+        title: 'Collections',
+        summary: null,
+        iconKey: 'collection',
+      },
     ]);
   });
 

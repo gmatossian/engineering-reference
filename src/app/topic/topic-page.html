@@ -1,6 +1,8 @@
 @if (topic(); as resolvedTopic) {
-  <article>
-    <h1 tabindex="-1">{{ resolvedTopic.title }}</h1>
+  <article class="topic-page">
+    <header class="topic-page__header">
+      <h1 tabindex="-1">{{ resolvedTopic.title }}</h1>
+    </header>
 
     @if (resolvedTopic.mainContentHtml !== null) {
       <app-topic-content [html]="resolvedTopic.mainContentHtml" />
@@ -8,7 +10,9 @@
 
     @if (childTopics(); as children) {
       @if (children.length > 0) {
-        <app-topic-link-list ariaLabel="Subtopics" [topics]="children" />
+        <div class="topic-page__children">
+          <app-topic-link-list ariaLabel="Subtopics" [topics]="children" />
+        </div>
       }
     }
   </article>

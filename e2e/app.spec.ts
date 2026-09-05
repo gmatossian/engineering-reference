@@ -17,7 +17,7 @@ test.describe('cross-browser smoke', { tag: '@smoke' }, () => {
       }),
     ).toBeVisible();
     await expect(page.getByRole('navigation', { name: 'Topics' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Java', exact: true })).toHaveAttribute(
+    await expect(page.getByRole('link', { name: /^Java/ })).toHaveAttribute(
       'href',
       `/topics/${JAVA_TOPIC_ID}`,
     );
@@ -91,7 +91,7 @@ test('navigates through bundled Topic detail with native history', async ({ page
   await expect(page).toHaveURL(`/topics/${COMPLEXITY_TOPIC_ID}`);
   await expect(page.getByRole('heading', { level: 1, name: 'Complexity' })).toBeFocused();
 
-  await page.getByRole('link', { name: 'Home', exact: true }).click();
+  await page.getByRole('link', { name: 'Engineering Reference', exact: true }).click();
 
   await expect(page).toHaveURL('/');
   await expect(page).toHaveTitle('Engineering Reference');

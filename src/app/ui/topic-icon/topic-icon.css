@@ -1,0 +1,44 @@
+:host {
+  align-items: center;
+  background: var(--topic-icon-background, var(--color-accent-neutral-soft));
+  border-radius: var(--radius-small);
+  color: var(--topic-icon-color, var(--color-accent-neutral));
+  display: inline-flex;
+  height: var(--topic-icon-size, 2.5rem);
+  justify-content: center;
+  width: var(--topic-icon-size, 2.5rem);
+}
+
+img {
+  height: 52%;
+  width: 52%;
+}
+
+:host([data-icon-key='java']) {
+  --topic-icon-background: var(--color-accent-cobalt-soft);
+  --topic-icon-color: var(--color-accent-cobalt);
+}
+
+:host([data-icon-key='architecture']),
+:host([data-icon-key='concurrency']) {
+  --topic-icon-background: var(--color-accent-forest-soft);
+  --topic-icon-color: var(--color-accent-forest);
+}
+
+:host([data-icon-key='algorithm']),
+:host([data-icon-key='complexity']) {
+  --topic-icon-background: var(--color-accent-ochre-soft);
+  --topic-icon-color: var(--color-accent-ochre);
+}
+
+:host([data-icon-key='database']),
+:host([data-icon-key='persistence']) {
+  --topic-icon-background: var(--color-accent-terracotta-soft);
+  --topic-icon-color: var(--color-accent-terracotta);
+}
+
+:host([data-icon-key='collection']),
+:host([data-icon-key='queue']) {
+  --topic-icon-background: var(--color-accent-indigo-soft);
+  --topic-icon-color: var(--color-accent-indigo);
+}

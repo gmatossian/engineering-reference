@@ -1,9 +1,14 @@
 <header class="application-header">
-  <a class="application-name" routerLink="/">Engineering Reference</a>
+  <nav class="application-navigation" aria-label="Application navigation">
+    <button class="back-control" type="button" [disabled]="backUnavailable" (click)="goBack()">
+      <span class="back-control__arrow" aria-hidden="true">←</span>
+      <span>Back</span>
+    </button>
 
-  <nav aria-label="Application navigation">
-    <button type="button" [disabled]="backUnavailable" (click)="goBack()">Back</button>
-    <a routerLink="/">Home</a>
+    <a class="application-name" routerLink="/">
+      <img class="application-mark" src="icons/application-mark.svg" alt="" />
+      <span>Engineering Reference</span>
+    </a>
   </nav>
 </header>
 

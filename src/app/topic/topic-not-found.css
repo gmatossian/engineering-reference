@@ -1,0 +1,26 @@
+.not-found {
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-medium);
+  margin-inline: auto;
+  max-width: 38rem;
+  padding: clamp(2rem, 7vw, 4rem);
+}
+
+.not-found__code {
+  color: var(--color-link);
+  font-family: var(--font-code);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+h1 {
+  margin: var(--space-2) 0 0;
+}
+
+p {
+  color: var(--color-secondary);
+  line-height: 1.6;
+  margin: var(--space-3) 0 0;
+}

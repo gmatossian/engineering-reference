@@ -4,28 +4,90 @@
 }
 
 .application-header {
+  background: color-mix(in srgb, var(--color-canvas) 94%, transparent);
+  border-bottom: 1px solid var(--color-hairline);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.application-navigation {
   align-items: center;
-  border-bottom: 1px solid #d6d9dc;
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: space-between;
-  padding: 1rem;
+  gap: var(--space-4);
+  margin-inline: auto;
+  max-width: var(--layout-wide);
+  min-height: 4rem;
+  padding: var(--space-2) var(--page-gutter);
 }
 
 .application-name {
+  align-items: center;
+  color: var(--color-text);
+  display: inline-flex;
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
   font-weight: 700;
+  gap: var(--space-2);
+  letter-spacing: -0.02em;
+  text-decoration: none;
 }
 
-nav {
+.application-mark {
+  flex: 0 0 auto;
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.back-control {
   align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-small);
+  color: var(--color-secondary);
+  cursor: pointer;
   display: flex;
-  gap: 1rem;
+  gap: var(--space-1);
+  min-height: 2.75rem;
+  padding: var(--space-2);
+}
+
+.back-control:not(:disabled):hover {
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+}
+
+.back-control:disabled {
+  cursor: default;
+  opacity: 0.38;
+}
+
+.back-control__arrow {
+  font-size: 1.25rem;
+  line-height: 1;
 }
 
 .application-main {
   margin-inline: auto;
-  max-width: 70rem;
+  max-width: var(--layout-wide);
   min-width: 0;
-  padding: 2rem 1rem;
+  padding: clamp(2.5rem, 6vw, 5rem) var(--page-gutter) 6rem;
+}
+
+@media (width <= 40rem) {
+  .application-navigation {
+    gap: var(--space-2);
+  }
+
+  .back-control span:last-child {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
 }

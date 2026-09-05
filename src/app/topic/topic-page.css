@@ -1,0 +1,19 @@
+.topic-page {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  margin-inline: auto;
+  max-width: var(--layout-content);
+}
+
+.topic-page__header {
+  border-bottom: 1px solid var(--color-hairline);
+  padding-bottom: var(--space-4);
+}
+
+h1 {
+  margin: 0;
+}
+
+.topic-page__children {
+  min-width: 0;
+}
