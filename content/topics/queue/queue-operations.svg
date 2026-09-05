@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 180">
+  <title>Queue operations</title>
+  <desc>Elements enter a queue at the tail and leave from the head.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2457a7" />
+    </marker>
+  </defs>
+  <g fill="none" stroke="#2457a7" stroke-width="3">
+    <path d="M20 90 H125" marker-end="url(#arrow)" />
+    <path d="M595 90 H700" marker-end="url(#arrow)" />
+  </g>
+  <g fill="#eef4ff" stroke="#2457a7" stroke-width="2">
+    <rect x="145" y="50" width="100" height="80" rx="8" />
+    <rect x="255" y="50" width="100" height="80" rx="8" />
+    <rect x="365" y="50" width="100" height="80" rx="8" />
+    <rect x="475" y="50" width="100" height="80" rx="8" />
+  </g>
+  <g fill="#17365d" font-family="sans-serif" font-size="18" text-anchor="middle">
+    <text x="72" y="75">offer</text>
+    <text x="72" y="112">tail</text>
+    <text x="195" y="97">D</text>
+    <text x="305" y="97">C</text>
+    <text x="415" y="97">B</text>
+    <text x="525" y="97">A</text>
+    <text x="650" y="75">poll</text>
+    <text x="650" y="112">head</text>
+  </g>
+</svg>

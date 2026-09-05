@@ -18,16 +18,17 @@ npx playwright install chromium
 
 ### Commands
 
-| Command                | Purpose                                                    |
-| ---------------------- | ---------------------------------------------------------- |
-| `npm start`            | Start the Angular development server.                      |
-| `npm run build`        | Create an optimized production build.                      |
-| `npm test`             | Run the Angular and Node unit-test suites.                  |
-| `npm run test:e2e`     | Build the application and run Playwright browser tests.    |
-| `npm run lint`         | Run ESLint against application, test, and configuration files. |
-| `npm run format`       | Format managed files with Prettier.                        |
-| `npm run format:check` | Check formatting without modifying files.                  |
-| `npm run check`        | Run the complete local equivalent of the CI quality gate.  |
+| Command                    | Purpose                                                         |
+| -------------------------- | --------------------------------------------------------------- |
+| `npm start`                | Generate content, then start the Angular development server.    |
+| `npm run build`            | Generate content, then create an optimized production build.    |
+| `npm run content:generate` | Validate authored content and recreate the runtime catalog.     |
+| `npm test`                 | Run the Angular and Node unit-test suites.                       |
+| `npm run test:e2e`         | Build the application and run Playwright browser tests.         |
+| `npm run lint`             | Run ESLint against application, test, and configuration files.  |
+| `npm run format`           | Format managed files with Prettier.                             |
+| `npm run format:check`     | Check formatting without modifying files.                       |
+| `npm run check`            | Run the complete local equivalent of the CI quality gate.       |
 
 Run the local verification required by the
 [AI-assisted development profile](docs/ai-assisted-development.md) before
