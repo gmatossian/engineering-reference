@@ -1,0 +1,24 @@
+.landing {
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 4rem);
+}
+
+.landing__introduction {
+  max-width: 43rem;
+}
+
+h1 {
+  margin: 0;
+}
+
+.landing__subtitle {
+  color: var(--color-secondary);
+  font-size: clamp(1.05rem, 2vw, 1.2rem);
+  line-height: 1.6;
+  margin: var(--space-3) 0 0;
+}
+
+.landing__hint {
+  color: var(--color-muted);
+  margin: var(--space-2) 0 0;
+}

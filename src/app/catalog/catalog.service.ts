@@ -1,10 +1,16 @@
 import { Injectable } from '@angular/core';
-import type { RuntimeCatalog, RuntimeTopic } from '../../../contracts/runtime-catalog';
+import type {
+  RuntimeCatalog,
+  RuntimeTopic,
+  TopicIconKey,
+} from '../../../contracts/runtime-catalog';
 import generatedCatalog from '../../../.generated/catalog.json';
 
 export interface TopicSummary {
   readonly id: string;
   readonly title: string;
+  readonly summary: string | null;
+  readonly iconKey: TopicIconKey | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -36,6 +42,11 @@ export class CatalogService {
       throw new Error(`Generated catalog references unknown Topic ${id}`);
     }
 
-    return { id, title: topic.title };
+    return {
+      id,
+      title: topic.title,
+      summary: topic.summary,
+      iconKey: topic.iconKey,
+    };
   }
 }

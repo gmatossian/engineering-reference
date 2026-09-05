@@ -1,0 +1,88 @@
+:root {
+  color-scheme: light;
+  --color-canvas: #fbf9f4;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f4f1ea;
+  --color-text: #1b1c19;
+  --color-secondary: #46474b;
+  --color-muted: #6d6e72;
+  --color-hairline: #e5e0d5;
+  --color-outline: #76777b;
+  --color-link: #164fc9;
+  --color-focus: #114dd8;
+  --color-accent-cobalt: #174ee5;
+  --color-accent-cobalt-soft: #e9efff;
+  --color-accent-forest: #14773f;
+  --color-accent-forest-soft: #e8f7ed;
+  --color-accent-ochre: #9c5a00;
+  --color-accent-ochre-soft: #fff5d8;
+  --color-accent-terracotta: #be3b2f;
+  --color-accent-terracotta-soft: #ffebe8;
+  --color-accent-indigo: #5147d9;
+  --color-accent-indigo-soft: #eeecff;
+  --color-accent-neutral: #5b6068;
+  --color-accent-neutral-soft: #efefec;
+  --font-heading: 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif;
+  --font-body: Inter, 'Avenir Next', 'Segoe UI', sans-serif;
+  --font-code: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+  --layout-wide: 70rem;
+  --layout-content: 56rem;
+  --page-gutter: clamp(1rem, 4vw, 2rem);
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --radius-small: 0.3rem;
+  --radius-medium: 0.55rem;
+  --shadow-subtle: 0 0.4rem 1.2rem rgb(27 28 25 / 8%);
+}
+
+html {
+  box-sizing: border-box;
+  font-family: var(--font-body);
+  min-height: 100%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-text);
+  margin: 0;
+  min-height: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading);
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+}
+
+a,
+button {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+@media (width <= 40rem) {
+  h1 {
+    font-size: clamp(1.9rem, 9vw, 2.35rem);
+  }
+}

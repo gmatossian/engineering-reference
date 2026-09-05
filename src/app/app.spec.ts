@@ -23,8 +23,9 @@ describe('App', () => {
     const homeLinks = compiled.querySelectorAll<HTMLAnchorElement>('a[href="/"]');
     const backButton = compiled.querySelector<HTMLButtonElement>('button');
 
-    expect(homeLinks).toHaveLength(2);
-    expect(backButton?.textContent).toBe('Back');
+    expect(homeLinks).toHaveLength(1);
+    expect(homeLinks[0].textContent?.trim()).toBe('Engineering Reference');
+    expect(backButton?.textContent?.trim()).toContain('Back');
     expect(backButton?.disabled).toBe(window.history.length <= 1);
   });
 });

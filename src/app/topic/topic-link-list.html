@@ -1,8 +1,28 @@
-<nav [attr.aria-label]="ariaLabel()">
+<nav
+  class="topic-links"
+  [class.topic-links--cards]="presentation() === 'cards'"
+  [attr.aria-label]="ariaLabel()"
+>
   <ul>
     @for (topic of topics(); track topic.id) {
       <li>
-        <a [routerLink]="['/topics', topic.id]">{{ topic.title }}</a>
+        <a
+          class="topic-link"
+          [attr.data-icon-key]="topic.iconKey ?? 'generic'"
+          [routerLink]="['/topics', topic.id]"
+        >
+          <app-topic-icon [iconKey]="topic.iconKey" />
+
+          <span class="topic-link__copy">
+            <span class="topic-link__title">{{ topic.title }}</span>
+
+            @if (presentation() === 'cards' && topic.summary !== null) {
+              <span class="topic-link__summary">{{ topic.summary }}</span>
+            }
+          </span>
+
+          <span class="topic-link__chevron" aria-hidden="true"></span>
+        </a>
       </li>
     }
   </ul>

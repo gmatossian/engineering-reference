@@ -9,6 +9,7 @@ import { TopicLinkList } from './topic-link-list';
 @Component({
   imports: [TopicContent, TopicLinkList, TopicNotFound],
   selector: 'app-topic-page',
+  styleUrl: './topic-page.css',
   templateUrl: './topic-page.html',
 })
 export class TopicPage {

@@ -24,7 +24,10 @@ describe('application routes', () => {
 
     const topicLink = harness.routeNativeElement?.querySelector<HTMLAnchorElement>('a');
 
-    expect(topicLink?.textContent?.trim()).toBe('Java');
+    expect(topicLink?.textContent).toContain('Java');
+    expect(topicLink?.textContent).toContain(
+      'Core language, collections, concurrency, and persistence concepts.',
+    );
     expect(topicLink?.getAttribute('href')).toBe(`/topics/${JAVA_TOPIC_ID}`);
     expect(TestBed.inject(Title).getTitle()).toBe('Engineering Reference');
   });
