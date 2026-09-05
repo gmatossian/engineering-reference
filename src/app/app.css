@@ -1,0 +1,28 @@
+:host {
+  display: block;
+  min-height: 100%;
+}
+
+.application-header {
+  align-items: center;
+  border-bottom: 1px solid #d6d9dc;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.application-name {
+  font-weight: 700;
+}
+
+nav {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+}
+
+.application-main {
+  margin-inline: auto;
+  max-width: 70rem;
+  padding: 2rem 1rem;
+}

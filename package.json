@@ -10,6 +10,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "npm run test:app && npm run test:tools",
+    "pretest:app": "npm run content:generate",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "ng lint",
