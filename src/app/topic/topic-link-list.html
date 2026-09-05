@@ -1,0 +1,9 @@
+<nav [attr.aria-label]="ariaLabel()">
+  <ul>
+    @for (topic of topics(); track topic.id) {
+      <li>
+        <a [routerLink]="['/topics', topic.id]">{{ topic.title }}</a>
+      </li>
+    }
+  </ul>
+</nav>
