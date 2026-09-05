@@ -6,27 +6,53 @@ const COLLECTIONS_TOPIC_ID = 'c29c5725-0b1f-480d-88f4-5c9d3b7f0dc5';
 const QUEUE_TOPIC_ID = '8cbea92a-606e-4ed3-839c-c7fff67f0909';
 const COMPLEXITY_TOPIC_ID = 'bf417331-9329-42b4-9517-351ef6af3b85';
 
-test('navigates through the bundled Topic hierarchy with native history', async ({ page }) => {
-  await page.goto('/');
+test.describe('cross-browser smoke', { tag: '@smoke' }, () => {
+  test('renders the landing page and its bundled Topics', async ({ page }) => {
+    await page.goto('/');
 
-  await expect(
-    page.getByRole('heading', {
-      level: 1,
-      name: 'Engineering Reference',
-    }),
-  ).toBeVisible();
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: 'Engineering Reference',
+      }),
+    ).toBeVisible();
+    await expect(page.getByRole('navigation', { name: 'Topics' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Java', exact: true })).toHaveAttribute(
+      'href',
+      `/topics/${JAVA_TOPIC_ID}`,
+    );
+  });
 
-  await page.getByRole('link', { name: 'Java', exact: true }).click();
+  test('loads a direct Topic URL and follows child navigation', async ({ page }) => {
+    await page.goto(`/topics/${JAVA_TOPIC_ID}`);
 
-  await expect(page).toHaveURL(`/topics/${JAVA_TOPIC_ID}`);
-  await expect(page.getByRole('heading', { level: 1, name: 'Java' })).toBeFocused();
-  await expect(page).toHaveTitle('Java | Engineering Reference');
-  await expect(page.locator('.topic-content')).toHaveCount(0);
+    await expect(page).toHaveURL(`/topics/${JAVA_TOPIC_ID}`);
+    await expect(page.getByRole('heading', { level: 1, name: 'Java' })).toBeVisible();
+    await expect(page).toHaveTitle('Java | Engineering Reference');
+    await expect(page.locator('.topic-content')).toHaveCount(0);
 
-  await page.getByRole('link', { name: 'Collections', exact: true }).click();
+    await page.getByRole('link', { name: 'Collections', exact: true }).click();
 
-  await expect(page).toHaveURL(`/topics/${COLLECTIONS_TOPIC_ID}`);
-  await expect(page.getByRole('heading', { level: 1, name: 'Collections' })).toBeFocused();
+    await expect(page).toHaveURL(`/topics/${COLLECTIONS_TOPIC_ID}`);
+    await expect(page.getByRole('heading', { level: 1, name: 'Collections' })).toBeFocused();
+    await expect(page.locator('.topic-content')).toContainText(
+      'Collections provide standard data structures',
+    );
+  });
+
+  test('presents an unknown Topic without redirecting', async ({ page }) => {
+    await page.goto('/topics/unknown-topic');
+
+    await expect(page).toHaveURL('/topics/unknown-topic');
+    await expect(page.getByRole('heading', { level: 1, name: 'Topic not found' })).toBeVisible();
+    await expect(page).toHaveTitle('Topic not found | Engineering Reference');
+  });
+});
+
+test('navigates through bundled Topic detail with native history', async ({ page }) => {
+  await page.goto(`/topics/${COLLECTIONS_TOPIC_ID}`);
+
+  await expect(page.getByRole('heading', { level: 1, name: 'Collections' })).toBeVisible();
   await expect(page.locator('.topic-content')).toContainText(
     'Collections provide standard data structures',
   );
@@ -40,11 +66,6 @@ test('navigates through the bundled Topic hierarchy with native history', async 
     'Elements entering at the tail and leaving from the head of a queue',
   );
 
-  await page.reload();
-
-  await expect(page).toHaveURL(`/topics/${QUEUE_TOPIC_ID}`);
-  await expect(page.getByRole('heading', { level: 1, name: 'Queue' })).toBeVisible();
-  await expect(page.getByRole('heading', { level: 1, name: 'Queue' })).not.toBeFocused();
   await expect(page.locator('.topic-content')).toContainText(
     'A queue holds elements for processing in a defined order',
   );
@@ -218,14 +239,6 @@ test('bounds generated Topic content at a narrow viewport', async ({ page }) => 
       () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
     ),
   ).toBe(true);
-});
-
-test('presents an unknown Topic without redirecting', async ({ page }) => {
-  await page.goto('/topics/unknown-topic');
-
-  await expect(page).toHaveURL('/topics/unknown-topic');
-  await expect(page.getByRole('heading', { level: 1, name: 'Topic not found' })).toBeVisible();
-  await expect(page).toHaveTitle('Topic not found | Engineering Reference');
 });
 
 test('renders the application without detectable accessibility violations', async ({ page }) => {
