@@ -102,9 +102,11 @@ Application source is organized by small product feature. Generic `components`,
 to a shared boundary only after a concrete reuse requirement appears.
 
 `contracts/runtime-catalog.ts` is a framework-neutral boundary containing the
-`RuntimeCatalog` and `RuntimeTopic` TypeScript types. Both the generator and
-Angular application import these types. It contains neither Angular-specific
-nor Node.js-specific behavior.
+`RuntimeCatalog` and `RuntimeTopic` TypeScript types and the closed
+`TOPIC_ICON_KEYS` vocabulary. Source validation imports the vocabulary as a
+runtime value, while the generator and Angular application share its derived
+`TopicIconKey` type. The boundary contains neither Angular-specific nor
+Node.js-specific behavior.
 
 ## Content Generation Pipeline
 
@@ -147,8 +149,9 @@ not generate heading IDs. New constructs require an explicit content-contract
 change plus styling, sanitization, and test coverage.
 
 Custom catalog validation enforces UUID identity, references, ordering,
-uniqueness, acyclicity, and reachability. The generator reports all discovered
-validation errors in one run and exits unsuccessfully when any are present.
+uniqueness, acyclicity, reachability, and the requirement that every landing
+Topic has a summary. The generator reports all discovered validation errors in
+one run and exits unsuccessfully when any are present.
 
 ### Generated boundary
 
@@ -164,9 +167,14 @@ Generation recreates this ignored directory deterministically:
 ```
 
 The generated JSON has the shape defined in the content storage decision and
-is type-checked against `RuntimeCatalog`. Angular imports
-`.generated/catalog.json` at build time, so the catalog is compiled into the
-application bundle rather than fetched as a runtime resource.
+is type-checked against `RuntimeCatalog`. Optional `summary` and `iconKey`
+source fields become explicit nullable runtime properties; the Angular UI owns
+the generic icon fallback when `iconKey` is `null`. TypeScript widens string
+literals imported from JSON, so the catalog service restores the trusted
+`RuntimeCatalog` type at that generated boundary rather than duplicating
+runtime validation in Angular. Angular imports `.generated/catalog.json` at
+build time, so the catalog is compiled into the application bundle rather than
+fetched as a runtime resource.
 
 Supported Topic images are copied without resizing or optimization for the
 MVP. The generator keeps the readable source filename, inserts a deterministic

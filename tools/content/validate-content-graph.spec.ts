@@ -28,6 +28,7 @@ describe('validateContentGraph', () => {
           sourcePath: 'content/topics/java/topic.md',
           id: topicId,
           title: 'Java',
+          summary: 'Java language concepts.',
           childTopicIds: [],
           markdownBody: '\nJava content.\n',
         },
@@ -35,6 +36,34 @@ describe('validateContentGraph', () => {
     };
 
     expect(validateContentGraph(contentSource)).toBe(contentSource);
+  });
+
+  it('requires every landing Topic to define a summary', () => {
+    const topicId = '11111111-1111-4111-8111-111111111111';
+    const sourcePath = 'content/topics/java/topic.md';
+
+    const contentSource: LoadedContentSource = {
+      catalog: {
+        sourcePath: 'content/catalog.yaml',
+        landingTopicIds: [topicId],
+      },
+      topics: [
+        {
+          sourcePath,
+          id: topicId,
+          title: 'Java',
+          childTopicIds: [],
+          markdownBody: '\nJava content.\n',
+        },
+      ],
+    };
+
+    const error = captureAggregateError(() => validateContentGraph(contentSource));
+
+    expect(error.errors).toHaveLength(1);
+    expect((error.errors[0] as Error).message).toBe(
+      `${sourcePath}: Landing Topic ${topicId} must define a summary`,
+    );
   });
 
   it('accepts a valid parent-child tree', () => {
@@ -51,6 +80,7 @@ describe('validateContentGraph', () => {
           sourcePath: 'content/topics/java/topic.md',
           id: parentId,
           title: 'Java',
+          summary: 'Java language concepts.',
           childTopicIds: [childId],
           markdownBody: '',
         },
@@ -119,6 +149,7 @@ describe('validateContentGraph', () => {
           sourcePath: 'content/topics/java/topic.md',
           id: topicId,
           title: 'Java',
+          summary: 'Java language concepts.',
           childTopicIds: [],
           markdownBody: '\nJava content.\n',
         },
@@ -172,6 +203,7 @@ describe('validateContentGraph', () => {
           sourcePath: parentSourcePath,
           id: parentId,
           title: 'Java',
+          summary: 'Java language concepts.',
           childTopicIds: [childId, childId],
           markdownBody: '',
         },
@@ -211,6 +243,7 @@ describe('validateContentGraph', () => {
           sourcePath: parentSourcePath,
           id: parentId,
           title: 'Java',
+          summary: 'Java language concepts.',
           childTopicIds: [missingChildId],
           markdownBody: '',
         },
@@ -242,6 +275,7 @@ describe('validateContentGraph', () => {
           sourcePath,
           id: topicId,
           title: 'Java',
+          summary: 'Java language concepts.',
           childTopicIds: [topicId],
           markdownBody: '',
         },
@@ -274,6 +308,7 @@ describe('validateContentGraph', () => {
           sourcePath: javaSourcePath,
           id: javaId,
           title: 'Java',
+          summary: 'Java language concepts.',
           childTopicIds: [collectionsId],
           markdownBody: '',
         },
@@ -318,6 +353,7 @@ describe('validateContentGraph', () => {
           sourcePath: 'content/topics/java/topic.md',
           id: javaId,
           title: 'Java',
+          summary: 'Java language concepts.',
           childTopicIds: [collectionsId, concurrencyId],
           markdownBody: '',
         },
@@ -366,6 +402,7 @@ describe('validateContentGraph', () => {
           sourcePath: 'content/topics/java/topic.md',
           id: landingTopicId,
           title: 'Java',
+          summary: 'Java language concepts.',
           childTopicIds: [],
           markdownBody: '\nJava content.\n',
         },
@@ -426,6 +463,7 @@ describe('validateContentGraph', () => {
           sourcePath: 'content/topics/java/topic.md',
           id: rootId,
           title: 'Java',
+          summary: 'Java language concepts.',
           childTopicIds: [missingChildId],
           markdownBody: '',
         },

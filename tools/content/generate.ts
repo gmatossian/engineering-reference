@@ -49,6 +49,8 @@ export function createRuntimeCatalog(
 
     topicsById[topic.id] = {
       title: topic.title,
+      summary: topic.summary ?? null,
+      iconKey: topic.iconKey ?? null,
       mainContentHtml: mainContentHtmlByTopicId.get(topic.id) ?? null,
       childTopicIds: [...topic.childTopicIds],
     };

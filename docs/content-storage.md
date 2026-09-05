@@ -85,16 +85,32 @@ metadata needed by the MVP:
 ---
 id: "33333333-3333-4333-8333-333333333333"
 title: "Queue"
+iconKey: "queue"
 childTopicIds:
   - "44444444-4444-4444-8444-444444444444"
 ---
 ```
 
-All three properties are required:
+Three properties are required:
 
 - `id` is the Topic's stable UUID;
 - `title` is its non-empty, non-unique display title; and
 - `childTopicIds` is its ordered list of immediate child UUIDs.
+
+Two presentation properties are optional for a Topic generally:
+
+- `summary` is concise landing-card text. It is trimmed, must be a non-empty
+  single line of at most 160 characters, and is treated as plain text rather
+  than Markdown or HTML. Complete-catalog validation requires it for every
+  Topic referenced by `landingTopicIds`.
+- `iconKey` selects a decorative icon from the supported vocabulary. It is a
+  registry key rather than a filename, URL, or markup fragment. When omitted,
+  the UI supplies its generic icon fallback.
+
+The initial supported icon keys are `java`, `architecture`, `algorithm`,
+`database`, `collection`, `queue`, `complexity`, `concurrency`, and
+`persistence`. Topics may reuse a key. Extending this closed vocabulary is a
+deliberate shared-contract change rather than an ordinary content edit.
 
 `childTopicIds` remains present as `[]` for a Topic with no children. Requiring
 the field distinguishes an intentional leaf from accidentally incomplete
@@ -113,6 +129,8 @@ valid only when `childTopicIds` is non-empty.
 ---
 id: "11111111-1111-4111-8111-111111111111"
 title: "Java"
+summary: "Core language, collections, concurrency, and persistence concepts."
+iconKey: "java"
 childTopicIds:
   - "22222222-2222-4222-8222-222222222222"
 ---
@@ -127,6 +145,7 @@ reference:
 ---
 id: "33333333-3333-4333-8333-333333333333"
 title: "Queue"
+iconKey: "queue"
 childTopicIds:
   - "44444444-4444-4444-8444-444444444444"
 ---
@@ -153,6 +172,7 @@ empty child list:
 ---
 id: "44444444-4444-4444-8444-444444444444"
 title: "Complexity"
+iconKey: "complexity"
 childTopicIds: []
 ---
 
@@ -242,6 +262,8 @@ catalog. Its conceptual shape is:
   "topicsById": {
     "11111111-1111-4111-8111-111111111111": {
       "title": "Java",
+      "summary": "Core language, collections, concurrency, and persistence concepts.",
+      "iconKey": "java",
       "mainContentHtml": null,
       "childTopicIds": [
         "22222222-2222-4222-8222-222222222222"
@@ -249,6 +271,8 @@ catalog. Its conceptual shape is:
     },
     "22222222-2222-4222-8222-222222222222": {
       "title": "Collections",
+      "summary": null,
+      "iconKey": "collection",
       "mainContentHtml": "<p>Collections group and organize objects.</p>",
       "childTopicIds": [
         "33333333-3333-4333-8333-333333333333"
@@ -256,6 +280,8 @@ catalog. Its conceptual shape is:
     },
     "33333333-3333-4333-8333-333333333333": {
       "title": "Queue",
+      "summary": null,
+      "iconKey": "queue",
       "mainContentHtml": "<p>A queue processes elements in a defined order.</p>",
       "childTopicIds": [
         "44444444-4444-4444-8444-444444444444"
@@ -263,6 +289,8 @@ catalog. Its conceptual shape is:
     },
     "44444444-4444-4444-8444-444444444444": {
       "title": "Complexity",
+      "summary": null,
+      "iconKey": "complexity",
       "mainContentHtml": "<div class=\"topic-content-overflow\" ...><table>...</table></div>",
       "childTopicIds": []
     }
@@ -275,8 +303,10 @@ serialized identity, while the values contain the data needed for generic
 rendering and navigation. Only `landingTopicIds` and each `childTopicIds` array
 have meaningful order.
 
-Every generated Topic contains `title`, `mainContentHtml`, and
-`childTopicIds`. `mainContentHtml` is explicitly `null` for a navigation-only
+Every generated Topic contains `title`, `summary`, `iconKey`,
+`mainContentHtml`, and `childTopicIds`. Optional source presentation metadata
+is emitted as explicit `null`, giving every generated Topic a predictable
+shape. `mainContentHtml` is likewise explicitly `null` for a navigation-only
 Topic; an empty string is invalid.
 
 The single-file runtime representation is emitted as
@@ -320,6 +350,9 @@ Generation fails when it encounters:
 - a direct Topic directory without a `topic.md` file;
 - an invalid or duplicate UUID;
 - a missing or blank title;
+- a blank, multiline, or overlong summary;
+- an unsupported icon key;
+- a landing Topic without a summary;
 - a missing or non-array `childTopicIds` value;
 - a Topic with neither meaningful main content nor children;
 - a missing landing or child Topic reference;

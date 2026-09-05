@@ -9,6 +9,8 @@ describe('validateTopicSource', () => {
       metadata: {
         id: '11111111-1111-4111-8111-111111111111',
         title: ' Queue ',
+        summary: ' Queue operations and implementation trade-offs. ',
+        iconKey: 'queue',
         childTopicIds: ['22222222-2222-4222-8222-222222222222'],
       },
       markdownBody: '\nQueue content.\n',
@@ -18,6 +20,8 @@ describe('validateTopicSource', () => {
       sourcePath,
       id: '11111111-1111-4111-8111-111111111111',
       title: 'Queue',
+      summary: 'Queue operations and implementation trade-offs.',
+      iconKey: 'queue',
       childTopicIds: ['22222222-2222-4222-8222-222222222222'],
       markdownBody: '\nQueue content.\n',
     });
@@ -36,6 +40,26 @@ describe('validateTopicSource', () => {
 
     expect(() => validateTopicSource(sourcePath, parsedSource)).toThrow(
       `${sourcePath}: Invalid Topic metadata: id:`,
+    );
+  });
+
+  it.each([
+    { field: 'iconKey', value: 'custom-file.svg' },
+    { field: 'summary', value: 'First line\nSecond line' },
+  ])('identifies an invalid $field in an actionable error', ({ field, value }) => {
+    const sourcePath = 'content/topics/queue/topic.md';
+    const parsedSource: ParsedTopicSource = {
+      metadata: {
+        id: '11111111-1111-4111-8111-111111111111',
+        title: 'Queue',
+        [field]: value,
+        childTopicIds: [],
+      },
+      markdownBody: '\nQueue content.\n',
+    };
+
+    expect(() => validateTopicSource(sourcePath, parsedSource)).toThrow(
+      `${sourcePath}: Invalid Topic metadata: ${field}:`,
     );
   });
 

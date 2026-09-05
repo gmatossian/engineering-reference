@@ -1,6 +1,7 @@
 ---
 id: '8cbea92a-606e-4ed3-839c-c7fff67f0909'
 title: 'Queue'
+iconKey: 'queue'
 childTopicIds:
   - 'bf417331-9329-42b4-9517-351ef6af3b85'
 ---

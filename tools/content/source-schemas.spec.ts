@@ -34,18 +34,62 @@ describe('catalogSourceSchema', () => {
 });
 
 describe('topicMetadataSchema', () => {
-  it('accepts Topic metadata and normalizes title whitespace', () => {
+  it('accepts Topic metadata and normalizes text whitespace', () => {
     expect(
       topicMetadataSchema.parse({
         id: topicId,
         title: ' Queue ',
+        summary: ' Queue operations and implementation trade-offs. ',
+        iconKey: 'queue',
         childTopicIds: [childTopicId],
       }),
     ).toEqual({
       id: topicId,
       title: 'Queue',
+      summary: 'Queue operations and implementation trade-offs.',
+      iconKey: 'queue',
       childTopicIds: [childTopicId],
     });
+  });
+
+  it('allows optional presentation metadata to be omitted', () => {
+    expect(
+      topicMetadataSchema.parse({
+        id: topicId,
+        title: 'Queue',
+        childTopicIds: [],
+      }),
+    ).toEqual({
+      id: topicId,
+      title: 'Queue',
+      childTopicIds: [],
+    });
+  });
+
+  it('rejects an unsupported icon key', () => {
+    expect(
+      topicMetadataSchema.safeParse({
+        id: topicId,
+        title: 'Queue',
+        iconKey: 'custom-file.svg',
+        childTopicIds: [],
+      }).success,
+    ).toBe(false);
+  });
+
+  it.each([
+    { description: 'blank', summary: '   ' },
+    { description: 'multiline', summary: 'First line\nSecond line' },
+    { description: 'longer than 160 characters', summary: 'a'.repeat(161) },
+  ])('rejects a $description summary', ({ summary }) => {
+    expect(
+      topicMetadataSchema.safeParse({
+        id: topicId,
+        title: 'Queue',
+        summary,
+        childTopicIds: [],
+      }).success,
+    ).toBe(false);
   });
 
   it('rejects a whitespace-only title', () => {
