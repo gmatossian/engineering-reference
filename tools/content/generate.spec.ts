@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promis
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import type { RuntimeCatalog } from '../../contracts/runtime-catalog.ts';
+import type { RuntimeCatalog, TopicIconKey } from '../../contracts/runtime-catalog.ts';
 import { generateContent, serializeRuntimeCatalog } from './generate.ts';
 
 const javaTopicId = 'd3ef7c8b-ee6b-48f5-9039-2aa94d03c19c';
@@ -18,6 +18,8 @@ async function writeTopic(
   metadata: {
     id: string;
     title: string;
+    summary?: string;
+    iconKey?: TopicIconKey;
     childTopicIds: readonly string[];
   },
   markdownBody = '',
@@ -31,6 +33,8 @@ async function writeTopic(
       '---',
       `id: "${metadata.id}"`,
       `title: "${metadata.title}"`,
+      ...(metadata.summary === undefined ? [] : [`summary: "${metadata.summary}"`]),
+      ...(metadata.iconKey === undefined ? [] : [`iconKey: "${metadata.iconKey}"`]),
       ...(metadata.childTopicIds.length === 0
         ? ['childTopicIds: []']
         : [
@@ -53,6 +57,8 @@ async function writeContentFixture(sourceRoot: string): Promise<void> {
   await writeTopic(sourceRoot, 'java', {
     id: javaTopicId,
     title: 'Java',
+    summary: 'Core language and platform concepts.',
+    iconKey: 'java',
     childTopicIds: [collectionsTopicId],
   });
   await writeTopic(
@@ -61,6 +67,7 @@ async function writeContentFixture(sourceRoot: string): Promise<void> {
     {
       id: collectionsTopicId,
       title: 'Collections',
+      iconKey: 'collection',
       childTopicIds: [queueTopicId],
     },
     '\nCollections group objects.\n',
@@ -71,6 +78,7 @@ async function writeContentFixture(sourceRoot: string): Promise<void> {
     {
       id: queueTopicId,
       title: 'Queue',
+      iconKey: 'queue',
       childTopicIds: [complexityTopicId],
     },
     '\n![Queue operations](./queue.svg)\n',
@@ -144,8 +152,18 @@ describe('generateContent', () => {
     expect(parsedCatalog.landingTopicIds).toEqual([javaTopicId]);
     expect(parsedCatalog.topicsById[javaTopicId]).toEqual({
       title: 'Java',
+      summary: 'Core language and platform concepts.',
+      iconKey: 'java',
       mainContentHtml: null,
       childTopicIds: [collectionsTopicId],
+    });
+    expect(parsedCatalog.topicsById[queueTopicId]).toMatchObject({
+      summary: null,
+      iconKey: 'queue',
+    });
+    expect(parsedCatalog.topicsById[complexityTopicId]).toMatchObject({
+      summary: null,
+      iconKey: null,
     });
     expect(parsedCatalog.topicsById[queueTopicId]?.mainContentHtml).toContain(
       `/assets/topics/${queueTopicId}/${imageFilename}`,

@@ -44,6 +44,8 @@ async function writeContentTree(sourceRoot: string): Promise<void> {
       '---',
       `id: "${javaTopicId}"`,
       'title: "Java"',
+      'summary: "Core language and platform concepts."',
+      'iconKey: "java"',
       'childTopicIds:',
       `  - "${queueTopicId}"`,
       '---',
@@ -97,6 +99,10 @@ describe('content pipeline', () => {
 
     expect(contentSource.catalog.landingTopicIds).toEqual([javaTopicId]);
     expect(contentSource.topics.map((topic) => topic.title)).toEqual(['Java', 'Queue']);
+    expect(contentSource.topics[0]).toMatchObject({
+      summary: 'Core language and platform concepts.',
+      iconKey: 'java',
+    });
 
     await expect(transformContent(contentSource, generatedRoot)).resolves.toEqual(
       expectedTransformedTopics,

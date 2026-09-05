@@ -184,8 +184,9 @@ The following remain possibilities rather than commitments:
 The product brief does not settle:
 
 - post-MVP taxonomy aids such as breadcrumbs, tags, and facets;
-- implementation details and content-model changes required by the accepted
-  visual direction;
+- remaining implementation details for the accepted visual direction, beyond
+  the presentation metadata governed by the content and visual-design
+  authorities;
 - search indexing and ranking;
 - deployment packaging and hosting details;
 - personal-state storage, if personal state is later justified;

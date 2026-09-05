@@ -26,6 +26,8 @@ Catalog
 Topic
   id: UUID
   title: string
+  summary: optional concise plain text
+  iconKey: optional supported icon key
   mainContent: optional formatted document
   childTopicIds: ordered list of UUIDs
 ```
@@ -54,6 +56,25 @@ Every Topic has a non-empty title. Titles are display text and are not
 identifiers, so they do not need to be globally unique. Two distinct Topics
 may both be titled `Complexity` when their content belongs to different
 contexts.
+
+## Presentation Metadata
+
+A Topic may define a concise plain-text `summary`. The summary describes the
+Topic when it appears in a compact navigational presentation; it is not a
+replacement for main content. A summary is optional for the Topic generally,
+but every Topic selected for the landing page must define one. Summaries are a
+single line, contain at most 160 characters, and are presented as text rather
+than interpreted as Markdown or HTML.
+
+A Topic may also select a decorative icon through an `iconKey` from the
+application's supported icon vocabulary. The key identifies a reusable visual
+concept rather than a file, URL, markup fragment, or unique Topic identity.
+Topics may share an icon key. When it is absent, the UI supplies a generic
+fallback so navigation never depends on every Topic having a specific icon.
+
+Topic content does not select colors or accent families. Color treatment
+belongs to the shared visual and icon system, and must not introduce domain
+meaning that the content model does not define.
 
 ## Main Content
 
@@ -85,7 +106,8 @@ without requiring artificial introductory content.
 Each Topic owns an ordered list of child Topic UUIDs. The order expresses how its
 immediate children should be presented. The parent stores only the UUIDs; the
 UI resolves each UUID to the child's canonical title when it constructs a
-navigation item such as `{ id, title }`.
+navigation item. Presentation metadata is resolved from that same canonical
+child Topic rather than stored on the relationship.
 
 Child relationships follow these rules:
 
@@ -114,6 +136,10 @@ Topic, so there is no `isRoot` field.
 A landing Topic may also appear as another Topic's child. The terms *landing
 Topic* and *top-level Topic* therefore describe placement on the landing page,
 not a graph-theory root with no parents.
+
+Every landing Topic defines a summary for its landing card. This is a
+catalog-level rule because the requirement depends on where the Topic is
+presented rather than on an intrinsic Topic type.
 
 Every Topic in the MVP catalog must be reachable from at least one landing
 Topic.
@@ -160,6 +186,10 @@ A valid MVP catalog satisfies all of the following:
 
 - at least one landing Topic is declared;
 - every Topic has a UUID and a non-empty title;
+- summaries, when present, are non-empty single-line plain text of at most 160
+  characters;
+- icon keys, when present, belong to the supported vocabulary;
+- every landing Topic has a summary;
 - every Topic has non-empty main content, at least one child, or both;
 - every landing and child UUID resolves to an existing Topic;
 - landing Topics and each Topic's children preserve their declared order;

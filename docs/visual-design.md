@@ -62,9 +62,11 @@ Accents belong on icons, narrow rules, borders, and subtle tinted surfaces.
 Large saturated fills are not part of this direction. Color must not be the
 only way an item communicates its meaning or state.
 
-The visual role of these accent families is accepted. Their data
-representation remains an implementation prerequisite rather than an implicit
-addition to the current Topic model.
+These families guide the shared visual and icon system; they are not Topic
+metadata. The content model does not define categories from which an accent
+could be derived, and authors do not select colors. An icon key may receive a
+consistent default treatment in the UI, but color does not carry domain
+meaning.
 
 ### Typography
 
@@ -134,10 +136,9 @@ may reflow through two columns before becoming a single column on narrow
 screens. Exact thresholds should be chosen from where the content stops fitting
 comfortably, not from device names.
 
-Supporting text is part of the accepted visual direction but not the current
-Topic domain model. Its authoring and runtime representation must be decided
-before implementation; it must not be supplied by a hard-coded application
-mapping.
+Supporting text comes from the Topic's plain-text `summary`. Complete-catalog
+validation requires a summary for each landing Topic, so the UI does not need
+a hard-coded application mapping or a missing-summary presentation state.
 
 ## Topic presentation
 
@@ -156,9 +157,8 @@ classification codes, or relationship metadata.
 
 Every Topic should display an icon when represented in navigation. Icons may
 be reused, and the UI must provide a generic fallback when a specific icon is
-not available. The display behavior is accepted; the source and runtime
-representation of a Topic's icon must be settled through the content-model and
-storage authorities before implementation.
+not available. A Topic optionally selects a supported icon through `iconKey`;
+the generated runtime value is `null` when no specific key is authored.
 
 ### Content-bearing Topics
 
@@ -236,19 +236,16 @@ requirements. Exclude:
 When a reference image and this document disagree, this document and the
 governing product documents prevail.
 
-## Implementation prerequisites
+## Resolved presentation metadata
 
-Before implementing the accepted concepts, refine and record how the generic
-content pipeline represents:
+The generic content pipeline represents landing-card text through `summary`
+and an optional specific icon through `iconKey`. Both values travel from Topic
+front matter through validation and deterministic generation into the shared
+runtime contract. The UI owns the generic icon fallback and all accent
+treatment; there is no authored accent-family field.
 
-- an optional specific Topic icon with a generic fallback;
-- landing-card supporting text; and
-- broad accent-family selection, if retained.
-
-These decisions must preserve generic rendering and ordinary content additions
-without Topic-specific Angular code. They require deliberate changes to the
-content-model, source-storage, validation, runtime-contract, and generator
-authorities rather than an undocumented UI-only mapping.
+This boundary preserves generic rendering and allows ordinary content to use
+the supported presentation vocabulary without Topic-specific Angular code.
 
 ## Reference screens
 

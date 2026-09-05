@@ -152,10 +152,18 @@ export function validateContentGraph(contentSource: LoadedContentSource): Loaded
   }
 
   for (const topicId of seenLandingTopicIds) {
-    if (!topicsById.has(topicId)) {
+    const matchingTopics = topicsById.get(topicId);
+
+    if (matchingTopics === undefined) {
       errors.push(
         new Error(
           `${contentSource.catalog.sourcePath}: Missing landing Topic reference ${topicId}`,
+        ),
+      );
+    } else if (matchingTopics.length === 1 && matchingTopics[0].summary === undefined) {
+      errors.push(
+        new Error(
+          `${matchingTopics[0].sourcePath}: Landing Topic ${topicId} must define a summary`,
         ),
       );
     }

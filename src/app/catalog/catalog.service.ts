@@ -9,7 +9,9 @@ export interface TopicSummary {
 
 @Injectable({ providedIn: 'root' })
 export class CatalogService {
-  private readonly catalog: RuntimeCatalog = generatedCatalog;
+  // The generator validates this trusted build artifact. JSON imports widen
+  // string literals, so restore the shared contract at the consumer boundary.
+  private readonly catalog = generatedCatalog as RuntimeCatalog;
 
   getLandingTopics(): readonly TopicSummary[] {
     return this.catalog.landingTopicIds.map((id) => this.getRequiredSummary(id));
