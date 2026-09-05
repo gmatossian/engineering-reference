@@ -111,7 +111,7 @@ test('bounds generated Topic content at a narrow viewport', async ({ page }) => 
   await page.goto(`/topics/${QUEUE_TOPIC_ID}`);
 
   const image = page.locator('.topic-content img');
-  const codeBlock = page.locator('.topic-content pre');
+  const codeOverflowRegion = page.getByRole('region', { name: 'Scrollable code block' });
 
   await expect(image).toBeVisible();
   await expect
@@ -161,10 +161,21 @@ test('bounds generated Topic content at a narrow viewport', async ({ page }) => 
     expect(dimensions.width).toBeLessThanOrEqual(dimensions.contentWidth);
   }
 
-  expect(await codeBlock.evaluate((element) => getComputedStyle(element).overflowX)).toBe('auto');
-  expect(await codeBlock.evaluate((element) => element.scrollWidth)).toBeGreaterThan(
-    await codeBlock.evaluate((element) => element.clientWidth),
+  expect(await codeOverflowRegion.evaluate((element) => getComputedStyle(element).overflowX)).toBe(
+    'auto',
   );
+  expect(await codeOverflowRegion.evaluate((element) => element.scrollWidth)).toBeGreaterThan(
+    await codeOverflowRegion.evaluate((element) => element.clientWidth),
+  );
+  await codeOverflowRegion.focus();
+  await expect(codeOverflowRegion).toBeFocused();
+  expect(
+    await codeOverflowRegion.evaluate((element) => getComputedStyle(element).outlineStyle),
+  ).not.toBe('none');
+  await codeOverflowRegion.press('ArrowRight');
+  await expect
+    .poll(() => codeOverflowRegion.evaluate((element) => element.scrollLeft))
+    .toBeGreaterThan(0);
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
@@ -173,7 +184,8 @@ test('bounds generated Topic content at a narrow viewport', async ({ page }) => 
 
   await page.goto(`/topics/${COMPLEXITY_TOPIC_ID}`);
 
-  const table = page.locator('.topic-content table');
+  const tableOverflowRegion = page.getByRole('region', { name: 'Scrollable table' });
+  const table = tableOverflowRegion.locator('table');
   await table.evaluate((element) => {
     const row = element.querySelector('tbody tr');
     if (row !== null) {
@@ -185,10 +197,22 @@ test('bounds generated Topic content at a narrow viewport', async ({ page }) => 
     }
   });
 
-  expect(await table.evaluate((element) => getComputedStyle(element).overflowX)).toBe('auto');
-  expect(await table.evaluate((element) => element.scrollWidth)).toBeGreaterThan(
-    await table.evaluate((element) => element.clientWidth),
+  expect(await table.evaluate((element) => getComputedStyle(element).display)).toBe('table');
+  expect(await tableOverflowRegion.evaluate((element) => getComputedStyle(element).overflowX)).toBe(
+    'auto',
   );
+  expect(await tableOverflowRegion.evaluate((element) => element.scrollWidth)).toBeGreaterThan(
+    await tableOverflowRegion.evaluate((element) => element.clientWidth),
+  );
+  await tableOverflowRegion.focus();
+  await expect(tableOverflowRegion).toBeFocused();
+  expect(
+    await tableOverflowRegion.evaluate((element) => getComputedStyle(element).outlineStyle),
+  ).not.toBe('none');
+  await tableOverflowRegion.press('ArrowRight');
+  await expect
+    .poll(() => tableOverflowRegion.evaluate((element) => element.scrollLeft))
+    .toBeGreaterThan(0);
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,

@@ -131,7 +131,7 @@ describe('transformContent', () => {
       {
         id: topicId,
         mainContentHtml: [
-          '<table>',
+          '<div aria-label="Scrollable table" class="topic-content-overflow" role="region" tabindex="0"><table>',
           '<thead>',
           '<tr>',
           '<th>Operation</th>',
@@ -144,7 +144,7 @@ describe('transformContent', () => {
           '<td>O(1)</td>',
           '</tr>',
           '</tbody>',
-          '</table>',
+          '</table></div>',
         ].join('\n'),
       },
     ]);
@@ -563,8 +563,8 @@ describe('transformContent', () => {
         mainContentHtml: [
           '<h2>Queue operations</h2>',
           '<p>Use <code>offer</code>.</p>',
-          '<pre><code class="language-java">queue.offer(item);',
-          '</code></pre>',
+          '<div aria-label="Scrollable code block" class="topic-content-overflow" role="region" tabindex="0"><pre><code class="language-java">queue.offer(item);',
+          '</code></pre></div>',
           '<ol>',
           '<li>Check capacity</li>',
           '<li>Add item</li>',

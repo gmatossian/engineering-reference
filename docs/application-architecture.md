@@ -292,8 +292,10 @@ It does not add Angular Material, another component framework, Tailwind, or a
 Sass compilation layer.
 
 Responsive implementation preserves the same content and navigation across
-viewports. Topic-content tables and code blocks receive bounded horizontal
-overflow without making the full page scroll horizontally.
+viewports. The generator places Topic-content tables and code blocks inside
+labelled, keyboard-focusable presentation wrappers. These wrappers own bounded
+horizontal overflow without changing the native semantics of the enclosed
+`table`, `pre`, or `code` elements or making the full page scroll horizontally.
 
 ## Local Development and Builds
 
