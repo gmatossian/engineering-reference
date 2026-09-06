@@ -82,7 +82,7 @@ meaning that the content model does not define.
 non-empty and may use:
 
 - paragraphs and headings;
-- inline code and code blocks;
+- strong emphasis, inline code, and code blocks;
 - ordered and unordered lists;
 - links;
 - tables; and

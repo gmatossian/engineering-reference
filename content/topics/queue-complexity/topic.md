@@ -5,11 +5,13 @@ iconKey: 'complexity'
 childTopicIds: []
 ---
 
-For common queue implementations, the core operations have the following typical
-complexities:
+The implementation determines the cost of the shared `Queue` operations:
 
-| Operation | Typical complexity |
-| --------- | ------------------ |
-| `offer`   | O(1)               |
-| `peek`    | O(1)               |
-| `poll`    | O(1)               |
+| Implementation  | `offer`        | `peek` | `poll`   |
+| --------------- | -------------- | ------ | -------- |
+| `ArrayDeque`    | Amortized O(1) | O(1)   | O(1)     |
+| `LinkedList`    | O(1)           | O(1)   | O(1)     |
+| `PriorityQueue` | O(log n)       | O(1)   | O(log n) |
+
+These are typical single-threaded costs. Concurrent queue implementations have
+their own progress, contention, and capacity behavior.

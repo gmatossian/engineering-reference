@@ -23,7 +23,7 @@
   --color-accent-neutral: #5b6068;
   --color-accent-neutral-soft: #efefec;
   --font-heading: 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif;
-  --font-body: Inter, 'Avenir Next', 'Segoe UI', sans-serif;
+  --font-body: 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif;
   --font-code: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
   --layout-wide: 70rem;
   --layout-content: 56rem;
@@ -63,10 +63,12 @@ h1,
 h2,
 h3 {
   font-family: var(--font-heading);
+  font-weight: 600;
 }
 
 h1 {
   font-size: clamp(2rem, 5vw, 2.8rem);
+  font-weight: 700;
   letter-spacing: -0.045em;
   line-height: 1.08;
 }

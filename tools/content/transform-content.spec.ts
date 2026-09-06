@@ -34,7 +34,7 @@ describe('transformContent', () => {
     }
   });
 
-  it('renders a Markdown paragraph as semantic HTML', async () => {
+  it('renders a Markdown paragraph with strong emphasis as semantic HTML', async () => {
     const topicId = '11111111-1111-4111-8111-111111111111';
 
     generatedRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-generated-'));
@@ -50,7 +50,7 @@ describe('transformContent', () => {
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
-          markdownBody: 'Queue content.',
+          markdownBody: 'Use **offer** when failure is expected.',
         },
       ],
     };
@@ -58,7 +58,7 @@ describe('transformContent', () => {
     await expect(transformContent(contentSource, generatedRoot)).resolves.toEqual([
       {
         id: topicId,
-        mainContentHtml: '<p>Queue content.</p>',
+        mainContentHtml: '<p>Use <strong>offer</strong> when failure is expected.</p>',
       },
     ]);
   });
@@ -148,6 +148,41 @@ describe('transformContent', () => {
         ].join('\n'),
       },
     ]);
+  });
+
+  it('gives repeated overflow regions unique accessible names', async () => {
+    const topicId = '11111111-1111-4111-8111-111111111111';
+
+    generatedRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-generated-'));
+
+    const contentSource: LoadedContentSource = {
+      catalog: {
+        sourcePath: 'content/catalog.yaml',
+        landingTopicIds: [topicId],
+      },
+      topics: [
+        {
+          sourcePath: 'content/topics/queue/topic.md',
+          id: topicId,
+          title: 'Queue',
+          childTopicIds: [],
+          markdownBody: [
+            '| First |',
+            '| --- |',
+            '| A |',
+            '',
+            '| Second |',
+            '| --- |',
+            '| B |',
+          ].join('\n'),
+        },
+      ],
+    };
+
+    const result = await transformContent(contentSource, generatedRoot);
+
+    expect(result[0]?.mainContentHtml).toContain('aria-label="Scrollable table 1"');
+    expect(result[0]?.mainContentHtml).toContain('aria-label="Scrollable table 2"');
   });
 
   it('rejects raw HTML', async () => {

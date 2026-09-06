@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="580" viewBox="0 0 920 580" role="img" aria-labelledby="title desc">
+  <title id="title">Map ordering interface hierarchy</title>
+  <desc id="desc">Map is extended by SequencedMap, which is implemented by LinkedHashMap and extended by SortedMap. SortedMap is extended by NavigableMap, which is implemented by TreeMap.</desc>
+  <defs>
+    <style>
+      .interface { fill: #f3f0e8; stroke: #343434; stroke-width: 2; }
+      .implementation { fill: #e4f2ed; stroke: #287a67; stroke-width: 2; }
+      .line { fill: none; stroke: #6b6b6b; stroke-width: 2; }
+      .name { fill: #202020; font: 600 20px 'Plus Jakarta Sans', sans-serif; text-anchor: middle; }
+      .kind { fill: #676767; font: 13px 'Plus Jakarta Sans', sans-serif; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <path class="line" d="M460 82V118"/>
+  <path class="line" d="M460 190V226"/>
+  <path class="line" d="M460 298V334"/>
+  <path class="line" d="M460 190H190V226"/>
+  <path class="line" d="M460 406V486"/>
+
+  <rect class="interface" x="350" y="18" width="220" height="64" rx="12"/>
+  <text class="name" x="460" y="46">Map</text>
+  <text class="kind" x="460" y="68">interface</text>
+
+  <rect class="interface" x="350" y="126" width="220" height="64" rx="12"/>
+  <text class="name" x="460" y="154">SequencedMap</text>
+  <text class="kind" x="460" y="176">defined encounter order</text>
+
+  <rect class="implementation" x="80" y="226" width="220" height="64" rx="12"/>
+  <text class="name" x="190" y="254">LinkedHashMap</text>
+  <text class="kind" x="190" y="276">implementation</text>
+
+  <rect class="interface" x="350" y="234" width="220" height="64" rx="12"/>
+  <text class="name" x="460" y="262">SortedMap</text>
+  <text class="kind" x="460" y="284">key ordering</text>
+
+  <rect class="interface" x="350" y="342" width="220" height="64" rx="12"/>
+  <text class="name" x="460" y="370">NavigableMap</text>
+  <text class="kind" x="460" y="392">closest-match navigation</text>
+
+  <rect class="implementation" x="350" y="494" width="220" height="64" rx="12"/>
+  <text class="name" x="460" y="522">TreeMap</text>
+  <text class="kind" x="460" y="544">implementation</text>
+</svg>

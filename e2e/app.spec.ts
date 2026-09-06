@@ -5,6 +5,8 @@ const JAVA_TOPIC_ID = 'd3ef7c8b-ee6b-48f5-9039-2aa94d03c19c';
 const COLLECTIONS_TOPIC_ID = 'c29c5725-0b1f-480d-88f4-5c9d3b7f0dc5';
 const QUEUE_TOPIC_ID = '8cbea92a-606e-4ed3-839c-c7fff67f0909';
 const COMPLEXITY_TOPIC_ID = 'bf417331-9329-42b4-9517-351ef6af3b85';
+const HTTP_STATUS_CODES_TOPIC_ID = 'b97384d3-f986-4850-a6b0-a1c3b893ee86';
+const TRADEOFF_TRIGGERS_TOPIC_ID = '9009159b-54aa-4724-94a2-5189a1e21437';
 
 test.describe('cross-browser smoke', { tag: '@smoke' }, () => {
   test('renders the landing page and its bundled Topics', async ({ page }) => {
@@ -31,12 +33,14 @@ test.describe('cross-browser smoke', { tag: '@smoke' }, () => {
     await expect(page).toHaveTitle('Java | Engineering Reference');
     await expect(page.locator('.topic-content')).toHaveCount(0);
 
-    await page.getByRole('link', { name: 'Collections', exact: true }).click();
+    await page.getByRole('link', { name: 'Collections framework', exact: true }).click();
 
     await expect(page).toHaveURL(`/topics/${COLLECTIONS_TOPIC_ID}`);
-    await expect(page.getByRole('heading', { level: 1, name: 'Collections' })).toBeFocused();
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Collections framework' }),
+    ).toBeFocused();
     await expect(page.locator('.topic-content')).toContainText(
-      'Collections provide standard data structures',
+      'Choose the interface by the behavior the program requires',
     );
   });
 
@@ -52,22 +56,25 @@ test.describe('cross-browser smoke', { tag: '@smoke' }, () => {
 test('navigates through bundled Topic detail with native history', async ({ page }) => {
   await page.goto(`/topics/${COLLECTIONS_TOPIC_ID}`);
 
-  await expect(page.getByRole('heading', { level: 1, name: 'Collections' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Collections framework' }),
+  ).toBeVisible();
   await expect(page.locator('.topic-content')).toContainText(
-    'Collections provide standard data structures',
+    'Choose the interface by the behavior the program requires',
   );
 
   await page.getByRole('link', { name: 'Queue', exact: true }).click();
 
   await expect(page).toHaveURL(`/topics/${QUEUE_TOPIC_ID}`);
   await expect(page.getByRole('heading', { level: 1, name: 'Queue' })).toBeFocused();
-  await expect(page.locator('.topic-content img')).toHaveAttribute(
-    'alt',
-    'Elements entering at the tail and leaving from the head of a queue',
-  );
+  await expect(
+    page.getByRole('img', {
+      name: 'Elements entering at the tail and leaving from the head of a queue',
+    }),
+  ).toHaveAttribute('alt', 'Elements entering at the tail and leaving from the head of a queue');
 
   await expect(page.locator('.topic-content')).toContainText(
-    'A queue holds elements for processing in a defined order',
+    'A queue holds elements before processing',
   );
   await expect(page.getByRole('link', { name: 'Complexity', exact: true })).toHaveAttribute(
     'href',
@@ -123,7 +130,9 @@ test('restores scroll position without displacing focus on browser history navig
   await page.goBack();
 
   await expect(page).toHaveURL(`/topics/${COLLECTIONS_TOPIC_ID}`);
-  await expect(page.getByRole('heading', { level: 1, name: 'Collections' })).toBeFocused();
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Collections framework' }),
+  ).toBeFocused();
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(400);
 });
 
@@ -131,8 +140,13 @@ test('bounds generated Topic content at a narrow viewport', async ({ page }) => 
   await page.setViewportSize({ width: 320, height: 640 });
   await page.goto(`/topics/${QUEUE_TOPIC_ID}`);
 
-  const image = page.locator('.topic-content img');
-  const codeOverflowRegion = page.getByRole('region', { name: 'Scrollable code block' });
+  const image = page.getByRole('img', {
+    name: 'Elements entering at the tail and leaving from the head of a queue',
+  });
+  const codeOverflowRegion = page.getByRole('region', {
+    name: 'Scrollable code block',
+    exact: true,
+  });
 
   await expect(image).toBeVisible();
   await expect
@@ -205,7 +219,10 @@ test('bounds generated Topic content at a narrow viewport', async ({ page }) => 
 
   await page.goto(`/topics/${COMPLEXITY_TOPIC_ID}`);
 
-  const tableOverflowRegion = page.getByRole('region', { name: 'Scrollable table' });
+  const tableOverflowRegion = page.getByRole('region', {
+    name: 'Scrollable table',
+    exact: true,
+  });
   const table = tableOverflowRegion.locator('table');
   await table.evaluate((element) => {
     const row = element.querySelector('tbody tr');
@@ -248,7 +265,13 @@ test('renders the application without detectable accessibility violations', asyn
   ]) {
     await page.setViewportSize(viewport);
 
-    for (const path of ['/', `/topics/${QUEUE_TOPIC_ID}`, `/topics/${COMPLEXITY_TOPIC_ID}`]) {
+    for (const path of [
+      '/',
+      `/topics/${QUEUE_TOPIC_ID}`,
+      `/topics/${COMPLEXITY_TOPIC_ID}`,
+      `/topics/${HTTP_STATUS_CODES_TOPIC_ID}`,
+      `/topics/${TRADEOFF_TRIGGERS_TOPIC_ID}`,
+    ]) {
       await page.goto(path);
 
       const accessibilityScanResults = await new AxeBuilder({ page }).analyze();

@@ -49,7 +49,7 @@ ul {
 .topic-link__title {
   font-family: var(--font-heading);
   font-size: 1.05rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.015em;
 }
 
@@ -116,7 +116,20 @@ ul {
 }
 
 .topic-link[data-icon-key='collection'],
-.topic-link[data-icon-key='queue'] {
+.topic-link[data-icon-key='queue'],
+.topic-link[data-icon-key='array'],
+.topic-link[data-icon-key='conversion'],
+.topic-link[data-icon-key='copy'],
+.topic-link[data-icon-key='creation'],
+.topic-link[data-icon-key='deque'],
+.topic-link[data-icon-key='heap'],
+.topic-link[data-icon-key='list'],
+.topic-link[data-icon-key='map'],
+.topic-link[data-icon-key='operations'],
+.topic-link[data-icon-key='priority'],
+.topic-link[data-icon-key='set'],
+.topic-link[data-icon-key='equality'],
+.topic-link[data-icon-key='ordering'] {
   --topic-accent: var(--color-accent-indigo);
 }
 

@@ -1,9 +1,14 @@
 .topic-content {
   color: var(--color-secondary);
   font-size: 1rem;
-  line-height: 1.75;
+  line-height: 1.625;
   min-width: 0;
   overflow-wrap: anywhere;
+}
+
+.topic-content strong {
+  color: var(--color-text);
+  font-weight: 600;
 }
 
 .topic-content > :first-child {

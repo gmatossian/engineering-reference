@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 400" role="img" aria-labelledby="title description">
+  <title id="title">Core Java Collections Framework hierarchy</title>
+  <desc id="description">
+    Collection extends Iterable. List, Set, and Queue extend Collection. Deque extends Queue. Map belongs to a separate hierarchy.
+  </desc>
+
+  <defs>
+    <style>
+      .box { fill: #ffffff; stroke: #c6c1b6; stroke-width: 2; }
+      .branch { fill: none; stroke: #76777b; stroke-width: 2; }
+      .type { fill: #1b1c19; font: 600 18px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .note { fill: #5f6064; font: 500 13px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <path class="branch" d="M350 66v48" />
+  <path class="branch" d="M350 174v42H105v28" />
+  <path class="branch" d="M350 216H290v28" />
+  <path class="branch" d="M350 216h125v28" />
+  <path class="branch" d="M475 298v42" />
+  <rect class="box" x="260" y="12" width="180" height="54" rx="8" />
+  <text class="type" x="350" y="46">Iterable&lt;E&gt;</text>
+
+  <rect class="box" x="250" y="114" width="200" height="60" rx="8" />
+  <text class="type" x="350" y="151">Collection&lt;E&gt;</text>
+
+  <rect class="box" x="20" y="244" width="170" height="54" rx="8" />
+  <text class="type" x="105" y="278">List&lt;E&gt;</text>
+
+  <rect class="box" x="205" y="244" width="170" height="54" rx="8" />
+  <text class="type" x="290" y="278">Set&lt;E&gt;</text>
+
+  <rect class="box" x="390" y="244" width="170" height="54" rx="8" />
+  <text class="type" x="475" y="278">Queue&lt;E&gt;</text>
+
+  <rect class="box" x="390" y="340" width="170" height="54" rx="8" />
+  <text class="type" x="475" y="374">Deque&lt;E&gt;</text>
+
+  <rect class="box" x="610" y="114" width="210" height="60" rx="8" />
+  <text class="type" x="715" y="151">Map&lt;K, V&gt;</text>
+  <text class="note" x="715" y="198">separate hierarchy</text>
+</svg>
