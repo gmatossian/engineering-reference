@@ -38,7 +38,20 @@ img {
 }
 
 :host([data-icon-key='collection']),
-:host([data-icon-key='queue']) {
+:host([data-icon-key='queue']),
+:host([data-icon-key='array']),
+:host([data-icon-key='conversion']),
+:host([data-icon-key='copy']),
+:host([data-icon-key='creation']),
+:host([data-icon-key='deque']),
+:host([data-icon-key='heap']),
+:host([data-icon-key='list']),
+:host([data-icon-key='map']),
+:host([data-icon-key='operations']),
+:host([data-icon-key='priority']),
+:host([data-icon-key='set']),
+:host([data-icon-key='equality']),
+:host([data-icon-key='ordering']) {
   --topic-icon-background: var(--color-accent-indigo-soft);
   --topic-icon-color: var(--color-accent-indigo);
 }

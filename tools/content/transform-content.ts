@@ -22,6 +22,7 @@ const SUPPORTED_MARKDOWN_NODE_TYPES = new Set([
   'paragraph',
   'heading',
   'text',
+  'strong',
   'inlineCode',
   'code',
   'list',
@@ -55,8 +56,20 @@ function wrapOverflowContent() {
       }
     });
 
+    const targetCounts = new Map<string, number>();
+    const targetIndexes = new Map<string, number>();
+
+    for (const { node } of targets) {
+      targetCounts.set(node.tagName, (targetCounts.get(node.tagName) ?? 0) + 1);
+    }
+
     for (const { index, node, parent } of targets) {
-      const accessibleLabel = node.tagName === 'pre' ? 'Scrollable code block' : 'Scrollable table';
+      const baseLabel = node.tagName === 'pre' ? 'Scrollable code block' : 'Scrollable table';
+      const targetIndex = (targetIndexes.get(node.tagName) ?? 0) + 1;
+      const accessibleLabel =
+        targetCounts.get(node.tagName) === 1 ? baseLabel : `${baseLabel} ${targetIndex}`;
+
+      targetIndexes.set(node.tagName, targetIndex);
 
       parent.children[index] = {
         type: 'element',
@@ -89,7 +102,7 @@ export const HTML_SANITIZATION_SCHEMA: SanitizationSchema = {
     div: [
       ['className', OVERFLOW_REGION_CLASS],
       ['role', 'region'],
-      ['ariaLabel', /^Scrollable (?:code block|table)$/],
+      ['ariaLabel', /^Scrollable (?:code block|table)(?: \d+)?$/],
       ['tabIndex', 0],
     ],
     img: ['alt', 'src'],
@@ -122,6 +135,7 @@ export const HTML_SANITIZATION_SCHEMA: SanitizationSchema = {
     'ol',
     'p',
     'pre',
+    'strong',
     'table',
     'tbody',
     'td',

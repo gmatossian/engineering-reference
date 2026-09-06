@@ -107,10 +107,12 @@ Two presentation properties are optional for a Topic generally:
   registry key rather than a filename, URL, or markup fragment. When omitted,
   the UI supplies its generic icon fallback.
 
-The initial supported icon keys are `java`, `architecture`, `algorithm`,
-`database`, `collection`, `queue`, `complexity`, `concurrency`, and
-`persistence`. Topics may reuse a key. Extending this closed vocabulary is a
-deliberate shared-contract change rather than an ordinary content edit.
+The supported icon keys are `java`, `architecture`, `algorithm`, `database`,
+`array`, `collection`, `conversion`, `copy`, `creation`, `deque`, `heap`, `list`,
+`map`, `operations`, `priority`, `queue`, `set`, `complexity`, `concurrency`,
+`equality`, `ordering`, and `persistence`. Topics may reuse a key. Extending this
+closed vocabulary is a deliberate shared-contract change rather than an ordinary
+content edit.
 
 `childTopicIds` remains present as `[]` for a Topic with no children. Requiring
 the field distinguishes an intentional leaf from accidentally incomplete
@@ -188,10 +190,13 @@ normally generated UUIDs.
 
 ## Supported Markdown
 
+The [content-authoring guide](content-authoring.md) defines how to use the supported
+syntax to produce concise, scannable Topics.
+
 The MVP source format supports:
 
 - paragraphs and headings;
-- inline code and fenced code blocks;
+- strong emphasis, inline code, and fenced code blocks;
 - ordered and unordered lists;
 - external HTTPS links;
 - tables; and

@@ -26,9 +26,11 @@ replacement for all the others.
 | Product purpose, MVP scope, and accepted exclusions | [`docs/product-brief.md`](product-brief.md) |
 | Topic domain model and invariants | [`docs/content-model.md`](content-model.md) |
 | Authored and generated content representation | [`docs/content-storage.md`](content-storage.md) |
+| Topic editorial and authoring conventions | [`docs/content-authoring.md`](content-authoring.md) |
 | Navigation, browser behavior, responsive behavior, and accessibility expectations | [`docs/interaction-model.md`](interaction-model.md) |
 | Application architecture, build pipeline, and technical boundaries | [`docs/application-architecture.md`](application-architecture.md) |
 | Visual direction, presentation rules, and accepted design references | [`docs/visual-design.md`](visual-design.md) |
+| Active review dispositions and intentional exceptions | [`docs/review-decisions.md`](review-decisions.md) |
 | Current task contract | The GitHub issue body and explicit accepted amendments |
 | Current task lifecycle position | The issue's status in the Engineering Reference GitHub Project |
 | Proposed implementation and evidence | The task branch, pull request, and CI results |
@@ -243,9 +245,11 @@ change and have its affected verification rerun.
 
 When independent review is selected, give the reviewer the accepted issue
 contract and amendments, governing repository documents, complete final diff,
-and current verification evidence. The reviewer must not infer requirements
-from the implementation or substitute preferred scope or architecture for
-accepted decisions.
+current verification evidence, and the active dispositions in
+[`docs/review-decisions.md`](review-decisions.md). The reviewer must not infer
+requirements from the implementation, substitute preferred scope or
+architecture for accepted decisions, or repeat a known disposition without new
+evidence or a changed requirement.
 
 Classify material findings as:
 

@@ -50,13 +50,13 @@ The base palette is warm and restrained:
 | Hairline | `#e5e0d5` | Borders and dividers |
 | Strong outline | `#76777b` | Focus and emphasized boundaries where appropriate |
 
-The concepts use restrained accent families for broad areas:
+The implementation uses restrained accent families for related icon concepts:
 
 - cobalt for languages and runtimes;
-- forest green for architecture and systems;
-- warm ochre for algorithms and theory;
-- terracotta for storage and databases; and
-- indigo for web and networking.
+- forest green for architecture and concurrency;
+- warm ochre for algorithms and complexity;
+- terracotta for databases and persistence; and
+- indigo for collections, data structures, and general operations.
 
 Accents belong on icons, narrow rules, borders, and subtle tinted surfaces.
 Large saturated fills are not part of this direction. Color must not be the
@@ -75,7 +75,7 @@ Typography supplies much of the interface's hierarchy:
 | Role | Preferred family | Character |
 | --- | --- | --- |
 | Application identity and headings | Plus Jakarta Sans | Distinctive, compact, and contemporary |
-| Body and navigation | Inter | Neutral and readable at interface and reference densities |
+| Body and navigation | Plus Jakarta Sans | Humanist, approachable, and readable at interface and reference densities |
 | Code | JetBrains Mono | Reserved for authored code and inline technical notation |
 
 The page title, introductory copy, Topic titles, supporting text, and body
@@ -83,6 +83,11 @@ content must remain visibly distinct through size, weight, line height, and
 spacing. Tiny uppercase metadata is not part of the product. Font loading and
 fallback strategy are implementation details and must preserve performance and
 readability.
+
+The initial implementation loads Plus Jakarta Sans and JetBrains Mono from Google
+Fonts and retains system-font fallbacks. This is an external runtime dependency;
+self-hosting should be reconsidered before publication if offline availability or
+third-party request privacy becomes a requirement.
 
 ### Spacing, shape, and depth
 

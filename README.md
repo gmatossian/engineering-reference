@@ -6,6 +6,10 @@ The accepted product, interaction, architecture, content, and
 [visual-design direction](docs/visual-design.md) are maintained as
 version-controlled project documentation.
 
+Content contributors should follow the
+[content-authoring guide](docs/content-authoring.md) so Topics remain concise and
+easy to scan.
+
 ## Development
 
 ### Requirements
