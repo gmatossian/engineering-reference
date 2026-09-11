@@ -6,7 +6,16 @@ The accepted product, interaction, architecture, content, and
 [visual-design direction](docs/visual-design.md) are maintained as
 version-controlled project documentation.
 
-Content contributors should follow the
+## Status
+
+The Engineering Reference MVP is complete and locally validated. The project
+remains an active work in progress: it is not yet deployed or production-ready.
+This repository is shared for visibility and feedback.
+
+The project is proprietary and is not accepting external code contributions.
+See [LICENSE](LICENSE).
+
+Maintainers authoring content should follow the
 [content-authoring guide](docs/content-authoring.md) so Topics remain concise and
 easy to scan.
 
@@ -79,3 +88,9 @@ Engineering Reference uses the project-local
 readiness, authority, verification, review, and durable handoff. Agent entry
 points route to the same profile so that different tools follow one local
 operating model.
+
+## License
+
+This software is proprietary and published publicly for visibility and feedback
+only. No open-source or other license is granted, and all rights are reserved.
+See [LICENSE](LICENSE).
