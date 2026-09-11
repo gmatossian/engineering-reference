@@ -7,11 +7,11 @@ Engineering Reference. It translates reusable agent-assisted engineering
 principles into this repository's actual authorities, delivery states,
 commands, risk boundaries, and review practices.
 
-The [Agent-Assisted Engineering Playbook](https://github.com/gmatossian/agent-assisted-engineering-playbook)
-provides supplementary rationale and reusable guidance. Access to it is not
-required to work safely in this repository. When central guidance and this
-profile appear to conflict, surface the conflict for human resolution; do not
-silently override this profile.
+The central Agent-Assisted Engineering Playbook provides supplementary
+rationale and reusable guidance. Access to it is not required to work safely in
+this repository. When central guidance and this profile appear to conflict,
+surface the conflict for human resolution; do not silently override this
+profile.
 
 This profile governs bounded engineering tasks. It does not define product
 discovery, roadmap prioritization, or the complete project lifecycle.
@@ -292,4 +292,4 @@ unaccepted exploration are not authoritative project memory.
 agents to this profile and the governing project documentation. Tool-specific
 instruction files such as [`../CLAUDE.md`](../CLAUDE.md) redirect to the same
 authority and must not introduce separate policy. The project README makes
-this profile discoverable to human contributors.
+this profile discoverable to maintainers.

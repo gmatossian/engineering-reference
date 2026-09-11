@@ -7,12 +7,11 @@ the [product brief](product-brief.md), [content model](content-model.md), and
 [navigation and responsive interaction model](interaction-model.md) into an
 implementation-facing presentation system.
 
-The selected concepts were produced in the
-[Engineering Reference Stitch project](https://stitch.withgoogle.com/projects/13144856373965085344?pli=1)
-and accepted during [issue #33](https://github.com/gmatossian/engineering-reference/issues/33).
-The reference images below preserve the selected visual direction. They are
-not pixel-perfect specifications, and their synthetic copy and invented UI do
-not override the repository's governing product documents.
+The selected concepts were produced with Google Stitch and accepted during
+[issue #33](https://github.com/gmatossian/engineering-reference/issues/33). The
+reference images below preserve the selected visual direction. They are not
+pixel-perfect specifications, and their synthetic copy and invented UI do not
+override the repository's governing product documents.
 
 The raw Stitch export and generated HTML are exploratory inputs. They are not
 versioned, are not application source, and must not be copied into the Angular

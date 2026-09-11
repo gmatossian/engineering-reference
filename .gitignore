@@ -6,6 +6,8 @@
 /out-tsc
 /bazel-out
 /.generated/
+/.local/
+/.local-notes/
 /stitch-export/
 
 # Node
