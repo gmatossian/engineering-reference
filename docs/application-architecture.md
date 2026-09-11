@@ -14,7 +14,7 @@ deployment provider or implement the application and content generator.
 
 ## Decision Summary
 
-Engineering Reference is a single, statically deployed Angular application.
+Engineering Reference is a single, statically deployable Angular application.
 Authored content is validated and converted before the Angular build, then the
 generated catalog is imported into the application bundle.
 
@@ -358,8 +358,9 @@ verifies that its sanitizer preserves the supported generated elements and
 attributes semantically; it does not require byte-identical HTML serialization.
 
 Automated tooling supplements rather than replaces manual keyboard and
-assistive-technology review. A manual keyboard and screen-reader pass is
-required before the MVP is released.
+assistive-technology review. The completed MVP verification included a manual
+keyboard and screen-reader pass. Later changes that affect those interactions
+require proportionate repeat verification.
 
 Formatting uses Prettier. TypeScript and Angular linting use the Angular 22
 version of `angular-eslint` with flat configuration. The MVP does not add
@@ -432,23 +433,23 @@ The initial interface contains a small set of semantic views and controls.
 Plain CSS keeps styling decisions visible and avoids adopting a component
 system or preprocessing layer before the visual design requires one.
 
-## Follow-up Implementation Slices
+## MVP Implementation Sequence
 
-Implementation should proceed through independently reviewable issues:
+The MVP was implemented through these independently reviewable issues:
 
-1. scaffold the strict, standalone, zoneless Angular workspace and baseline
+1. scaffolded the strict, standalone, zoneless Angular workspace and baseline
    formatting, linting, test, and CI commands;
-2. implement the shared runtime contract and deterministic content generator,
+2. implemented the shared runtime contract and deterministic content generator,
    including representative authored content and generator tests;
-3. implement routing, the bundled catalog service, application shell, landing
+3. implemented routing, the bundled catalog service, application shell, landing
    view, and not-found view;
-4. implement Topic content and child navigation, focus and history behavior,
+4. implemented Topic content and child navigation, focus and history behavior,
    generated-content styling, and responsive overflow; and
-5. complete cross-browser end-to-end, axe, keyboard, and assistive-technology
+5. completed cross-browser end-to-end, axe, keyboard, and assistive-technology
    verification for the MVP.
 
-Each issue may refine file-level implementation details, but it must preserve
-the boundaries and behavior accepted here. Deployment-provider selection and
+Each issue refined file-level implementation details while preserving the
+boundaries and behavior accepted here. Deployment-provider selection and
 production deployment remain separate work.
 
 ## Deliberately Unresolved
@@ -460,5 +461,6 @@ This decision does not select:
 - image optimization beyond deterministic copying and cache-busting names; or
 - post-MVP capabilities and scaling changes.
 
-These decisions are deferred because the accepted MVP can be scaffolded and
-implemented without them.
+These decisions were deferred at the architecture stage because the accepted
+MVP could be scaffolded and implemented without them. Later governing documents
+record any decisions resolved subsequently.
