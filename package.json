@@ -1,6 +1,7 @@
 {
   "name": "engineering-reference",
   "version": "0.0.0",
+  "license": "UNLICENSED",
   "scripts": {
     "ng": "ng",
     "content:generate": "node tools/content/generate.ts",

@@ -2,10 +2,12 @@
 
 ## Status
 
-The product direction, MVP boundary, content model, content representation,
-navigation interaction, application architecture, and initial visual direction
-are defined. Visual implementation and deployment decisions remain. The
-accepted interaction behavior is documented in the
+The accepted MVP scope has been implemented and locally validated. Based on
+that implementation and the accumulated dogfooding record, the owner has
+accepted the MVP as complete. Deployment and production verification are
+separate delivery work and are not requirements for MVP completion. The
+repository and its delivery project may be public as a work in progress under
+the posture below. The accepted interaction behavior is documented in the
 [MVP Navigation and Responsive Interaction Model](interaction-model.md), and
 the technical boundary is documented in the
 [MVP Application Architecture and Build Pipeline](application-architecture.md).
@@ -168,6 +170,21 @@ other reference formats.
 A Topic may link outward to deeper reading, but such links are optional and do
 not change the application's ownership of its concise reference content.
 
+## Public Work-in-Progress Posture
+
+The source repository and its delivery project may be public while the product
+remains undeployed and is not production-ready. Public availability is for
+visibility and feedback only; it does not mean that the product is deployed,
+production-ready, open source, or accepting external code contributions.
+
+The repository's proprietary [LICENSE](../LICENSE) governs use of the software.
+Before publication, maintainers must audit the full Git history and relevant
+GitHub collaboration surfaces, run a dedicated full-history secret scan, resolve
+the disposition of personal information, complete the repository and project
+messaging, and record an explicit human go/no-go decision. After publication,
+maintainers must enable the available repository protections and verify the
+public experience while signed out.
+
 ## Possible Post-MVP Capabilities
 
 The following remain possibilities rather than commitments:
@@ -191,8 +208,7 @@ The product brief does not settle:
 - deployment packaging and hosting details;
 - personal-state storage, if personal state is later justified;
 - migration and rollout sequencing beyond the initial catalog;
-- deployment approach and environments;
-- the criteria for making the repository and its delivery project public.
+- deployment approach and environments.
 
 These decisions should be made in dependency order and recorded explicitly.
 They must not be inferred from exploratory implementation.
