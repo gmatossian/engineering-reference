@@ -10,8 +10,9 @@ platform and any future authoring interface remain separate decisions.
 
 ## Decision Summary
 
-MVP content is maintained as static, version-controlled source and is rebuilt
-and redeployed when it changes.
+MVP content is maintained as static, version-controlled source. Once the
+application is deployed, content changes are published by rebuilding and
+redeploying it.
 
 - Each Topic is authored as Markdown with YAML front matter.
 - Each Topic has its own human-readable directory under `content/topics/`.
@@ -337,9 +338,10 @@ built:
 9. Emit the deterministic runtime JSON catalog.
 
 The same generator and validation path runs locally, in CI, and as a required
-dependency of the application build. Content changes therefore require a
-commit, rebuild, and deployment; no backend, database, or runtime content
-service is required for the MVP.
+dependency of the application build. Content changes therefore require a commit
+and rebuild; once the application is deployed, publishing those changes also
+requires redeployment. No backend, database, or runtime content service is
+required for the MVP.
 
 The generated JSON is not committed. Authored Markdown, YAML, and image assets
 are the only content source of truth. Excluding derived output prevents noisy

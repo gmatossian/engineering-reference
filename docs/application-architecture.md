@@ -44,11 +44,10 @@ The MVP uses:
 - the Angular CLI's standard `application` builder.
 
 The exact compatible dependency versions are recorded in `package.json` and
-locked by `package-lock.json` when the application is scaffolded. `package.json`
-uses ECMAScript modules through `"type": "module"`, declares Angular 22's
-supported Node.js 24 range through `engines`, and `.nvmrc` pins the actual
-compatible Node.js 24 release used by the project rather than only its major
-version.
+locked by `package-lock.json`. `package.json` uses ECMAScript modules through
+`"type": "module"`, declares Angular 22's supported Node.js 24 range through
+`engines`, and `.nvmrc` pins the actual compatible Node.js 24 release used by
+the project rather than only its major version.
 
 The application uses standalone components and `bootstrapApplication`; it does
 not introduce application NgModules. Angular's strict TypeScript and template
@@ -433,9 +432,10 @@ The initial interface contains a small set of semantic views and controls.
 Plain CSS keeps styling decisions visible and avoids adopting a component
 system or preprocessing layer before the visual design requires one.
 
-## MVP Implementation Sequence
+## Architecture Implementation Sequence
 
-The MVP was implemented through these independently reviewable issues:
+The MVP architecture was implemented through these independently reviewable
+slices:
 
 1. scaffolded the strict, standalone, zoneless Angular workspace and baseline
    formatting, linting, test, and CI commands;
