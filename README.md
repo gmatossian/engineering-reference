@@ -68,7 +68,8 @@ npm run test:e2e -- --project=firefox
 Run `npm run check` before review to execute the complete local equivalent of
 the CI quality gate.
 
-Before an MVP release, also perform a manual pass against a production build:
+The completed MVP verification included the following manual checks. Repeat the
+applicable checks for later changes that affect these behaviors:
 
 - use only the keyboard to move through the landing page, Topic links, Back,
   Home, and any overflowing code or table region;
