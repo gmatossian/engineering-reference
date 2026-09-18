@@ -1,14 +1,23 @@
-# Engineering Reference MVP Content Model
+# Engineering Reference Content Model
 
 ## Status
 
-This document defines the accepted content-domain model for the MVP. The source
-and generated representations are defined separately in
-[MVP Content Storage and File Representation](content-storage.md), and the
-accepted browsing behavior is defined in the
-[MVP Navigation and Responsive Interaction Model](interaction-model.md). The
-[MVP Application Architecture and Build Pipeline](application-architecture.md)
+This document defines the accepted content-domain model. It preserves the
+implemented MVP Topic identity, content, and ordered-child graph and extends
+them with the classification, context, and lateral relationships accepted as
+Direction C in the [Topic findability audit](topic-findability-audit.md). The
+source and generated representations are defined separately in
+[Content Storage and File Representation](content-storage.md), and the accepted
+browsing behavior is defined in the
+[Navigation and Responsive Interaction Model](interaction-model.md). The
+[Application Architecture and Build Pipeline](application-architecture.md)
 defines how the model is generated and consumed.
+
+The Direction C fields below are the accepted target contract, not a claim that
+the current runtime already emits them. A follow-up contract-and-generator
+slice must introduce the fields together with an atomic migration of every
+published Topic; `main` must not contain a partially migrated catalog. Until
+that slice is accepted, the implemented MVP subset remains valid runtime data.
 
 ## Model Overview
 
@@ -28,8 +37,11 @@ Topic
   title: string
   summary: optional concise plain text
   iconKey: optional supported icon key
+  domains: non-empty set of supported domain keys
+  kind: supported content-kind key
   mainContent: optional formatted document
   childTopicIds: ordered list of UUIDs
+  relatedTopicIds: ordered list of UUIDs
 ```
 
 This notation describes the domain model only. It does not prescribe how the
@@ -76,6 +88,61 @@ Topic content does not select colors or accent families. Color treatment
 belongs to the shared visual and icon system, and must not introduce domain
 meaning that the content model does not define.
 
+## Retrieval Classification
+
+Classification is independent of hierarchy. It improves finding and
+recognition without changing Topic identity, canonical content, or child
+relationships.
+
+### Domains
+
+Every Topic belongs to one or more supported technical domains. Domain
+membership answers “where could I reasonably browse for this?” and does not
+assert exclusive ownership or a canonical parent.
+
+The initial domain vocabulary is deliberately small and derived from the
+published corpus:
+
+| Key | Display label | Scope |
+| --- | --- | --- |
+| `java` | Java | The Java language, runtime, and general ecosystem |
+| `collections` | Collections | Collection APIs, collection choices, and collection-backed structures |
+| `concurrency` | Concurrency | Concurrency, parallel execution, coordination, and resource limits |
+| `persistence` | Persistence | JPA, ORM, repositories, and application persistence behavior |
+| `databases` | Databases | Database systems, SQL, storage, and data-access design |
+| `http` | HTTP | HTTP protocol semantics and lookup references |
+| `system-design` | System Design | Architecture decisions, estimation, and design exercises |
+| `algorithms-data-structures` | Algorithms and data structures | Complexity, algorithms, and language-independent data-structure concepts |
+
+These keys are a closed contract rather than author-defined tags. A Topic can
+belong to several domains, such as Java and Collections or Persistence and
+Databases. Membership has no authored priority; generated and displayed order
+follows the vocabulary above.
+
+Changing the vocabulary is a shared content-contract and interaction decision,
+not an ordinary Topic edit.
+
+### Content kind
+
+Every Topic has exactly one primary retrieval-oriented content kind:
+
+| Key | Display label | Meaning |
+| --- | --- | --- |
+| `area` | Area | An organizing entry point such as Java or Databases |
+| `concept` | Concept | An explanatory reference for a principle or behavior |
+| `operations` | Operations | API, syntax, task, or lookup material used while doing work |
+| `decision-aid` | Decision aid | A comparison, selection guide, or trade-off reference |
+| `exercise` | Exercise | An applied problem or case-study container |
+| `pattern` | Pattern or technique | A reusable solution shape or engineering technique |
+
+Kind describes how a reader uses the Topic, not its technical domain or visual
+style. Every Topic is already a reference, so `reference` is not a useful
+kind. A comparison such as offset versus cursor pagination is a decision aid;
+a system-design case such as URL shortener is an exercise.
+
+The vocabulary supplies a stable initial grouping order. Extending or changing
+it requires reviewing the full corpus and the affected browse experience.
+
 ## Main Content
 
 `mainContent` is an optional, ordered, formatted document. When present, it is
@@ -94,8 +161,8 @@ and responsive behavior.
 
 All of a Topic's main content is displayed. Headings can organize a longer
 document, but sections are not individually collapsed or progressively
-revealed in the MVP. The main content appears before navigation to immediate
-children, and the user can scroll when necessary.
+revealed. The main content appears before navigation to immediate children,
+and the user can scroll when necessary.
 
 Main content is optional because some Topics exist primarily to organize
 navigation. For example, selecting `Java` may display its ordered children
@@ -119,13 +186,62 @@ Child relationships follow these rules:
 - every referenced UUID must identify an existing Topic.
 
 The resulting hierarchy is a directed acyclic graph rather than necessarily a
-strict tree. The MVP supports navigation from a Topic to its children; child
-Topics do not store parent references.
+strict tree. The application supports navigation from a Topic to its children;
+child Topics do not store parent references. Reverse parent context is derived
+during generation.
 
-Relationship-specific labels, descriptions, related-topic links, and other
-edge metadata are not part of the MVP. If a later use case requires them, the
-UUID references can be replaced by richer relationship records without
-changing Topic identity.
+Child relationships remain distinct from domains, content kind, and Related
+Topics. They communicate intentional broad-to-specific progression rather than
+every useful retrieval path.
+
+## Related Topics
+
+Each Topic owns an ordered `relatedTopicIds` list for a small set of curated
+lateral links. A Related Topic answers “what nearby reference is useful next?”;
+it does not assert containment, domain membership, sequence, or a canonical
+parent.
+
+Related relationships follow these rules:
+
+- a Topic may have no Related Topics;
+- every referenced UUID identifies an existing Topic;
+- a Topic cannot reference itself or the same Related Topic twice;
+- list order controls presentation;
+- the relationship is directed and is not made reciprocal automatically;
+- related relationships may form cycles; and
+- related relationships do not make an otherwise empty Topic valid.
+
+The initial relationship is deliberately untyped. Typed edges or automatic
+recommendations require a demonstrated presentation or authoring need and a
+separate contract change. Authors should not repeat links already exposed as
+immediate children or Browse contexts unless the distinct retrieval value is
+deliberate and reviewable.
+
+## Browse Collections and Contexts
+
+The initial browse collections are derived views rather than authored content
+entities. The all-Topics surface can select a domain and optionally a kind;
+domain views can group their members by kind. A named view such as **System
+Design — Exercises** is therefore the intersection of accepted classification,
+not another parent relationship or duplicated membership list.
+
+There is no authored `collectionIds` field or standalone Collection record in
+the initial contract. An explicitly ordered curated collection can be added
+later only when a real retrieval need cannot be represented by domain, kind,
+hierarchy, or Related Topics.
+
+Browse contexts are generated from canonical data and are the same regardless
+of the route used to reach a Topic. They include:
+
+- the Topic's domain memberships;
+- its content kind; and
+- reverse parent links derived from `childTopicIds`.
+
+Browse contexts are not a breadcrumb and do not select one canonical path.
+They may show several valid contexts for a Topic with several parents or
+domains. Domain and kind context can link to those individual browse filters;
+their intersection remains available by applying both filters on the
+all-Topics surface.
 
 ## Landing Topics
 
@@ -141,8 +257,11 @@ Every landing Topic defines a summary for its landing card. This is a
 catalog-level rule because the requirement depends on where the Topic is
 presented rather than on an intrinsic Topic type.
 
-Every Topic in the MVP catalog must be reachable from at least one landing
-Topic.
+Every Topic appears in the all-Topics index and at least one domain because
+domain membership is required. Child-graph reachability from a landing Topic
+is no longer required: the hierarchy is one useful retrieval view rather than
+the complete information architecture. Landing and child references must still
+form a valid directed acyclic graph.
 
 ## Valid Topic Shapes
 
@@ -153,7 +272,8 @@ A Topic may contain:
 - children only.
 
 A Topic with neither main content nor children is invalid because navigating
-to it would produce an empty page.
+to it would produce an empty page. Domain membership, kind, Browse contexts,
+and Related Topics do not make an otherwise empty Topic valid.
 
 ## Illustrative Catalog
 
@@ -182,25 +302,31 @@ navigation, or both.
 
 ## Catalog Validation
 
-A valid MVP catalog satisfies all of the following:
+A valid catalog satisfies all of the following:
 
 - at least one landing Topic is declared;
 - every Topic has a UUID and a non-empty title;
 - summaries, when present, are non-empty single-line plain text of at most 160
   characters;
 - icon keys, when present, belong to the supported vocabulary;
+- every Topic has at least one supported domain and no duplicate domain;
+- every Topic has exactly one supported content kind;
 - every landing Topic has a summary;
 - every Topic has non-empty main content, at least one child, or both;
 - every landing and child UUID resolves to an existing Topic;
+- every Topic declares an ordered Related Topics list, which may be empty;
 - landing Topics and each Topic's children preserve their declared order;
 - no parent contains a duplicate child reference;
 - the child graph contains neither self-references nor indirect cycles; and
-- every Topic is reachable from at least one landing Topic.
+- every Related Topic UUID resolves, with no self-reference or duplicate in a
+  Topic's ordered related list.
 
 ## Deliberately Unresolved
 
-This model does not decide post-MVP relationships such as related Topics,
-tags, and facets.
+This model does not define authored ordered collections, typed relationships,
+search aliases, or open-ended tags. Those capabilities require evidence that
+the accepted domain, kind, hierarchy, derived collections, and untyped Related
+Topics cannot meet.
 
 Storage and application decisions are recorded in their respective documents
 without changing the accepted domain semantics above.

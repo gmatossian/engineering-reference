@@ -1,16 +1,24 @@
-# Engineering Reference MVP Application Architecture and Build Pipeline
+# Engineering Reference Application Architecture and Build Pipeline
 
 ## Status
 
-This document defines the accepted application architecture and build pipeline
-for the MVP. It implements the decisions in the
+This document defines the accepted application architecture and build pipeline.
+It preserves the implemented MVP boundary and specifies the incremental
+classification, index, search, context, and relationship responsibilities
+required by Direction C. It implements the decisions in the
 [product brief](product-brief.md), [content model](content-model.md),
 [content storage representation](content-storage.md), and
 [navigation interaction model](interaction-model.md).
 
 Detailed presentation rules are defined separately in the
-[MVP Visual Design](visual-design.md). This document does not select a
+[Visual Design](visual-design.md). This document does not select a
 deployment provider or implement the application and content generator.
+
+The Direction C architecture below is the accepted target boundary. The
+current application continues to run the implemented MVP contract until the
+dependency-ordered slices at the end of this document land. The contract,
+generator, and complete published corpus must migrate atomically before any UI
+depends on the new fields or indexes.
 
 ## Decision Summary
 
@@ -26,9 +34,13 @@ generated catalog is imported into the application bundle.
 - The application uses the Angular Router, signals, and a small read-only
   catalog service rather than an external state-management library.
 - The content generator uses a typed Markdown abstract-syntax-tree pipeline
-  and emits deterministic, ignored build artifacts.
+  and emits deterministic, ignored build artifacts plus derived classification
+  and reverse-parent indexes.
 - The browser trusts the internally generated catalog and does not duplicate
   its build-time schema validation.
+- A read-only catalog service performs deterministic client-side title search,
+  classification filtering, and context lookup over the bundled artifact; no
+  backend or additional runtime request is introduced.
 - Angular's sanitizer remains active when generated HTML is rendered.
 - Plain CSS, automated tests, accessibility checks, and one reproducible CI
   command support the initial implementation.
@@ -84,12 +96,18 @@ The repository contains one Angular application at its root:
 │       ├── app.routes.ts
 │       ├── catalog/
 │       │   └── catalog.service.ts
+│       ├── browse/
+│       │   ├── topic-index-page.*
+│       │   ├── topic-finder.*
+│       │   └── topic-result-list.*
 │       ├── landing/
 │       │   └── landing-page.*
 │       └── topic/
 │           ├── topic-page.*
 │           ├── topic-content.*
+│           ├── topic-context.*
 │           ├── topic-link-list.*
+│           ├── related-topic-list.*
 │           └── topic-not-found.*
 ├── angular.json
 ├── package.json
@@ -102,10 +120,11 @@ to a shared boundary only after a concrete reuse requirement appears.
 
 `contracts/runtime-catalog.ts` is a framework-neutral boundary containing the
 `RuntimeCatalog` and `RuntimeTopic` TypeScript types and the closed
-`TOPIC_ICON_KEYS` vocabulary. Source validation imports the vocabulary as a
-runtime value, while the generator and Angular application share its derived
-`TopicIconKey` type. The boundary contains neither Angular-specific nor
-Node.js-specific behavior.
+`TOPIC_ICON_KEYS`, `TOPIC_DOMAIN_KEYS`, and `TOPIC_KIND_KEYS` vocabularies.
+Source validation imports the vocabularies as runtime values, while the
+generator and Angular application share their derived TypeScript types and
+display-label and ordering metadata. The boundary contains neither Angular-
+specific nor Node.js-specific behavior.
 
 ## Content Generation Pipeline
 
@@ -147,10 +166,13 @@ unaccepted constructs fail generation with a clear error. The pipeline does
 not generate heading IDs. New constructs require an explicit content-contract
 change plus styling, sanitization, and test coverage.
 
-Custom catalog validation enforces UUID identity, references, ordering,
-uniqueness, acyclicity, reachability, and the requirement that every landing
-Topic has a summary. The generator reports all discovered validation errors in
-one run and exits unsuccessfully when any are present.
+Custom catalog validation enforces UUID identity, required classification,
+supported vocabulary keys, child and related references, authored ordering,
+uniqueness, child-graph acyclicity, and the requirement that every landing
+Topic has a summary. Child-graph reachability from a landing Topic is no longer
+required because every valid Topic is present in the all-Topics and domain
+indexes. The generator reports all discovered validation errors in one run and
+exits unsuccessfully when any are present.
 
 ### Generated boundary
 
@@ -167,13 +189,16 @@ Generation recreates this ignored directory deterministically:
 
 The generated JSON has the shape defined in the content storage decision and
 is type-checked against `RuntimeCatalog`. Optional `summary` and `iconKey`
-source fields become explicit nullable runtime properties; the Angular UI owns
-the generic icon fallback when `iconKey` is `null`. TypeScript widens string
-literals imported from JSON, so the catalog service restores the trusted
-`RuntimeCatalog` type at that generated boundary rather than duplicating
-runtime validation in Angular. Angular imports `.generated/catalog.json` at
-build time, so the catalog is compiled into the application bundle rather than
-fetched as a runtime resource.
+source fields become explicit nullable runtime properties; required `domains`,
+`kind`, `childTopicIds`, and `relatedTopicIds` retain predictable shapes. The
+generator also emits alphabetical Topic IDs, IDs by domain and kind, and
+reverse parent IDs derived from `childTopicIds`. The Angular UI owns the generic
+icon fallback when `iconKey` is `null`. TypeScript widens string literals
+imported from JSON, so the catalog service restores the trusted `RuntimeCatalog`
+type at that generated boundary rather than duplicating runtime validation in
+Angular. Angular imports `.generated/catalog.json` at build time, so the
+catalog and indexes are compiled into the application bundle rather than
+fetched as runtime resources.
 
 Supported Topic images are copied without resizing or optimization for the
 MVP. The generator keeps the readable source filename, inserts a deterministic
@@ -189,11 +214,13 @@ production output. The content hash changes the URL when an image changes,
 allowing long-lived browser caches without serving stale content.
 
 Topic directories are processed in ascending code-point order, and
-`topicsById` keys are emitted in ascending UUID order. JSON uses two-space
-indentation and one trailing LF. Asset hashes use the first 12 lowercase
-hexadecimal characters of the file's SHA-256 digest. These rules define the
-canonical output rather than relying on filesystem enumeration order or local
-serialization conventions.
+`topicsById` keys are emitted in ascending UUID order. Alphabetical and
+classification indexes use case-insensitive title order and then UUID;
+reverse-parent indexes use parent title and then UUID. Domain arrays use the
+closed domain-vocabulary order. JSON uses two-space indentation and one
+trailing LF. Asset hashes use the first 12 lowercase hexadecimal characters of
+the file's SHA-256 digest. These rules define the canonical output rather than
+relying on filesystem enumeration order or local serialization conventions.
 
 PNG and WebP files are data assets. Committed SVG files are treated as trusted,
 reviewable project source, like TypeScript and configuration, rather than as
@@ -211,11 +238,19 @@ remain the source of truth, while local and CI builds recreate the same output.
 The router defines:
 
 - `/` for the landing view;
+- `/topics` for the all-Topics browse and title-search view;
 - `/topics/:id` for a Topic identified by its stable UUID; and
 - a wildcard route for the explicit Topic-not-found view.
 
+The static `/topics` route is declared before `/topics/:id`. Its optional `q`,
+`domain`, and `kind` query parameters are router-owned addressable state.
+Typing replaces the current query-parameter state instead of pushing history
+per keystroke; Topic selection still performs normal history-producing
+navigation.
+
 The landing and wildcard routes use static router titles of
 `Engineering Reference` and `Topic not found | Engineering Reference`.
+The index route uses `All topics | Engineering Reference`.
 `TopicPageComponent` supplies `<Topic title> | Engineering Reference` for a
 resolved Topic.
 
@@ -243,12 +278,23 @@ redirect to the landing page.
 for:
 
 - resolving the ordered landing Topics;
+- resolving every Topic in generated alphabetical order;
 - looking up a Topic by UUID; and
-- resolving a Topic's ordered child UUIDs to navigable Topic summaries.
+- resolving a Topic's ordered child and Related Topic UUIDs;
+- resolving domains, kinds, and their intersections through generated indexes;
+- resolving reverse parent IDs for Browse contexts; and
+- deterministic title search and filtering.
 
-The service does not fetch, retry, mutate, or persist catalog data. Generation
-and compilation guarantee the internal artifact's schema, so the browser does
-not run Zod or another duplicate runtime validator.
+Title search trims and case-folds the query, performs substring matching over
+canonical titles, and orders exact, prefix, and remaining substring matches in
+that sequence. Each tier uses case-insensitive title order and UUID. It does
+not parse generated HTML, maintain a separate keyword registry, or use fuzzy,
+semantic, remote, or behavior-informed ranking.
+
+The service does not fetch, retry, mutate, or persist catalog data. Search and
+filtering operate over the immutable bundled artifact. Generation and
+compilation guarantee the internal artifact's schema, so the browser does not
+run Zod or another duplicate runtime validator.
 
 All UUID lookups are own-property-safe. The service uses `Object.hasOwn` before
 reading a `topicsById` value so arbitrary route strings such as `constructor`,
@@ -256,22 +302,36 @@ reading a `topicsById` value so arbitrary route strings such as `constructor`,
 JavaScript object properties.
 
 The Angular Router owns the current addressable Topic selection and browser
-history. Signals and computed values hold only local or derived presentation
-state. The MVP introduces neither an external state library nor a separate
-navigation history derived from the Topic graph.
+history plus the all-Topics query and filter state. Signals and computed values
+hold only local or derived presentation state. The application introduces
+neither an external state library nor a separate navigation history derived
+from the Topic graph.
 
 ### Component responsibilities
 
 - `AppComponent` supplies the application shell, visible Home and Back
-  controls, and router outlet. It treats Back as unavailable when
+  controls, the All topics link, and router outlet. It treats Back as unavailable when
   `window.history.length <= 1`; this is a documented browser-history
   approximation rather than a guarantee about the destination.
-- `LandingPageComponent` displays the ordered landing Topics.
+- `LandingPageComponent` displays the finder and ordered landing Topics.
+- `TopicFinderComponent` owns the labelled landing or index search form without
+  owning catalog data or navigation history.
+- `TopicIndexPageComponent` normalizes query parameters, composes search and
+  filters, exposes the result count, and selects alphabetical, relevance, or
+  grouped-domain presentation. The browse feature's closed grouped-domain set
+  initially contains only `system-design`; changing it requires interaction
+  review rather than a Topic metadata edit.
+- `TopicResultListComponent` renders grouped or flat Topic results as native
+  links with kind and domain context.
 - `TopicPageComponent` resolves the route input, sets view metadata, and
   composes the selected Topic presentation.
 - `TopicContentComponent` renders a Topic's generated main-content HTML.
+- `TopicContextComponent` renders kind, domain links, and reverse-parent links
+  from derived catalog data; it does not reconstruct browser history.
 - `TopicLinkListComponent` renders ordered landing or child Topics as native
   links.
+- `RelatedTopicListComponent` renders the authored related UUID order as a
+  separately labelled native-link region.
 - `TopicNotFoundComponent` provides the explicit unknown-route or unknown-Topic
   view.
 
@@ -304,6 +364,12 @@ viewports. The generator places Topic-content tables and code blocks inside
 labelled, keyboard-focusable presentation wrappers. These wrappers own bounded
 horizontal overflow without changing the native semantics of the enclosed
 `table`, `pre`, or `code` elements or making the full page scroll horizontally.
+
+Finder and index controls use native form elements. Query and filter changes
+retain focus and publish only the result count through a polite status region.
+Responsive CSS may move the Browse contexts region beside Topic content at wide
+sizes, but DOM and keyboard order remain title, context, content, children, and
+Related Topics.
 
 ## Local Development and Builds
 
@@ -345,8 +411,9 @@ environment and prevents silent test-discovery gaps.
 
 Chromium runs the full end-to-end suite at representative wide and narrow
 viewports, including focus and automated accessibility checks. Firefox and
-WebKit run a smaller smoke suite covering the landing view, a direct Topic URL,
-child navigation, and the not-found view.
+WebKit run a smaller smoke suite covering the landing view, all-Topics search
+and filtering, a direct Topic URL with its context, child navigation, and the
+not-found view.
 
 Coverage is reported without an initial numeric threshold. Tests explicitly
 cover every catalog validation rule, Markdown safety constraints,
@@ -355,6 +422,14 @@ navigation, focus behavior, and not-found behavior. Catalog lookup tests
 include JavaScript prototype property names. An Angular integration test
 verifies that its sanitizer preserves the supported generated elements and
 attributes semantically; it does not require byte-identical HTML serialization.
+
+Direction C coverage also includes domain and kind validation, related
+relationship validation, derived index determinism, reverse-parent context,
+duplicate-title ordering, exact/prefix/substring title ranking, query-parameter
+normalization, grouped domain browsing, no-results behavior, result-count
+announcements, direct Topic context, and Related Topics. Browser tests exercise
+these journeys at representative wide and narrow viewports, including keyboard
+focus and automated accessibility checks.
 
 Automated tooling supplements rather than replaces manual keyboard and
 assistive-technology review. The completed MVP verification included a manual
@@ -391,6 +466,7 @@ Because the catalog is imported into the bundle, the application has no
 separate runtime catalog request, loading state, catalog-unavailable state, or
 Retry action. The deliberate runtime failure case is an unknown Topic or route,
 which displays the Topic-not-found view defined by the interaction model.
+An unmatched title query is an ordinary empty result, not a runtime failure.
 
 ## Alternatives Considered
 
@@ -452,6 +528,23 @@ Each issue refined file-level implementation details while preserving the
 boundaries and behavior accepted here. Deployment-provider selection and
 production deployment remain separate work.
 
+Direction C should likewise be delivered through bounded, dependency-ordered
+slices:
+
+1. atomically extend the framework-neutral contracts, source validation,
+   generator, derived runtime indexes, and every published Topic; keep the code
+   and classification/relationship migration of all 67 Topics in the decision
+   baseline as distinct review sections even though they merge together;
+2. add the `/topics` route, landing finder, title search, filters, and grouped
+   domain browsing;
+3. add Browse contexts and Related Topics to the Topic view; and
+4. complete focused responsive, cross-browser, keyboard, screen-reader, and
+   accessibility verification for the new journeys.
+
+Later slices may begin only when their required runtime data exists. Each slice
+must preserve usable hierarchical browsing and keep the default branch
+releasable.
+
 ## Deliberately Unresolved
 
 This decision does not select:
@@ -459,8 +552,9 @@ This decision does not select:
 - a deployment provider, domain, or hosting rewrite configuration;
 - detailed branding, typography, spacing, breakpoints, or visual composition;
 - image optimization beyond deterministic copying and cache-busting names; or
-- post-MVP capabilities and scaling changes.
+- fuzzy or semantic search, search aliases, authored ordered collections, or
+  typed relationships.
 
-These decisions were deferred at the architecture stage because the accepted
-MVP could be scaffolded and implemented without them. Later governing documents
-record any decisions resolved subsequently.
+These decisions are not required for the accepted Direction C slices. Any
+later addition is recorded first in the governing product, content,
+interaction, and technical documents it affects.

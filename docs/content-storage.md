@@ -1,16 +1,24 @@
-# MVP Content Storage and File Representation
+# Content Storage and File Representation
 
 ## Status
 
-This document defines the accepted source and generated representations for
-MVP content. The tools and application integration that implement this
+This document defines the accepted source and generated content
+representations. It preserves the implemented MVP format and specifies the
+classification, related-link, and derived-index extensions required by
+Direction C. The tools and application integration that implement this
 representation are defined in the
 [application architecture](application-architecture.md). The deployment
 platform and any future authoring interface remain separate decisions.
 
+The Direction C source and runtime fields below are the accepted target
+representation. They become required only when a follow-up changes the shared
+contract, generator, and every published Topic atomically. Until then, the
+implemented MVP source and generated catalog remain valid; authors must not add
+unsupported fields piecemeal.
+
 ## Decision Summary
 
-MVP content is maintained as static, version-controlled source. Once the
+Content is maintained as static, version-controlled source. Once the
 application is deployed, content changes are published by rebuilding and
 redeploying it.
 
@@ -19,9 +27,11 @@ redeploying it.
 - Local image assets live alongside the Topic that owns them.
 - `content/catalog.yaml` contains the ordered landing Topic UUIDs.
 - The build discovers Topic files rather than relying on a central registry.
+- Topic front matter owns domain membership, one content kind, ordered
+  children, and ordered curated Related Topics.
 - A build-time generator validates the complete catalog, converts Markdown to
-  sanitized semantic HTML, copies referenced assets, and emits one runtime JSON
-  catalog.
+  sanitized semantic HTML, copies referenced assets, derives reverse and
+  classification indexes, and emits one runtime JSON catalog.
 - Angular imports the generated catalog into its application bundle.
 - The generated JSON is build output and is not committed.
 - The Angular application uses a generic renderer; Topics do not require
@@ -79,24 +89,33 @@ Topic.
 
 ## Topic Source
 
-Each `topic.md` begins with YAML front matter containing exactly the Topic
-metadata needed by the MVP:
+Each `topic.md` begins with YAML front matter containing exactly the target
+Topic metadata accepted in this document:
 
 ```yaml
 ---
 id: "33333333-3333-4333-8333-333333333333"
 title: "Queue"
 iconKey: "queue"
+domains:
+  - "java"
+  - "collections"
+  - "algorithms-data-structures"
+kind: "concept"
 childTopicIds:
   - "44444444-4444-4444-8444-444444444444"
+relatedTopicIds: []
 ---
 ```
 
-Three properties are required:
+Six properties are required in the target contract:
 
 - `id` is the Topic's stable UUID;
-- `title` is its non-empty, non-unique display title; and
-- `childTopicIds` is its ordered list of immediate child UUIDs.
+- `title` is its non-empty, non-unique display title;
+- `domains` is its non-empty set of supported technical-domain keys;
+- `kind` is its single supported retrieval-oriented content-kind key;
+- `childTopicIds` is its ordered list of immediate child UUIDs; and
+- `relatedTopicIds` is its ordered list of curated lateral Topic UUIDs.
 
 Two presentation properties are optional for a Topic generally:
 
@@ -115,10 +134,26 @@ The supported icon keys are `java`, `architecture`, `algorithm`, `database`,
 closed vocabulary is a deliberate shared-contract change rather than an ordinary
 content edit.
 
+The supported domain keys, in canonical generated and display order, are
+`java`, `collections`, `concurrency`, `persistence`, `databases`, `http`,
+`system-design`, and `algorithms-data-structures`. Source membership order is
+not meaningful; generation normalizes it to this shared order. Every Topic has
+at least one domain and cannot repeat a domain key.
+
+The supported content-kind keys, in grouping order, are `area`, `concept`,
+`operations`, `decision-aid`, `exercise`, and `pattern`. Every Topic has exactly
+one kind. The [content model](content-model.md) defines their semantics and
+display labels.
+
 `childTopicIds` remains present as `[]` for a Topic with no children. Requiring
 the field distinguishes an intentional leaf from accidentally incomplete
 metadata and gives every generated Topic the same predictable relationship
 shape.
+
+`relatedTopicIds` likewise remains present as `[]` when no curated lateral
+link is intended. Its order controls presentation. References are directed and
+are not made reciprocal automatically; related cycles are valid, while
+missing, duplicate, and self references are rejected.
 
 The Markdown body after the front matter is the optional `mainContent`. When a
 body is present, it must contain meaningful content. A Topic with no body is
@@ -134,8 +169,12 @@ id: "11111111-1111-4111-8111-111111111111"
 title: "Java"
 summary: "Core language, collections, concurrency, and persistence concepts."
 iconKey: "java"
+domains:
+  - "java"
+kind: "area"
 childTopicIds:
   - "22222222-2222-4222-8222-222222222222"
+relatedTopicIds: []
 ---
 ```
 
@@ -149,8 +188,14 @@ reference:
 id: "33333333-3333-4333-8333-333333333333"
 title: "Queue"
 iconKey: "queue"
+domains:
+  - "java"
+  - "collections"
+  - "algorithms-data-structures"
+kind: "concept"
 childTopicIds:
   - "44444444-4444-4444-8444-444444444444"
+relatedTopicIds: []
 ---
 
 A queue processes elements in a defined order.
@@ -176,7 +221,12 @@ empty child list:
 id: "44444444-4444-4444-8444-444444444444"
 title: "Complexity"
 iconKey: "complexity"
+domains:
+  - "collections"
+  - "algorithms-data-structures"
+kind: "concept"
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 | Operation | Typical complexity |
@@ -194,7 +244,7 @@ normally generated UUIDs.
 The [content-authoring guide](content-authoring.md) defines how to use the supported
 syntax to produce concise, scannable Topics.
 
-The MVP source format supports:
+The source format supports:
 
 - paragraphs and headings;
 - strong emphasis, inline code, and fenced code blocks;
@@ -217,10 +267,10 @@ scheme. Other spellings and protocols are rejected so that the validated HTML
 can pass through the sanitizer without its meaning changing.
 
 Inline navigation to another Topic is also excluded. Internal Topic navigation
-is represented only by `childTopicIds`, preserving the accepted ordered,
-broad-to-specific navigation model. Relative links to Topic files and
-application routes are invalid because storage paths and routes are not stable
-Topic identity.
+is represented by stable UUID relationships in `childTopicIds` and
+`relatedTopicIds`; domain and reverse-parent navigation is derived by the
+generator. Relative links to Topic files and application routes are invalid
+because storage paths and routes are not stable Topic identity.
 
 ## Images
 
@@ -257,48 +307,73 @@ and optimization are not part of the MVP pipeline.
 
 ## Generated Runtime Catalog
 
-The generator emits a single JSON document for the deliberately small MVP
-catalog. Its conceptual shape is:
+The generator emits a single JSON document for the deliberately small catalog.
+Its conceptual shape is:
 
 ```json
 {
   "landingTopicIds": [
     "11111111-1111-4111-8111-111111111111"
   ],
+  "allTopicIds": [
+    "22222222-2222-4222-8222-222222222222",
+    "11111111-1111-4111-8111-111111111111"
+  ],
+  "topicIdsByDomain": {
+    "java": [
+      "22222222-2222-4222-8222-222222222222",
+      "11111111-1111-4111-8111-111111111111"
+    ],
+    "collections": [
+      "22222222-2222-4222-8222-222222222222"
+    ],
+    "concurrency": [],
+    "persistence": [],
+    "databases": [],
+    "http": [],
+    "system-design": [],
+    "algorithms-data-structures": []
+  },
+  "topicIdsByKind": {
+    "area": [
+      "11111111-1111-4111-8111-111111111111"
+    ],
+    "concept": [
+      "22222222-2222-4222-8222-222222222222"
+    ],
+    "operations": [],
+    "decision-aid": [],
+    "exercise": [],
+    "pattern": []
+  },
+  "parentTopicIdsById": {
+    "11111111-1111-4111-8111-111111111111": [],
+    "22222222-2222-4222-8222-222222222222": [
+      "11111111-1111-4111-8111-111111111111"
+    ]
+  },
   "topicsById": {
     "11111111-1111-4111-8111-111111111111": {
       "title": "Java",
       "summary": "Core language, collections, concurrency, and persistence concepts.",
       "iconKey": "java",
+      "domains": ["java"],
+      "kind": "area",
       "mainContentHtml": null,
       "childTopicIds": [
         "22222222-2222-4222-8222-222222222222"
-      ]
+      ],
+      "relatedTopicIds": []
     },
     "22222222-2222-4222-8222-222222222222": {
       "title": "Collections",
       "summary": null,
       "iconKey": "collection",
+      "domains": ["java", "collections"],
+      "kind": "concept",
       "mainContentHtml": "<p>Collections group and organize objects.</p>",
-      "childTopicIds": [
-        "33333333-3333-4333-8333-333333333333"
-      ]
-    },
-    "33333333-3333-4333-8333-333333333333": {
-      "title": "Queue",
-      "summary": null,
-      "iconKey": "queue",
-      "mainContentHtml": "<p>A queue processes elements in a defined order.</p>",
-      "childTopicIds": [
-        "44444444-4444-4444-8444-444444444444"
-      ]
-    },
-    "44444444-4444-4444-8444-444444444444": {
-      "title": "Complexity",
-      "summary": null,
-      "iconKey": "complexity",
-      "mainContentHtml": "<div class=\"topic-content-overflow\" ...><table>...</table></div>",
-      "childTopicIds": []
+      "childTopicIds": [],
+      "relatedTopicIds": []
     }
   }
 }
@@ -306,14 +381,22 @@ catalog. Its conceptual shape is:
 
 `topicsById` is an unordered registry keyed by stable Topic UUID. The key is the
 serialized identity, while the values contain the data needed for generic
-rendering and navigation. Only `landingTopicIds` and each `childTopicIds` array
-have meaningful order.
+rendering and navigation. `landingTopicIds`, each `childTopicIds`, and each
+`relatedTopicIds` list preserve authored order. Topic domain arrays follow the
+canonical domain-vocabulary order.
+
+`allTopicIds`, each classification index, and each reverse-parent list are
+derived. Topic lists in those indexes use case-insensitive title order with the
+UUID as a deterministic tie-breaker. The domain and kind maps contain every
+supported key, including an empty array when the current catalog has no member.
+The application can intersect these indexes to produce domain-and-kind browse
+collections without an authored collection registry.
 
 Every generated Topic contains `title`, `summary`, `iconKey`,
-`mainContentHtml`, and `childTopicIds`. Optional source presentation metadata
-is emitted as explicit `null`, giving every generated Topic a predictable
-shape. `mainContentHtml` is likewise explicitly `null` for a navigation-only
-Topic; an empty string is invalid.
+`domains`, `kind`, `mainContentHtml`, `childTopicIds`, and `relatedTopicIds`.
+Optional source presentation metadata is emitted as explicit `null`, giving
+every generated Topic a predictable shape. `mainContentHtml` is likewise
+explicitly `null` for a navigation-only Topic; an empty string is invalid.
 
 The single-file runtime representation is emitted as
 `.generated/catalog.json` and imported into the Angular bundle. It therefore
@@ -329,19 +412,20 @@ built:
 1. Read `content/catalog.yaml`.
 2. Discover every `content/topics/*/topic.md` file.
 3. Parse and validate YAML front matter and Markdown bodies.
-4. Index Topics by UUID and validate the complete navigation graph.
+4. Index Topics by UUID and validate the complete child and related graphs.
 5. Validate links and local image references.
 6. Convert supported Markdown to semantic HTML.
 7. Sanitize the generated HTML.
 8. Copy referenced images with content-hashed names and rewrite their output
    paths.
-9. Emit the deterministic runtime JSON catalog.
+9. Derive the alphabetical, classification, and reverse-parent indexes.
+10. Emit the deterministic runtime JSON catalog.
 
 The same generator and validation path runs locally, in CI, and as a required
 dependency of the application build. Content changes therefore require a commit
 and rebuild; once the application is deployed, publishing those changes also
 requires redeployment. No backend, database, or runtime content service is
-required for the MVP.
+required.
 
 The generated JSON is not committed. Authored Markdown, YAML, and image assets
 are the only content source of truth. Excluding derived output prevents noisy
@@ -359,12 +443,15 @@ Generation fails when it encounters:
 - a missing or blank title;
 - a blank, multiline, or overlong summary;
 - an unsupported icon key;
+- a missing, empty, duplicate, or unsupported domain membership;
+- a missing or unsupported content kind;
 - a landing Topic without a summary;
 - a missing or non-array `childTopicIds` value;
+- a missing or non-array `relatedTopicIds` value;
 - a Topic with neither meaningful main content nor children;
 - a missing landing or child Topic reference;
 - a duplicate child reference, self-reference, or indirect cycle;
-- a Topic unreachable from every landing Topic;
+- a missing, duplicate, or self-referential Related Topic reference;
 - raw HTML or an internal file, route, or Topic link;
 - a noncanonical external link or an unsupported or unsafe link protocol;
 - a missing image, unsupported image type, unsafe image filename, or image
@@ -416,8 +503,9 @@ Topic-specific application logic.
 
 A registry mapping every UUID to a source path would duplicate discoverable
 information and require another edit for each Topic addition or location
-change. Build-time discovery keeps the catalog source focused on the only
-global ordering decision: landing Topics.
+change. Build-time discovery keeps the catalog source focused on global browse
+configuration. Classification and reverse-parent indexes are generated from
+canonical Topic front matter rather than maintained as duplicate source.
 
 ### Runtime Markdown parsing
 
@@ -444,8 +532,9 @@ This decision does not select:
 
 - deployment infrastructure;
 - a graphical or in-application authoring interface; or
-- post-MVP content relationships and capabilities.
+- authored ordered collections, typed relationships, or search aliases.
 
 The application architecture records the resolved implementation choices.
-Remaining choices can be made without changing the accepted source
-representation or content semantics.
+Any later capability that changes the accepted source representation or
+content semantics requires another explicit contract decision rather than an
+inferred metadata extension.
