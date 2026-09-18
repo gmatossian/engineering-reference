@@ -3,6 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { provideRouter, Router, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from './app.routes';
+import { TopicIndexPage } from './browse/topic-index-page';
 import { LandingPage } from './landing/landing-page';
 import { TopicNotFound } from './topic/topic-not-found';
 import { TopicPage } from './topic/topic-page';
@@ -22,14 +23,32 @@ describe('application routes', () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/', LandingPage);
 
-    const topicLink = harness.routeNativeElement?.querySelector<HTMLAnchorElement>('a');
+    const routeElement = harness.routeNativeElement;
+    const topicLink = routeElement?.querySelector<HTMLAnchorElement>(
+      'nav[aria-label="Curated paths"] a',
+    );
 
+    expect(routeElement?.querySelector('form[role="search"]')).toBeNull();
+    expect(routeElement?.querySelectorAll('nav[aria-label="Domains"] a')).toHaveLength(8);
     expect(topicLink?.textContent).toContain('Java');
     expect(topicLink?.textContent).toContain(
       'Core language, collections, concurrency, and persistence concepts.',
     );
     expect(topicLink?.getAttribute('href')).toBe(`/topics/${JAVA_TOPIC_ID}`);
     expect(TestBed.inject(Title).getTitle()).toBe('Engineering Reference');
+  });
+
+  it('matches the static all-Topics route before the Topic identifier route', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/topics', TopicIndexPage);
+    await harness.fixture.whenStable();
+
+    const routeElement = harness.routeNativeElement;
+
+    expect(routeElement?.querySelector('h1')?.textContent).toBe('All topics');
+    expect(routeElement?.querySelectorAll('app-topic-result-list a')).toHaveLength(67);
+    expect(TestBed.inject(Router).url).toBe('/topics');
+    expect(TestBed.inject(Title).getTitle()).toBe('All topics | Engineering Reference');
   });
 
   it('renders a navigation-only Topic without an empty content region', async () => {

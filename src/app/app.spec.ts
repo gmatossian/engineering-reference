@@ -21,11 +21,16 @@ describe('App', () => {
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
     const homeLinks = compiled.querySelectorAll<HTMLAnchorElement>('a[href="/"]');
+    const allTopicsLink = compiled.querySelector<HTMLAnchorElement>('a[href="/topics"]');
     const backButton = compiled.querySelector<HTMLButtonElement>('button');
+    const search = compiled.querySelector<HTMLInputElement>('#header-topic-search');
 
     expect(homeLinks).toHaveLength(1);
     expect(homeLinks[0].textContent?.trim()).toBe('Engineering Reference');
+    expect(allTopicsLink?.textContent?.trim()).toBe('All topics');
     expect(backButton?.textContent?.trim()).toContain('Back');
     expect(backButton?.disabled).toBe(window.history.length <= 1);
+    expect(search?.getAttribute('type')).toBe('search');
+    expect(search?.labels?.[0]?.textContent).toContain('Search topics');
   });
 });

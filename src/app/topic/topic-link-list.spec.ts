@@ -37,10 +37,10 @@ describe('TopicLinkList', () => {
     ).toEqual(['java', 'generic']);
   });
 
-  it('renders card summaries and keeps the entire card as one link', () => {
+  it('renders curated-path summaries and keeps the entire row as one link', () => {
     const fixture = TestBed.createComponent(TopicLinkList);
     fixture.componentRef.setInput('ariaLabel', 'Topics');
-    fixture.componentRef.setInput('presentation', 'cards');
+    fixture.componentRef.setInput('presentation', 'curated');
     fixture.componentRef.setInput('topics', [
       {
         id: 'java-topic',

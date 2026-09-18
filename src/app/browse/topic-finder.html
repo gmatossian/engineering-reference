@@ -1,0 +1,24 @@
+<form
+  class="topic-finder"
+  [class.topic-finder--compact]="appearance() === 'compact'"
+  role="search"
+  (submit)="$event.preventDefault(); submit()"
+>
+  <label [for]="inputId()">{{ label() }}</label>
+
+  <div class="topic-finder__controls">
+    <input
+      [id]="inputId()"
+      name="q"
+      type="search"
+      autocomplete="off"
+      [placeholder]="placeholder()"
+      [value]="currentValue()"
+      (input)="handleInput($event)"
+    />
+
+    @if (buttonLabel(); as actionLabel) {
+      <button type="submit">{{ actionLabel }}</button>
+    }
+  </div>
+</form>

@@ -1,6 +1,6 @@
 <nav
   class="topic-links"
-  [class.topic-links--cards]="presentation() === 'cards'"
+  [class.topic-links--curated]="presentation() === 'curated'"
   [attr.aria-label]="ariaLabel()"
 >
   <ul>
@@ -16,7 +16,7 @@
           <span class="topic-link__copy">
             <span class="topic-link__title">{{ topic.title }}</span>
 
-            @if (presentation() === 'cards' && topic.summary !== null) {
+            @if (presentation() === 'curated' && topic.summary !== null) {
               <span class="topic-link__summary">{{ topic.summary }}</span>
             }
           </span>
