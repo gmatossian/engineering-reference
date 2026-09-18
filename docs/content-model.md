@@ -19,9 +19,11 @@ atomically so the catalog does not contain a partially migrated Topic shape.
 
 ## Model Overview
 
-The catalog contains an ordered list of landing Topics and a collection of
-Topics. A Topic is the single navigable content entity; broad subject areas and
-individual concepts do not require different entity types.
+The catalog contains an ordered list of secondary curated landing Topics and a
+collection of Topics. The application's primary landing-domain entries are
+derived from the closed domain vocabulary rather than represented as Topics.
+A Topic remains the single navigable content entity; broad subject overviews
+and individual concepts do not require different entity types.
 
 The model can be expressed conceptually as:
 
@@ -126,7 +128,7 @@ Every Topic has exactly one primary retrieval-oriented content kind:
 
 | Key | Display label | Meaning |
 | --- | --- | --- |
-| `area` | Area | An organizing entry point such as Java or Databases |
+| `area` | Area | An organizing overview such as Java or Databases; not the domain itself or its required gateway |
 | `concept` | Concept | An explanatory reference for a principle or behavior |
 | `operations` | Operations | API, syntax, task, or lookup material used while doing work |
 | `decision-aid` | Decision aid | A comparison, selection guide, or trade-off reference |
@@ -190,7 +192,8 @@ during generation.
 
 Child relationships remain distinct from domains, content kind, and Related
 Topics. They communicate intentional broad-to-specific progression rather than
-every useful retrieval path.
+every useful retrieval path. They are secondary curated relationships: a
+Topic's findability never depends on the reader discovering one of its parents.
 
 ## Related Topics
 
@@ -219,9 +222,10 @@ deliberate and reviewable.
 
 The initial browse collections are derived views rather than authored content
 entities. The all-Topics surface can select a domain and optionally a kind;
-domain views can group their members by kind. A named view such as **System
-Design — Exercises** is therefore the intersection of accepted classification,
-not another parent relationship or duplicated membership list.
+landing domain entries link directly to those filtered views, and domain views
+can group their members by kind. A named view such as **System Design —
+Exercises** is therefore the intersection of accepted classification, not
+another parent relationship or duplicated membership list.
 
 There is no authored `collectionIds` field or standalone Collection record in
 the initial contract. An explicitly ordered curated collection can be added
@@ -241,25 +245,39 @@ domains. Domain and kind context can link to those individual browse filters;
 their intersection remains available by applying both filters on the
 all-Topics surface.
 
-## Landing Topics
+## Landing Domains and Curated Topics
 
-The catalog owns a non-empty ordered list of Topic UUIDs to display on the
-landing page. Being included in this list is not an intrinsic property of a
-Topic, so there is no `isRoot` field.
+The primary landing browse entries represent every supported domain in the
+closed vocabulary. They use canonical domain display order and link to the
+corresponding filtered all-Topics view. A domain is classification rather than
+a Topic, so selecting **System Design** as a domain opens
+`/topics?domain=system-design`; it does not require the reader to enter the
+canonical `System Design` Area Topic first.
+
+Separately, the catalog owns a non-empty ordered list of Topic UUIDs to display
+as secondary curated paths on the landing page. The existing
+`landingTopicIds` name remains part of the implemented contract, but membership
+does not make those Topics the primary catalog gateways. Being included in this
+list is not an intrinsic property of a Topic, so there is no `isRoot` field.
 
 A landing Topic may also appear as another Topic's child. The terms *landing
 Topic* and *top-level Topic* therefore describe placement on the landing page,
 not a graph-theory root with no parents.
 
-Every landing Topic defines a summary for its landing card. This is a
-catalog-level rule because the requirement depends on where the Topic is
-presented rather than on an intrinsic Topic type.
+Every curated landing Topic defines a summary for its landing presentation.
+This is a catalog-level rule because the requirement depends on where the Topic
+is presented rather than on an intrinsic Topic type.
 
 Every Topic appears in the all-Topics index and at least one domain because
-domain membership is required. Child-graph reachability from a landing Topic
-is no longer required: the hierarchy is one useful retrieval view rather than
-the complete information architecture. Landing and child references must still
-form a valid directed acyclic graph.
+domain membership is required. An Area Topic remains an ordinary, directly
+addressable Topic and can appear as an explicitly labelled overview result in
+each matching domain view. It is not interchangeable with the domain and does
+not own that browse collection.
+
+Child-graph reachability from a curated landing Topic is not required: the
+hierarchy is one useful secondary retrieval view rather than the complete
+information architecture. Landing and child references must still form a valid
+directed acyclic graph.
 
 ## Valid Topic Shapes
 
@@ -279,10 +297,10 @@ The following example demonstrates the model without prescribing the final
 catalog:
 
 ```text
-Landing Topics
+Curated Landing Topics
 ├── Java                         children only
 │   ├── Arrays                   content, possibly children
-│   ├── Collections              content and children
+│   ├── Collections framework    content and children
 │   │   ├── List                 content and children
 │   │   └── Queue                content and children
 │   │       └── Complexity       content only
@@ -293,10 +311,11 @@ Landing Topics
 └── Algorithms                   content, children, or both
 ```
 
-`Java`, `System Design`, and `Algorithms` are ordinary Topics selected for the
-landing page. Broad organizing Topics can contain children without main
-content, while increasingly specific Topics can provide content, further
-navigation, or both.
+`Java`, `System Design`, and `Algorithms` are ordinary Area Topics that may be
+selected as curated landing paths. They remain distinct from the Java, System
+Design, and Algorithms and data structures domain entries. Broad organizing
+Topics can contain children without main content, while increasingly specific
+Topics can provide content, further navigation, or both.
 
 ## Catalog Validation
 

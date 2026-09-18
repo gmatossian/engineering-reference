@@ -18,6 +18,14 @@ The audit investigates four retrieval jobs independently:
 It does not change the production UI, Topic content, catalog, or the accepted
 product, content, interaction, architecture, and visual-design authorities.
 
+Issue
+[#62](https://github.com/gmatossian/engineering-reference/issues/62)
+subsequently accepted a browse-first hybrid refinement of Direction C. This
+audit remains the evidence and original recommendation rather than the current
+landing-page contract. The governing product and interaction documents now
+make title retrieval and complete domain browsing primary, with the existing
+ordered landing Topics retained as secondary curated paths.
+
 ## Method and limitations
 
 The expectation pass below was produced from an alphabetical list of titles
