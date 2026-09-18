@@ -3,7 +3,12 @@ id: 'a2fc39d5-9564-4260-b247-f38d53bedecc'
 title: 'Arrays and lists'
 summary: 'Convert between arrays and lists without overlooking mutability or primitive boxing.'
 iconKey: 'conversion'
+domains:
+  - 'java'
+  - 'collections'
+kind: 'operations'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 Choose a conversion based on the **array element type** and the required

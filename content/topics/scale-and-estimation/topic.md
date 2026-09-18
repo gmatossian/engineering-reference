@@ -3,7 +3,11 @@ id: '17e411bb-2c99-49e8-93ec-18b767e4a890'
 title: 'Scale and estimation'
 summary: 'Turn traffic, payload, retention, and peak assumptions into useful capacity estimates.'
 iconKey: 'complexity'
+domains:
+  - 'system-design'
+kind: 'operations'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 Start with the **workload**, not the infrastructure. An order-of-magnitude answer

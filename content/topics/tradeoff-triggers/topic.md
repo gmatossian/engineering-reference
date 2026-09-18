@@ -3,7 +3,11 @@ id: '9009159b-54aa-4724-94a2-5189a1e21437'
 title: 'Trade-off triggers'
 summary: 'Turn system requirements into explicit design choices and name the cost of each bias.'
 iconKey: 'architecture'
+domains:
+  - 'system-design'
+kind: 'decision-aid'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 Start with what **must be true**. Choose the simplest bias that satisfies that

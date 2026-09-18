@@ -17,11 +17,11 @@ Detailed presentation decisions are defined separately in the
 navigation behavior, responsive semantics, and accessibility expectations. It
 does not define deployment infrastructure.
 
-The Direction C interactions below are accepted target behavior. The deployed
-or locally running application continues to provide the completed MVP behavior
-until the required runtime data and bounded UI slices are implemented and
-verified. This document authorizes those follow-ups; it does not imply that a
-documentation-only change has shipped them.
+The Direction C interactions below are accepted target behavior. The bundled
+runtime data foundation is implemented, while the application continues to
+provide the completed MVP behavior until the bounded UI slices are implemented
+and verified. This document authorizes those follow-ups; it does not imply that
+the data-foundation change has shipped the new interactions.
 
 ## Interaction Summary
 

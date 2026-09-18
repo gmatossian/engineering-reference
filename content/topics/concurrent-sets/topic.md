@@ -3,7 +3,13 @@ id: 'c3707cd5-08e6-46da-b6ba-49b10459c00b'
 title: 'Concurrent sets'
 summary: 'Choose a concurrent set for general membership, sorted navigation, snapshots, or synchronized access.'
 iconKey: 'concurrency'
+domains:
+  - 'java'
+  - 'collections'
+  - 'concurrency'
+kind: 'decision-aid'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 Choose according to the required **ordering** and the balance between reads and

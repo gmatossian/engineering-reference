@@ -3,6 +3,11 @@ import { catalogSourceSchema, topicMetadataSchema } from './source-schemas.ts';
 
 const topicId = '11111111-1111-4111-8111-111111111111';
 const childTopicId = '22222222-2222-4222-8222-222222222222';
+const requiredClassification = {
+  domains: ['java', 'collections'],
+  kind: 'concept',
+  relatedTopicIds: [] as string[],
+};
 
 describe('catalogSourceSchema', () => {
   it('accepts an ordered list of Topic UUIDs', () => {
@@ -41,6 +46,7 @@ describe('topicMetadataSchema', () => {
         title: ' Queue ',
         summary: ' Queue operations and implementation trade-offs. ',
         iconKey: 'queue',
+        ...requiredClassification,
         childTopicIds: [childTopicId],
       }),
     ).toEqual({
@@ -48,6 +54,7 @@ describe('topicMetadataSchema', () => {
       title: 'Queue',
       summary: 'Queue operations and implementation trade-offs.',
       iconKey: 'queue',
+      ...requiredClassification,
       childTopicIds: [childTopicId],
     });
   });
@@ -57,11 +64,13 @@ describe('topicMetadataSchema', () => {
       topicMetadataSchema.parse({
         id: topicId,
         title: 'Queue',
+        ...requiredClassification,
         childTopicIds: [],
       }),
     ).toEqual({
       id: topicId,
       title: 'Queue',
+      ...requiredClassification,
       childTopicIds: [],
     });
   });
@@ -72,6 +81,7 @@ describe('topicMetadataSchema', () => {
         id: topicId,
         title: 'Queue',
         iconKey: 'custom-file.svg',
+        ...requiredClassification,
         childTopicIds: [],
       }).success,
     ).toBe(false);
@@ -87,6 +97,7 @@ describe('topicMetadataSchema', () => {
         id: topicId,
         title: 'Queue',
         summary,
+        ...requiredClassification,
         childTopicIds: [],
       }).success,
     ).toBe(false);
@@ -97,6 +108,7 @@ describe('topicMetadataSchema', () => {
       topicMetadataSchema.safeParse({
         id: topicId,
         title: '   ',
+        ...requiredClassification,
         childTopicIds: [],
       }).success,
     ).toBe(false);
@@ -107,6 +119,7 @@ describe('topicMetadataSchema', () => {
       topicMetadataSchema.safeParse({
         id: topicId,
         title: 'Queue',
+        ...requiredClassification,
       }).success,
     ).toBe(false);
   });
@@ -116,8 +129,39 @@ describe('topicMetadataSchema', () => {
       topicMetadataSchema.safeParse({
         id: topicId,
         title: 'Queue',
+        ...requiredClassification,
         childTopicIds: [],
         unexpected: true,
+      }).success,
+    ).toBe(false);
+  });
+
+  it.each([
+    { description: 'missing domains', metadata: { kind: 'concept', relatedTopicIds: [] } },
+    {
+      description: 'empty domains',
+      metadata: { domains: [], kind: 'concept', relatedTopicIds: [] },
+    },
+    {
+      description: 'duplicate domains',
+      metadata: { domains: ['java', 'java'], kind: 'concept', relatedTopicIds: [] },
+    },
+    {
+      description: 'unsupported domain',
+      metadata: { domains: ['frontend'], kind: 'concept', relatedTopicIds: [] },
+    },
+    {
+      description: 'unsupported kind',
+      metadata: { domains: ['java'], kind: 'tutorial', relatedTopicIds: [] },
+    },
+    { description: 'missing relatedTopicIds', metadata: { domains: ['java'], kind: 'concept' } },
+  ])('rejects $description', ({ metadata }) => {
+    expect(
+      topicMetadataSchema.safeParse({
+        id: topicId,
+        title: 'Queue',
+        childTopicIds: [],
+        ...metadata,
       }).success,
     ).toBe(false);
   });

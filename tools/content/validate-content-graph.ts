@@ -58,53 +58,6 @@ function findIndirectCycleErrors(topicsById: ReadonlyMap<string, TopicSource[]>)
   return errors;
 }
 
-function findUnreachableTopicErrors(
-  contentSource: LoadedContentSource,
-  topicsById: ReadonlyMap<string, TopicSource[]>,
-): Error[] {
-  const reachableTopicIds = new Set<string>();
-
-  function visit(topicId: string): void {
-    if (reachableTopicIds.has(topicId)) {
-      return;
-    }
-
-    const matchingTopics = topicsById.get(topicId);
-
-    if (matchingTopics?.length !== 1) {
-      return;
-    }
-
-    const topic = matchingTopics[0];
-
-    reachableTopicIds.add(topicId);
-
-    for (const childTopicId of topic.childTopicIds) {
-      visit(childTopicId);
-    }
-  }
-
-  for (const landingTopicId of contentSource.catalog.landingTopicIds) {
-    visit(landingTopicId);
-  }
-
-  const errors: Error[] = [];
-
-  for (const matchingTopics of topicsById.values()) {
-    if (matchingTopics.length !== 1) {
-      continue;
-    }
-
-    const topic = matchingTopics[0];
-
-    if (!reachableTopicIds.has(topic.id)) {
-      errors.push(new Error(`${topic.sourcePath}: Unreachable Topic ${topic.id}`));
-    }
-  }
-
-  return errors;
-}
-
 export function validateContentGraph(contentSource: LoadedContentSource): LoadedContentSource {
   const topicsById = new Map<string, TopicSource[]>();
   const errors: Error[] = [];
@@ -172,6 +125,8 @@ export function validateContentGraph(contentSource: LoadedContentSource): Loaded
   for (const topic of contentSource.topics) {
     const seenChildTopicIds = new Set<string>();
     const duplicateChildTopicIds = new Set<string>();
+    const seenRelatedTopicIds = new Set<string>();
+    const duplicateRelatedTopicIds = new Set<string>();
 
     for (const childTopicId of topic.childTopicIds) {
       if (seenChildTopicIds.has(childTopicId)) {
@@ -202,10 +157,41 @@ export function validateContentGraph(contentSource: LoadedContentSource): Loaded
         );
       }
     }
+
+    for (const relatedTopicId of topic.relatedTopicIds) {
+      if (seenRelatedTopicIds.has(relatedTopicId)) {
+        duplicateRelatedTopicIds.add(relatedTopicId);
+      } else {
+        seenRelatedTopicIds.add(relatedTopicId);
+      }
+    }
+
+    if (seenRelatedTopicIds.has(topic.id)) {
+      errors.push(
+        new Error(`${topic.sourcePath}: Self-reference in Related Topics for Topic ${topic.id}`),
+      );
+    }
+
+    for (const relatedTopicId of duplicateRelatedTopicIds) {
+      errors.push(
+        new Error(
+          `${topic.sourcePath}: Duplicate Related Topic reference ${relatedTopicId} in Topic ${topic.id}`,
+        ),
+      );
+    }
+
+    for (const relatedTopicId of seenRelatedTopicIds) {
+      if (!topicsById.has(relatedTopicId)) {
+        errors.push(
+          new Error(
+            `${topic.sourcePath}: Missing Related Topic reference ${relatedTopicId} in Topic ${topic.id}`,
+          ),
+        );
+      }
+    }
   }
 
   errors.push(...findIndirectCycleErrors(topicsById));
-  errors.push(...findUnreachableTopicErrors(contentSource, topicsById));
 
   if (errors.length > 0) {
     throw new AggregateError(

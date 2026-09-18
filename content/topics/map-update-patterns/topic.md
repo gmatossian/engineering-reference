@@ -3,7 +3,12 @@ id: '0ad85071-497d-4891-9d3d-8cc8d207495e'
 title: 'Lookup and update patterns'
 summary: 'Choose the Map operation that expresses fallback, initialization, replacement, or accumulation directly.'
 iconKey: 'operations'
+domains:
+  - 'java'
+  - 'collections'
+kind: 'operations'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 Choose the operation that expresses the intended update directly.

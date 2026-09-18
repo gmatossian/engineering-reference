@@ -3,7 +3,12 @@ id: 'd4cb13e7-f0de-48c1-b7ea-5ba1b3708954'
 title: 'List operations and traps'
 summary: 'Use search, removal, views, and iteration without common overload and backing-list mistakes.'
 iconKey: 'operations'
+domains:
+  - 'java'
+  - 'collections'
+kind: 'operations'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 ## Search and bulk changes

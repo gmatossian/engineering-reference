@@ -2,6 +2,12 @@ import { describe, expect, it } from 'vitest';
 import type { ParsedTopicSource } from './parse-topic-source.ts';
 import { validateTopicSource } from './validate-topic-source.ts';
 
+const requiredClassification = {
+  domains: ['java', 'collections'],
+  kind: 'concept',
+  relatedTopicIds: [] as string[],
+};
+
 describe('validateTopicSource', () => {
   it('returns a flat, typed Topic source record', () => {
     const sourcePath = 'content/topics/queue/topic.md';
@@ -11,6 +17,7 @@ describe('validateTopicSource', () => {
         title: ' Queue ',
         summary: ' Queue operations and implementation trade-offs. ',
         iconKey: 'queue',
+        ...requiredClassification,
         childTopicIds: ['22222222-2222-4222-8222-222222222222'],
       },
       markdownBody: '\nQueue content.\n',
@@ -22,6 +29,7 @@ describe('validateTopicSource', () => {
       title: 'Queue',
       summary: 'Queue operations and implementation trade-offs.',
       iconKey: 'queue',
+      ...requiredClassification,
       childTopicIds: ['22222222-2222-4222-8222-222222222222'],
       markdownBody: '\nQueue content.\n',
     });
@@ -33,6 +41,7 @@ describe('validateTopicSource', () => {
       metadata: {
         id: 'not-a-uuid',
         title: 'Queue',
+        ...requiredClassification,
         childTopicIds: [],
       },
       markdownBody: '\nQueue content.\n',
@@ -46,12 +55,16 @@ describe('validateTopicSource', () => {
   it.each([
     { field: 'iconKey', value: 'custom-file.svg' },
     { field: 'summary', value: 'First line\nSecond line' },
+    { field: 'domains', value: [] },
+    { field: 'kind', value: 'tutorial' },
+    { field: 'relatedTopicIds', value: 'not-an-array' },
   ])('identifies an invalid $field in an actionable error', ({ field, value }) => {
     const sourcePath = 'content/topics/queue/topic.md';
     const parsedSource: ParsedTopicSource = {
       metadata: {
         id: '11111111-1111-4111-8111-111111111111',
         title: 'Queue',
+        ...requiredClassification,
         [field]: value,
         childTopicIds: [],
       },
@@ -63,12 +76,14 @@ describe('validateTopicSource', () => {
     );
   });
 
-  it('rejects a Topic with neither meaningful content nor children', () => {
+  it('rejects a Topic with neither meaningful content nor children even when it is classified and related', () => {
     const sourcePath = 'content/topics/empty/topic.md';
     const parsedSource: ParsedTopicSource = {
       metadata: {
         id: '11111111-1111-4111-8111-111111111111',
         title: 'Empty Topic',
+        ...requiredClassification,
+        relatedTopicIds: ['22222222-2222-4222-8222-222222222222'],
         childTopicIds: [],
       },
       markdownBody: ' \n\t',
@@ -95,6 +110,7 @@ describe('validateTopicSource', () => {
       metadata: {
         id: '11111111-1111-4111-8111-111111111111',
         title: 'Queue',
+        ...requiredClassification,
         childTopicIds,
       },
       markdownBody,

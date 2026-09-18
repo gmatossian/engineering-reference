@@ -3,7 +3,13 @@ id: '30e2c64a-8978-447e-bde6-022686cefe8d'
 title: 'Virtual threads and resource limits'
 summary: 'Use a virtual thread per blocking task while limiting scarce downstream resources separately.'
 iconKey: 'concurrency'
+domains:
+  - 'java'
+  - 'concurrency'
+kind: 'decision-aid'
 childTopicIds: []
+relatedTopicIds:
+  - '84239686-a565-4af2-ad78-b2c9eee61ea9'
 ---
 
 Virtual threads are final in **Java 21**. They support large numbers of tasks that

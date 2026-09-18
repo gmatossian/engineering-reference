@@ -3,7 +3,14 @@ id: 'b1273826-a36d-4b96-8c91-e20a85c191b9'
 title: 'Concurrent maps'
 summary: 'Choose an unordered or sorted concurrent map and update individual keys atomically.'
 iconKey: 'concurrency'
+domains:
+  - 'java'
+  - 'collections'
+  - 'concurrency'
+kind: 'decision-aid'
 childTopicIds: []
+relatedTopicIds:
+  - '6f8943c2-2c77-4280-a2c2-2fff57564f2d'
 ---
 
 Use a concurrent map when multiple threads must safely read and update shared

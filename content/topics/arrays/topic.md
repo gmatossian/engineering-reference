@@ -3,9 +3,14 @@ id: '2fe75411-92f0-4e6f-bfd0-1756dc08ebe2'
 title: 'Arrays'
 summary: 'Initialize fixed-length Java arrays according to what is known at creation time.'
 iconKey: 'array'
+domains:
+  - 'java'
+  - 'algorithms-data-structures'
+kind: 'concept'
 childTopicIds:
   - 'df423741-8ff2-44ab-a770-32f8e76846b8'
   - 'a2fc39d5-9564-4260-b247-f38d53bedecc'
+relatedTopicIds: []
 ---
 
 Java arrays are **mutable** containers with a **fixed length**. Choose the

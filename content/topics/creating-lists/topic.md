@@ -3,7 +3,12 @@ id: '080e9bef-0cdf-49a8-b812-2a65ff06d78b'
 title: 'Creating lists'
 summary: 'Choose a list construction based on mutability, copying, and null handling.'
 iconKey: 'creation'
+domains:
+  - 'java'
+  - 'collections'
+kind: 'operations'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 Choose the construction by the required **mutability** and whether the result should

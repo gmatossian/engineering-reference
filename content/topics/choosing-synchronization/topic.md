@@ -3,7 +3,12 @@ id: '6f8943c2-2c77-4280-a2c2-2fff57564f2d'
 title: 'Choosing a synchronization strategy'
 summary: 'Match the shape of shared state to the smallest mechanism that protects its complete invariant.'
 iconKey: 'architecture'
+domains:
+  - 'java'
+  - 'concurrency'
+kind: 'decision-aid'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 Choose the **smallest correct atomic boundary**: everything that must remain true

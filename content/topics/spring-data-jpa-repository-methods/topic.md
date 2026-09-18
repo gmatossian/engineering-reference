@@ -3,7 +3,13 @@ id: 'f8accec6-81ae-48da-bf60-8209557f15af'
 title: 'Spring Data repository methods'
 summary: 'Connect common JpaRepository methods to their usual EntityManager behavior and important return values.'
 iconKey: 'operations'
+domains:
+  - 'java'
+  - 'persistence'
+  - 'databases'
+kind: 'operations'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 Spring Data JPA supplies a `SimpleJpaRepository` implementation for ordinary

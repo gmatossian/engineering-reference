@@ -3,7 +3,13 @@ id: '62196430-caa5-48c7-bb68-c064209d6291'
 title: 'Dirty checking, flush, and commit'
 summary: 'Know when managed changes become SQL and why flushing is not the same as committing.'
 iconKey: 'persistence'
+domains:
+  - 'java'
+  - 'persistence'
+  - 'databases'
+kind: 'concept'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 Hibernate checks managed entities for changes and translates those changes into SQL

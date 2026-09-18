@@ -2,6 +2,12 @@ import { describe, expect, it } from 'vitest';
 import type { LoadedContentSource } from './load-content-source.ts';
 import { validateContentGraph } from './validate-content-graph.ts';
 
+const defaultTopicClassification = {
+  domains: ['java'] as 'java'[],
+  kind: 'concept' as const,
+  relatedTopicIds: [] as string[],
+};
+
 function captureAggregateError(action: () => unknown): AggregateError {
   try {
     action();
@@ -26,6 +32,7 @@ describe('validateContentGraph', () => {
       topics: [
         {
           sourcePath: 'content/topics/java/topic.md',
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Java',
           summary: 'Java language concepts.',
@@ -50,6 +57,7 @@ describe('validateContentGraph', () => {
       topics: [
         {
           sourcePath,
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Java',
           childTopicIds: [],
@@ -78,6 +86,7 @@ describe('validateContentGraph', () => {
       topics: [
         {
           sourcePath: 'content/topics/java/topic.md',
+          ...defaultTopicClassification,
           id: parentId,
           title: 'Java',
           summary: 'Java language concepts.',
@@ -86,6 +95,7 @@ describe('validateContentGraph', () => {
         },
         {
           sourcePath: 'content/topics/collections/topic.md',
+          ...defaultTopicClassification,
           id: childId,
           title: 'Collections',
           childTopicIds: [],
@@ -110,6 +120,7 @@ describe('validateContentGraph', () => {
       topics: [
         {
           sourcePath: firstSourcePath,
+          ...defaultTopicClassification,
           id: duplicateId,
           title: 'Java',
           childTopicIds: [],
@@ -117,6 +128,7 @@ describe('validateContentGraph', () => {
         },
         {
           sourcePath: secondSourcePath,
+          ...defaultTopicClassification,
           id: duplicateId,
           title: 'Concurrency',
           childTopicIds: [],
@@ -147,6 +159,7 @@ describe('validateContentGraph', () => {
       topics: [
         {
           sourcePath: 'content/topics/java/topic.md',
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Java',
           summary: 'Java language concepts.',
@@ -201,6 +214,7 @@ describe('validateContentGraph', () => {
       topics: [
         {
           sourcePath: parentSourcePath,
+          ...defaultTopicClassification,
           id: parentId,
           title: 'Java',
           summary: 'Java language concepts.',
@@ -209,6 +223,7 @@ describe('validateContentGraph', () => {
         },
         {
           sourcePath: 'content/topics/collections/topic.md',
+          ...defaultTopicClassification,
           id: childId,
           title: 'Collections',
           childTopicIds: [],
@@ -241,6 +256,7 @@ describe('validateContentGraph', () => {
       topics: [
         {
           sourcePath: parentSourcePath,
+          ...defaultTopicClassification,
           id: parentId,
           title: 'Java',
           summary: 'Java language concepts.',
@@ -273,6 +289,7 @@ describe('validateContentGraph', () => {
       topics: [
         {
           sourcePath,
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Java',
           summary: 'Java language concepts.',
@@ -306,6 +323,7 @@ describe('validateContentGraph', () => {
       topics: [
         {
           sourcePath: javaSourcePath,
+          ...defaultTopicClassification,
           id: javaId,
           title: 'Java',
           summary: 'Java language concepts.',
@@ -314,6 +332,7 @@ describe('validateContentGraph', () => {
         },
         {
           sourcePath: collectionsSourcePath,
+          ...defaultTopicClassification,
           id: collectionsId,
           title: 'Collections',
           childTopicIds: [javaId],
@@ -351,6 +370,7 @@ describe('validateContentGraph', () => {
       topics: [
         {
           sourcePath: 'content/topics/java/topic.md',
+          ...defaultTopicClassification,
           id: javaId,
           title: 'Java',
           summary: 'Java language concepts.',
@@ -359,6 +379,7 @@ describe('validateContentGraph', () => {
         },
         {
           sourcePath: 'content/topics/collections/topic.md',
+          ...defaultTopicClassification,
           id: collectionsId,
           title: 'Collections',
           childTopicIds: [concurrentHashMapId],
@@ -366,6 +387,7 @@ describe('validateContentGraph', () => {
         },
         {
           sourcePath: 'content/topics/concurrency/topic.md',
+          ...defaultTopicClassification,
           id: concurrencyId,
           title: 'Concurrency',
           childTopicIds: [concurrentHashMapId],
@@ -373,6 +395,7 @@ describe('validateContentGraph', () => {
         },
         {
           sourcePath: 'content/topics/concurrent-hash-map/topic.md',
+          ...defaultTopicClassification,
           id: concurrentHashMapId,
           title: 'ConcurrentHashMap',
           childTopicIds: [],
@@ -387,10 +410,9 @@ describe('validateContentGraph', () => {
     expect(contentSource).toEqual(originalContentSource);
   });
 
-  it('rejects a Topic that is unreachable from every landing Topic', () => {
+  it('accepts a Topic that is unreachable from every landing Topic', () => {
     const landingTopicId = '11111111-1111-4111-8111-111111111111';
     const unreachableTopicId = '22222222-2222-4222-8222-222222222222';
-    const unreachableSourcePath = 'content/topics/orphan/topic.md';
 
     const contentSource: LoadedContentSource = {
       catalog: {
@@ -400,6 +422,7 @@ describe('validateContentGraph', () => {
       topics: [
         {
           sourcePath: 'content/topics/java/topic.md',
+          ...defaultTopicClassification,
           id: landingTopicId,
           title: 'Java',
           summary: 'Java language concepts.',
@@ -407,7 +430,8 @@ describe('validateContentGraph', () => {
           markdownBody: '\nJava content.\n',
         },
         {
-          sourcePath: unreachableSourcePath,
+          sourcePath: 'content/topics/orphan/topic.md',
+          ...defaultTopicClassification,
           id: unreachableTopicId,
           title: 'Orphan',
           childTopicIds: [],
@@ -416,14 +440,108 @@ describe('validateContentGraph', () => {
       ],
     };
 
-    const error = captureAggregateError(() => validateContentGraph(contentSource));
-    const errors = error.errors;
+    expect(validateContentGraph(contentSource)).toBe(contentSource);
+  });
 
-    expect(errors).toHaveLength(1);
-    expect(errors[0]).toBeInstanceOf(Error);
-    expect((errors[0] as Error).message).toContain('Unreachable Topic');
-    expect((errors[0] as Error).message).toContain(unreachableTopicId);
-    expect((errors[0] as Error).message).toContain(unreachableSourcePath);
+  it.each([
+    {
+      description: 'missing',
+      relatedTopicIds: ['33333333-3333-4333-8333-333333333333'],
+      expectedMessage: 'Missing Related Topic reference',
+    },
+    {
+      description: 'duplicate',
+      relatedTopicIds: [
+        '22222222-2222-4222-8222-222222222222',
+        '22222222-2222-4222-8222-222222222222',
+      ],
+      expectedMessage: 'Duplicate Related Topic reference',
+    },
+    {
+      description: 'self-referential',
+      relatedTopicIds: ['11111111-1111-4111-8111-111111111111'],
+      expectedMessage: 'Self-reference in Related Topics',
+    },
+  ])('rejects a $description Related Topic reference', ({ relatedTopicIds, expectedMessage }) => {
+    const topicId = '11111111-1111-4111-8111-111111111111';
+    const relatedTopicId = '22222222-2222-4222-8222-222222222222';
+    const contentSource: LoadedContentSource = {
+      catalog: {
+        sourcePath: 'content/catalog.yaml',
+        landingTopicIds: [topicId],
+      },
+      topics: [
+        {
+          sourcePath: 'content/topics/topic/topic.md',
+          ...defaultTopicClassification,
+          id: topicId,
+          title: 'Topic',
+          summary: 'Topic summary.',
+          childTopicIds: [],
+          relatedTopicIds,
+          markdownBody: 'Topic content.',
+        },
+        {
+          sourcePath: 'content/topics/related/topic.md',
+          ...defaultTopicClassification,
+          id: relatedTopicId,
+          title: 'Related',
+          childTopicIds: [],
+          markdownBody: 'Related content.',
+        },
+      ],
+    };
+
+    const error = captureAggregateError(() => validateContentGraph(contentSource));
+
+    expect(error.errors).toHaveLength(1);
+    expect((error.errors[0] as Error).message).toContain(expectedMessage);
+  });
+
+  it('allows directed Related Topic cycles without changing authored order', () => {
+    const firstTopicId = '11111111-1111-4111-8111-111111111111';
+    const secondTopicId = '22222222-2222-4222-8222-222222222222';
+    const thirdTopicId = '33333333-3333-4333-8333-333333333333';
+    const contentSource: LoadedContentSource = {
+      catalog: {
+        sourcePath: 'content/catalog.yaml',
+        landingTopicIds: [firstTopicId],
+      },
+      topics: [
+        {
+          sourcePath: 'content/topics/first/topic.md',
+          ...defaultTopicClassification,
+          id: firstTopicId,
+          title: 'First',
+          summary: 'First summary.',
+          childTopicIds: [],
+          relatedTopicIds: [thirdTopicId, secondTopicId],
+          markdownBody: 'First content.',
+        },
+        {
+          sourcePath: 'content/topics/second/topic.md',
+          ...defaultTopicClassification,
+          id: secondTopicId,
+          title: 'Second',
+          childTopicIds: [],
+          relatedTopicIds: [firstTopicId],
+          markdownBody: 'Second content.',
+        },
+        {
+          sourcePath: 'content/topics/third/topic.md',
+          ...defaultTopicClassification,
+          id: thirdTopicId,
+          title: 'Third',
+          childTopicIds: [],
+          markdownBody: 'Third content.',
+        },
+      ],
+    };
+
+    const originalContentSource = structuredClone(contentSource);
+
+    expect(validateContentGraph(contentSource)).toBe(contentSource);
+    expect(contentSource).toEqual(originalContentSource);
   });
 
   it('rejects a catalog that lists no landing Topic', () => {
@@ -451,7 +569,6 @@ describe('validateContentGraph', () => {
     const rootId = '11111111-1111-4111-8111-111111111111';
     const missingLandingId = '22222222-2222-4222-8222-222222222222';
     const missingChildId = '33333333-3333-4333-8333-333333333333';
-    const unreachableId = '44444444-4444-4444-8444-444444444444';
 
     const contentSource: LoadedContentSource = {
       catalog: {
@@ -461,26 +578,20 @@ describe('validateContentGraph', () => {
       topics: [
         {
           sourcePath: 'content/topics/java/topic.md',
+          ...defaultTopicClassification,
           id: rootId,
           title: 'Java',
           summary: 'Java language concepts.',
           childTopicIds: [missingChildId],
           markdownBody: '',
         },
-        {
-          sourcePath: 'content/topics/orphan/topic.md',
-          id: unreachableId,
-          title: 'Orphan',
-          childTopicIds: [],
-          markdownBody: '\nOrphan content.\n',
-        },
       ],
     };
 
     const error = captureAggregateError(() => validateContentGraph(contentSource));
 
-    expect(error.message).toBe('Catalog graph validation failed with 3 error(s)');
-    expect(error.errors).toHaveLength(3);
+    expect(error.message).toBe('Catalog graph validation failed with 2 error(s)');
+    expect(error.errors).toHaveLength(2);
 
     const messages = error.errors.map((item: unknown) => {
       expect(item).toBeInstanceOf(Error);
@@ -490,6 +601,5 @@ describe('validateContentGraph', () => {
 
     expect(messages.join('\n')).toContain('Missing landing Topic reference');
     expect(messages.join('\n')).toContain('Missing child Topic reference');
-    expect(messages.join('\n')).toContain('Unreachable Topic');
   });
 });

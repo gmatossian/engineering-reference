@@ -3,11 +3,16 @@ id: '750d6258-e1be-4813-9487-18c6ba78af0a'
 title: 'Concurrency'
 summary: 'Protect shared state, execute tasks, and limit access to constrained resources.'
 iconKey: 'concurrency'
+domains:
+  - 'java'
+  - 'concurrency'
+kind: 'area'
 childTopicIds:
   - '6f8943c2-2c77-4280-a2c2-2fff57564f2d'
   - 'a9da2af5-7976-4bcf-abf4-0a9c1ad3458b'
   - '84239686-a565-4af2-ad78-b2c9eee61ea9'
   - '30e2c64a-8978-447e-bde6-022686cefe8d'
+relatedTopicIds: []
 ---
 
 Start by finding the **shared mutable state**. If state can remain immutable or

@@ -3,7 +3,12 @@ id: 'cd880907-60d6-4874-b8fd-2f9eacf0e5e6'
 title: 'Scoped values'
 summary: 'Share immutable context down a call chain with a per-thread binding that ends automatically.'
 iconKey: 'concurrency'
+domains:
+  - 'java'
+  - 'concurrency'
+kind: 'concept'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 Java 25 finalized `ScopedValue` for passing contextual data to distant methods

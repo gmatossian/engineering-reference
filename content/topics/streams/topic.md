@@ -3,11 +3,15 @@ id: '2d23f8e8-66db-4d0a-b5bc-bfc0536d5ab8'
 title: 'Streams'
 summary: 'Build lazy, single-use pipelines that transform or aggregate a sequence of values.'
 iconKey: 'operations'
+domains:
+  - 'java'
+kind: 'concept'
 childTopicIds:
   - '45d1ae48-9ecf-4186-8df2-2e199ebcb4b4'
   - 'f9ff7ed9-ecd3-432c-b2e6-5ae1e323f3b0'
   - 'cb9514d7-b891-46f4-98b8-4a5d0847b332'
   - '57cd79fd-a949-4942-b6bf-34aba40ad7cd'
+relatedTopicIds: []
 ---
 
 A stream is a **lazy pipeline over a data source**. It does not store the elements;

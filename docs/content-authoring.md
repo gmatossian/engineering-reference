@@ -47,6 +47,29 @@ Some broad Topics exist only to organize child Topics. The content model permits
 this navigation-only shape; do not add artificial overview content when navigation
 alone serves the Topic's purpose.
 
+## Classify and relate for retrieval
+
+Every Topic declares one or more domains, one primary content kind, and an ordered
+Related Topics list. These fields provide retrieval paths; they do not replace the
+Topic's title, content, or ordered children.
+
+- Add each domain in which a reader could reasonably browse for the Topic. Do not
+  copy the current ancestor chain mechanically, and do not add a domain merely
+  because it is adjacent to the subject.
+- Choose the kind by the Topic's primary retrieval job: an organizing entry point,
+  explanatory concept, operational lookup, decision aid, exercise, or reusable
+  pattern. Classify how the reader uses the Topic rather than how the page happens
+  to be formatted.
+- Keep `relatedTopicIds` small and intentional. Add a link only when that nearby
+  reference is a useful next retrieval path that is not already adequately exposed
+  as an immediate child or Browse context.
+- Preserve Related Topic order deliberately. Relationships are directed and need
+  not be reciprocal; an explicit empty list is valid and preferable to filler.
+
+Use only the closed vocabularies in the content model and storage contract. A new
+domain or kind is a shared-contract decision that requires reviewing the complete
+catalog, not an ordinary Topic edit.
+
 ## Include only retrieval value
 
 Include a content block when it materially helps the reader recover the answer,

@@ -3,7 +3,13 @@ id: '072fc2b2-2755-45ec-aabe-d8a4740fa4e9'
 title: 'EntityManager and entity lifecycle'
 summary: 'Recognize new, managed, detached, and removed entities and the persistence context that owns them.'
 iconKey: 'persistence'
+domains:
+  - 'java'
+  - 'persistence'
+  - 'databases'
+kind: 'concept'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 An `EntityManager` owns a **persistence context**: for each entity type and database

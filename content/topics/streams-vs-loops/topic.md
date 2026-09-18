@@ -3,7 +3,11 @@ id: 'f9ff7ed9-ecd3-432c-b2e6-5ae1e323f3b0'
 title: 'Streams vs loops'
 summary: 'Choose declarative pipelines for transformations and explicit loops for control flow or coordinated mutation.'
 iconKey: 'conversion'
+domains:
+  - 'java'
+kind: 'decision-aid'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 Neither form is universally better. Choose the one that makes the operation's intent

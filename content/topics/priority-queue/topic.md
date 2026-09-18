@@ -3,8 +3,14 @@ id: 'bb3dda6e-7ad8-4358-834d-094a0b333a5e'
 title: 'PriorityQueue'
 summary: 'Use Java’s heap-backed collection to process elements by natural or comparator-defined priority.'
 iconKey: 'priority'
+domains:
+  - 'java'
+  - 'collections'
+  - 'algorithms-data-structures'
+kind: 'concept'
 childTopicIds:
   - 'c73d8532-c046-4052-9c04-b06acc618d68'
+relatedTopicIds: []
 ---
 
 `PriorityQueue<E>` is Java's general-purpose **heap-backed collection**. Use it when

@@ -3,6 +3,11 @@ id: '57b0dc57-7a64-4c09-9140-2a470748da38'
 title: 'JPA'
 summary: 'Understand repositories, entity lifecycle, dirty checking, flushing, and lazy-loading boundaries.'
 iconKey: 'persistence'
+domains:
+  - 'java'
+  - 'persistence'
+  - 'databases'
+kind: 'area'
 childTopicIds:
   - 'f8accec6-81ae-48da-bf60-8209557f15af'
   - '072fc2b2-2755-45ec-aabe-d8a4740fa4e9'
@@ -10,6 +15,7 @@ childTopicIds:
   - '62196430-caa5-48c7-bb68-c064209d6291'
   - '1dbd7b94-8a7b-41d0-8b1f-46d2e5b21720'
   - '3ee152a5-33e8-4700-8e08-1b35439f5e8e'
+relatedTopicIds: []
 ---
 
 Jakarta Persistence (**JPA**) is the standard contract for mapping Java objects to

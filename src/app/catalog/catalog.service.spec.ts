@@ -1,9 +1,14 @@
 import { TestBed } from '@angular/core/testing';
+import type { RuntimeCatalog } from '../../../contracts/runtime-catalog';
+import generatedCatalog from '../../../.generated/catalog.json';
 import { CatalogService } from './catalog.service';
 
 const JAVA_TOPIC_ID = 'd3ef7c8b-ee6b-48f5-9039-2aa94d03c19c';
 const ARRAYS_TOPIC_ID = '2fe75411-92f0-4e6f-bfd0-1756dc08ebe2';
 const COLLECTIONS_TOPIC_ID = 'c29c5725-0b1f-480d-88f4-5c9d3b7f0dc5';
+const SYSTEM_DESIGN_TOPIC_ID = '43a1a5e8-f5b7-46b7-bbd6-0fb212d7212b';
+const URL_SHORTENER_TOPIC_ID = 'b19de3ee-dc7d-4d9d-9b82-06d997a825e1';
+const catalog = generatedCatalog as RuntimeCatalog;
 
 describe('CatalogService', () => {
   let service: CatalogService;
@@ -31,6 +36,24 @@ describe('CatalogService', () => {
 
   it('looks up a Topic by UUID', () => {
     expect(service.getTopic(JAVA_TOPIC_ID)?.title).toBe('Java');
+  });
+
+  it('exposes the expanded Topic metadata at the trusted application boundary', () => {
+    expect(service.getTopic(URL_SHORTENER_TOPIC_ID)).toMatchObject({
+      domains: ['system-design'],
+      kind: 'exercise',
+      relatedTopicIds: [
+        '17e411bb-2c99-49e8-93ec-18b767e4a890',
+        '9009159b-54aa-4724-94a2-5189a1e21437',
+      ],
+    });
+  });
+
+  it('exposes the generated discovery indexes at the trusted application boundary', () => {
+    expect(catalog.allTopicIds).toContain(URL_SHORTENER_TOPIC_ID);
+    expect(catalog.topicIdsByDomain['system-design']).toContain(URL_SHORTENER_TOPIC_ID);
+    expect(catalog.topicIdsByKind.exercise).toEqual([URL_SHORTENER_TOPIC_ID]);
+    expect(catalog.parentTopicIdsById[URL_SHORTENER_TOPIC_ID]).toEqual([SYSTEM_DESIGN_TOPIC_ID]);
   });
 
   it('resolves child Topics in their declared order', () => {

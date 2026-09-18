@@ -3,7 +3,13 @@ id: 'bec92ddc-6f0c-48a5-a576-1e49a92d5c3a'
 title: 'Choosing storage'
 summary: 'Match URL mappings, redirect lookups, and analytics events to suitable storage workloads.'
 iconKey: 'database'
+domains:
+  - 'databases'
+  - 'system-design'
+kind: 'decision-aid'
 childTopicIds: []
+relatedTopicIds:
+  - '8cd3c5fb-eea7-4398-ba7e-8b6496ec431f'
 ---
 
 Choose storage per **workload**, not once for the entire system. A URL shortener can

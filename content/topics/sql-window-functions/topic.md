@@ -3,7 +3,11 @@ id: 'd7d5d680-00d4-4782-8875-a0fd06dabeb9'
 title: 'SQL window functions'
 summary: 'Calculate ranks, running values, and comparisons across related rows without collapsing the result.'
 iconKey: 'database'
+domains:
+  - 'databases'
+kind: 'operations'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 Window functions calculate across rows related to the current row while **preserving

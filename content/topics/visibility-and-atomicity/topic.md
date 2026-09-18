@@ -3,7 +3,12 @@ id: 'a9da2af5-7976-4bcf-abf4-0a9c1ad3458b'
 title: 'Visibility and atomicity'
 summary: 'Distinguish seeing the latest value from performing a compound operation indivisibly.'
 iconKey: 'operations'
+domains:
+  - 'java'
+  - 'concurrency'
+kind: 'concept'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 **Visibility** means one thread can observe another thread's write. **Atomicity**
