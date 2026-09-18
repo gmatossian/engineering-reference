@@ -13,11 +13,9 @@ browsing behavior is defined in the
 [Application Architecture and Build Pipeline](application-architecture.md)
 defines how the model is generated and consumed.
 
-The Direction C fields below are the accepted target contract, not a claim that
-the current runtime already emits them. A follow-up contract-and-generator
-slice must introduce the fields together with an atomic migration of every
-published Topic; `main` must not contain a partially migrated catalog. Until
-that slice is accepted, the implemented MVP subset remains valid runtime data.
+The Direction C fields below are the implemented content contract. The shared
+runtime contract, generator, and complete published corpus introduced them
+atomically so the catalog does not contain a partially migrated Topic shape.
 
 ## Model Overview
 

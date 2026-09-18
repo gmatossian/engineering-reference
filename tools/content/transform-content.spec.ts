@@ -10,6 +10,12 @@ import { unified } from 'unified';
 import type { LoadedContentSource } from './load-content-source.ts';
 import { HTML_SANITIZATION_SCHEMA, transformContent } from './transform-content.ts';
 
+const defaultTopicClassification = {
+  domains: ['java'] as 'java'[],
+  kind: 'concept' as const,
+  relatedTopicIds: [] as string[],
+};
+
 async function captureAggregateError(action: () => Promise<unknown>): Promise<AggregateError> {
   try {
     await action();
@@ -47,6 +53,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath: 'content/topics/queue/topic.md',
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
@@ -77,6 +84,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath: 'content/topics/java/topic.md',
+          ...defaultTopicClassification,
           id: parentTopicId,
           title: 'Java',
           childTopicIds: [childTopicId],
@@ -84,6 +92,7 @@ describe('transformContent', () => {
         },
         {
           sourcePath: 'content/topics/collections/topic.md',
+          ...defaultTopicClassification,
           id: childTopicId,
           title: 'Collections',
           childTopicIds: [],
@@ -117,6 +126,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath: 'content/topics/queue/topic.md',
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
@@ -163,6 +173,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath: 'content/topics/queue/topic.md',
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
@@ -199,6 +210,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath,
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
@@ -230,6 +242,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath,
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
@@ -260,6 +273,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath,
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
@@ -292,6 +306,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath,
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
@@ -326,6 +341,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath,
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
@@ -358,6 +374,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath,
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
@@ -389,6 +406,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath: 'content/topics/queue/topic.md',
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
@@ -426,6 +444,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath: join(topicDirectory, 'topic.md'),
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
@@ -470,6 +489,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath,
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
@@ -509,6 +529,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath,
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
@@ -539,6 +560,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath,
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
@@ -570,6 +592,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath: 'content/topics/queue/topic.md',
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
@@ -635,6 +658,7 @@ describe('transformContent', () => {
         topics: [
           {
             sourcePath,
+            ...defaultTopicClassification,
             id: topicId,
             title: 'Queue',
             childTopicIds: [],
@@ -675,6 +699,7 @@ describe('transformContent', () => {
         topics: [
           {
             sourcePath,
+            ...defaultTopicClassification,
             id: topicId,
             title: 'Queue',
             childTopicIds: [],
@@ -714,6 +739,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath,
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
@@ -748,6 +774,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath,
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
@@ -787,6 +814,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath,
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
@@ -834,6 +862,7 @@ describe('transformContent', () => {
         topics: [
           {
             sourcePath,
+            ...defaultTopicClassification,
             id: topicId,
             title: 'Queue',
             childTopicIds: [],
@@ -871,6 +900,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath: firstSourcePath,
+          ...defaultTopicClassification,
           id: firstTopicId,
           title: 'Queue',
           childTopicIds: [],
@@ -878,6 +908,7 @@ describe('transformContent', () => {
         },
         {
           sourcePath: secondSourcePath,
+          ...defaultTopicClassification,
           id: secondTopicId,
           title: 'Stack',
           childTopicIds: [],
@@ -913,6 +944,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath,
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
@@ -957,6 +989,7 @@ describe('transformContent', () => {
         topics: [
           {
             sourcePath,
+            ...defaultTopicClassification,
             id: topicId,
             title: 'Queue',
             childTopicIds: [],
@@ -999,6 +1032,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath,
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
@@ -1038,6 +1072,7 @@ describe('transformContent', () => {
       topics: [
         {
           sourcePath,
+          ...defaultTopicClassification,
           id: topicId,
           title: 'Queue',
           childTopicIds: [],

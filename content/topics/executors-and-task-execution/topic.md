@@ -3,7 +3,12 @@ id: '84239686-a565-4af2-ad78-b2c9eee61ea9'
 title: 'Executors and task execution'
 summary: 'Submit tasks through an executor and choose its concurrency and scheduling policy deliberately.'
 iconKey: 'queue'
+domains:
+  - 'java'
+  - 'concurrency'
+kind: 'concept'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 An `ExecutorService` separates **submitting work** from creating and managing the

@@ -2,7 +2,12 @@
 id: 'bf417331-9329-42b4-9517-351ef6af3b85'
 title: 'Complexity'
 iconKey: 'complexity'
+domains:
+  - 'collections'
+  - 'algorithms-data-structures'
+kind: 'concept'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 The implementation determines the cost of the shared `Queue` operations:

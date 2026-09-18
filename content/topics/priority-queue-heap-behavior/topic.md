@@ -3,7 +3,13 @@ id: 'c73d8532-c046-4052-9c04-b06acc618d68'
 title: 'Heap behavior'
 summary: 'Understand which ordering guarantees a PriorityQueue heap provides—and which it does not.'
 iconKey: 'heap'
+domains:
+  - 'java'
+  - 'collections'
+  - 'algorithms-data-structures'
+kind: 'concept'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 `PriorityQueue` stores its elements in a **heap**, not a fully sorted sequence. The

@@ -3,7 +3,14 @@ id: 'e080cdee-eecc-4c33-92d8-3a75acbf5d34'
 title: 'Equality and hash codes'
 summary: 'Keep hash-based set elements and map keys reliable by preserving equality, hashing, and ordering contracts.'
 iconKey: 'equality'
+domains:
+  - 'java'
+  - 'collections'
+kind: 'concept'
 childTopicIds: []
+relatedTopicIds:
+  - '7ddf26ac-1481-4b56-a897-e72a8a881c84'
+  - '1cfa160f-9b9b-4f56-855d-74b87a5f76da'
 ---
 
 `HashSet` elements and `HashMap` keys use `hashCode()` to find a candidate bucket,

@@ -3,7 +3,13 @@ id: 'b4959ddf-3236-4fe7-b6a9-d527281a0f6a'
 title: 'Choosing a Set implementation'
 summary: 'Select hash-based, insertion-ordered, sorted, or enum-specialized storage.'
 iconKey: 'architecture'
+domains:
+  - 'java'
+  - 'collections'
+  - 'algorithms-data-structures'
+kind: 'decision-aid'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 Choose the implementation by the **ordering guarantee** the caller needs.

@@ -2,7 +2,14 @@ import { randomUUID } from 'node:crypto';
 import { lstat, mkdir, mkdtemp, rename, rm, writeFile } from 'node:fs/promises';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import type { RuntimeCatalog, RuntimeTopic } from '../../contracts/runtime-catalog.ts';
+import {
+  TOPIC_DOMAIN_KEYS,
+  TOPIC_KIND_KEYS,
+  type RuntimeCatalog,
+  type RuntimeTopic,
+  type TopicDomainKey,
+  type TopicKindKey,
+} from '../../contracts/runtime-catalog.ts';
 import type { LoadedContentSource } from './load-content-source.ts';
 import { loadContentSource } from './load-content-source.ts';
 import type { TransformedTopicContent } from './transform-content.ts';
@@ -29,6 +36,32 @@ function compareInCodePointOrder(left: string, right: string): number {
   return leftCodePoints.length - rightCodePoints.length;
 }
 
+function compareTopicsByTitleThenId(
+  left: LoadedContentSource['topics'][number],
+  right: LoadedContentSource['topics'][number],
+): number {
+  const titleComparison = compareInCodePointOrder(
+    left.title.toLowerCase(),
+    right.title.toLowerCase(),
+  );
+
+  return titleComparison === 0 ? compareInCodePointOrder(left.id, right.id) : titleComparison;
+}
+
+function createCompleteIndex<Key extends string>(
+  keys: readonly Key[],
+  topics: LoadedContentSource['topics'],
+  includes: (topic: LoadedContentSource['topics'][number], key: Key) => boolean,
+): Record<Key, readonly string[]> {
+  const index = {} as Record<Key, readonly string[]>;
+
+  for (const key of keys) {
+    index[key] = topics.filter((topic) => includes(topic, key)).map((topic) => topic.id);
+  }
+
+  return index;
+}
+
 export function createRuntimeCatalog(
   contentSource: LoadedContentSource,
   transformedTopics: readonly TransformedTopicContent[],
@@ -41,6 +74,10 @@ export function createRuntimeCatalog(
   const topicsInCanonicalOrder = [...contentSource.topics].sort((left, right) =>
     compareInCodePointOrder(left.id, right.id),
   );
+  const topicsInTitleOrder = [...contentSource.topics].sort(compareTopicsByTitleThenId);
+  const domainOrder = new Map<TopicDomainKey, number>(
+    TOPIC_DOMAIN_KEYS.map((domain, index) => [domain, index]),
+  );
 
   for (const topic of topicsInCanonicalOrder) {
     if (!mainContentHtmlByTopicId.has(topic.id)) {
@@ -51,13 +88,49 @@ export function createRuntimeCatalog(
       title: topic.title,
       summary: topic.summary ?? null,
       iconKey: topic.iconKey ?? null,
+      domains: [...topic.domains].sort(
+        (left, right) => (domainOrder.get(left) ?? -1) - (domainOrder.get(right) ?? -1),
+      ),
+      kind: topic.kind,
       mainContentHtml: mainContentHtmlByTopicId.get(topic.id) ?? null,
       childTopicIds: [...topic.childTopicIds],
+      relatedTopicIds: [...topic.relatedTopicIds],
     };
+  }
+
+  const parentTopicsByChildId = new Map<string, LoadedContentSource['topics']>();
+
+  for (const parentTopic of contentSource.topics) {
+    for (const childTopicId of parentTopic.childTopicIds) {
+      const parents = parentTopicsByChildId.get(childTopicId) ?? [];
+
+      parents.push(parentTopic);
+      parentTopicsByChildId.set(childTopicId, parents);
+    }
+  }
+
+  const parentTopicIdsById: Record<string, readonly string[]> = {};
+
+  for (const topic of topicsInCanonicalOrder) {
+    parentTopicIdsById[topic.id] = [...(parentTopicsByChildId.get(topic.id) ?? [])]
+      .sort(compareTopicsByTitleThenId)
+      .map((parentTopic) => parentTopic.id);
   }
 
   return {
     landingTopicIds: [...contentSource.catalog.landingTopicIds],
+    allTopicIds: topicsInTitleOrder.map((topic) => topic.id),
+    topicIdsByDomain: createCompleteIndex<TopicDomainKey>(
+      TOPIC_DOMAIN_KEYS,
+      topicsInTitleOrder,
+      (topic, domain) => topic.domains.includes(domain),
+    ),
+    topicIdsByKind: createCompleteIndex<TopicKindKey>(
+      TOPIC_KIND_KEYS,
+      topicsInTitleOrder,
+      (topic, kind) => topic.kind === kind,
+    ),
+    parentTopicIdsById,
     topicsById,
   };
 }

@@ -3,7 +3,12 @@ id: '6fabfd5b-4700-41b4-8240-3884d533ba55'
 title: 'Deque operations'
 summary: 'Insert, inspect, and remove elements explicitly at either end of a deque.'
 iconKey: 'deque'
+domains:
+  - 'java'
+  - 'collections'
+kind: 'operations'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 `Deque<E>` extends `Queue<E>` with operations for the **head and tail**. Use the

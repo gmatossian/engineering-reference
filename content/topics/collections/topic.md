@@ -2,11 +2,16 @@
 id: 'c29c5725-0b1f-480d-88f4-5c9d3b7f0dc5'
 title: 'Collections framework'
 iconKey: 'collection'
+domains:
+  - 'java'
+  - 'collections'
+kind: 'area'
 childTopicIds:
   - '6d028a15-f716-4862-80e7-ea5e3b89d946'
   - 'eb48ad81-c168-48ec-a5ac-602901e5d284'
   - '8cbea92a-606e-4ed3-839c-c7fff67f0909'
   - 'd972ae23-879d-4f2c-9ede-5532e69ca15f'
+relatedTopicIds: []
 ---
 
 Choose the interface by the **behavior the program requires**; choose a concrete

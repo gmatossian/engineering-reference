@@ -3,6 +3,9 @@ id: '78b29290-d46f-45b2-aaba-c31597ceb6d4'
 title: 'Java language evolution'
 summary: 'Find the Java release that introduced a significant modern language or core-library feature.'
 iconKey: 'java'
+domains:
+  - 'java'
+kind: 'area'
 childTopicIds:
   - '4ca7a180-254f-46f3-9999-4f70f41957eb'
   - '2d23f8e8-66db-4d0a-b5bc-bfc0536d5ab8'
@@ -14,6 +17,7 @@ childTopicIds:
   - 'c6d0c192-60ee-45ba-9580-745e7bf29259'
   - '30e2c64a-8978-447e-bde6-022686cefe8d'
   - 'cd880907-60d6-4874-b8fd-2f9eacf0e5e6'
+relatedTopicIds: []
 ---
 
 This is a curated retrieval index, not complete release notes. It includes features

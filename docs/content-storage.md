@@ -10,11 +10,10 @@ representation are defined in the
 [application architecture](application-architecture.md). The deployment
 platform and any future authoring interface remain separate decisions.
 
-The Direction C source and runtime fields below are the accepted target
-representation. They become required only when a follow-up changes the shared
-contract, generator, and every published Topic atomically. Until then, the
-implemented MVP source and generated catalog remain valid; authors must not add
-unsupported fields piecemeal.
+The Direction C source and runtime fields below are the implemented
+representation. They are required for every published Topic and are validated
+and generated through the shared contract introduced with the atomic catalog
+migration.
 
 ## Decision Summary
 
@@ -89,8 +88,8 @@ Topic.
 
 ## Topic Source
 
-Each `topic.md` begins with YAML front matter containing exactly the target
-Topic metadata accepted in this document:
+Each `topic.md` begins with YAML front matter containing exactly the Topic
+metadata accepted in this document:
 
 ```yaml
 ---
@@ -108,7 +107,7 @@ relatedTopicIds: []
 ---
 ```
 
-Six properties are required in the target contract:
+Six properties are required:
 
 - `id` is the Topic's stable UUID;
 - `title` is its non-empty, non-unique display title;

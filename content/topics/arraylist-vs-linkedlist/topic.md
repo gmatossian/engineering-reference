@@ -3,7 +3,13 @@ id: '8df831eb-e81b-450e-9f40-0ec30afaace3'
 title: 'ArrayList versus LinkedList'
 summary: 'Compare positional access, insertion costs, and memory behavior before choosing an implementation.'
 iconKey: 'complexity'
+domains:
+  - 'java'
+  - 'collections'
+  - 'algorithms-data-structures'
+kind: 'decision-aid'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 Prefer `ArrayList` unless the workload demonstrates a reason to choose otherwise.

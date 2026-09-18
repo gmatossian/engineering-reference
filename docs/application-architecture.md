@@ -14,11 +14,10 @@ Detailed presentation rules are defined separately in the
 [Visual Design](visual-design.md). This document does not select a
 deployment provider or implement the application and content generator.
 
-The Direction C architecture below is the accepted target boundary. The
-current application continues to run the implemented MVP contract until the
-dependency-ordered slices at the end of this document land. The contract,
-generator, and complete published corpus must migrate atomically before any UI
-depends on the new fields or indexes.
+The Direction C data foundation below is implemented: the framework-neutral
+contract, generator, derived indexes, and complete published corpus migrated
+atomically. The application continues to present the implemented MVP behavior
+until the dependency-ordered UI slices at the end of this document land.
 
 ## Decision Summary
 
@@ -528,8 +527,7 @@ Each issue refined file-level implementation details while preserving the
 boundaries and behavior accepted here. Deployment-provider selection and
 production deployment remain separate work.
 
-Direction C should likewise be delivered through bounded, dependency-ordered
-slices:
+Direction C is delivered through bounded, dependency-ordered slices:
 
 1. atomically extend the framework-neutral contracts, source validation,
    generator, derived runtime indexes, and every published Topic; keep the code
@@ -540,6 +538,10 @@ slices:
 3. add Browse contexts and Related Topics to the Topic view; and
 4. complete focused responsive, cross-browser, keyboard, screen-reader, and
    accessibility verification for the new journeys.
+
+The first slice is implemented. The remaining slices may depend on its bundled
+runtime data without reopening the authored contract or deriving duplicate
+indexes in application code.
 
 Later slices may begin only when their required runtime data exists. Each slice
 must preserve usable hierarchical browsing and keep the default branch

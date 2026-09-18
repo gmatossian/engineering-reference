@@ -3,7 +3,11 @@ id: 'dad2f45c-44a0-4667-be7f-4eeda8bafdfe'
 title: 'Switch expressions'
 summary: 'Return a value from switch using exhaustive arrow cases without accidental fall-through.'
 iconKey: 'operations'
+domains:
+  - 'java'
+kind: 'operations'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 Java 14 finalized `switch` expressions. Arrow cases do **not fall through**, and an

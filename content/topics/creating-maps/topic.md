@@ -3,7 +3,12 @@ id: 'c3e7b0c0-b574-4edd-89ec-24f50f206522'
 title: 'Creating maps'
 summary: 'Choose a map construction based on mutability, copying, null handling, and duplicate keys.'
 iconKey: 'creation'
+domains:
+  - 'java'
+  - 'collections'
+kind: 'operations'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 Choose the construction by the required **mutability** and how invalid or repeated

@@ -3,7 +3,12 @@ id: 'fc3f3ad0-3d94-42a5-a79b-9309c1140cf0'
 title: 'Map views and iteration'
 summary: 'Iterate keys, values, or entries without extra lookups or accidental changes through backed views.'
 iconKey: 'collection'
+domains:
+  - 'java'
+  - 'collections'
+kind: 'operations'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 Choose the view that contains exactly what the operation needs.

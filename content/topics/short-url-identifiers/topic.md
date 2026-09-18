@@ -3,7 +3,12 @@ id: '8cd3c5fb-eea7-4398-ba7e-8b6496ec431f'
 title: 'Short URL identifiers'
 summary: 'Choose how a short code is generated, represented, and placed safely in a URL.'
 iconKey: 'conversion'
+domains:
+  - 'system-design'
+kind: 'decision-aid'
 childTopicIds: []
+relatedTopicIds:
+  - 'bec92ddc-6f0c-48a5-a576-1e49a92d5c3a'
 ---
 
 **Encoding changes representation—not uniqueness, secrecy, or trust.** Generate the

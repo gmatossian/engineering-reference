@@ -3,7 +3,13 @@ id: '3ee152a5-33e8-4700-8e08-1b35439f5e8e'
 title: 'Optimistic locking with @Version'
 summary: 'Detect stale entity updates with a version field and handle conflicts at the use-case boundary.'
 iconKey: 'concurrency'
+domains:
+  - 'java'
+  - 'persistence'
+  - 'databases'
+kind: 'pattern'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 `@Version` gives each entity revision a version value. It does **not lock the row

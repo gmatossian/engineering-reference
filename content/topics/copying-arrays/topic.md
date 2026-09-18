@@ -3,7 +3,11 @@ id: 'df423741-8ff2-44ab-a770-32f8e76846b8'
 title: 'Copying arrays'
 summary: 'Choose between Arrays.copyOf, Arrays.copyOfRange, and System.arraycopy.'
 iconKey: 'copy'
+domains:
+  - 'java'
+kind: 'operations'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 ## Whole array

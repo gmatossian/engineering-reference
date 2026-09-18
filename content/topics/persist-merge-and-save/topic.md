@@ -3,7 +3,15 @@ id: 'd1a3f0d1-92a1-4c65-87a0-ee7d8d10131e'
 title: 'persist, merge, and save'
 summary: 'Distinguish making a new entity managed from copying detached state into a managed instance.'
 iconKey: 'operations'
+domains:
+  - 'java'
+  - 'persistence'
+  - 'databases'
+kind: 'decision-aid'
 childTopicIds: []
+relatedTopicIds:
+  - '072fc2b2-2755-45ec-aabe-d8a4740fa4e9'
+  - '62196430-caa5-48c7-bb68-c064209d6291'
 ---
 
 | Operation               | Intended input         | What becomes managed                    | Return value               |

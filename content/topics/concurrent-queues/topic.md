@@ -3,7 +3,13 @@ id: '044ec0de-f354-4a1c-958e-98a3d1b833fb'
 title: 'Concurrent queues'
 summary: 'Choose between immediate concurrent access and blocking producer-consumer coordination.'
 iconKey: 'concurrency'
+domains:
+  - 'java'
+  - 'collections'
+  - 'concurrency'
+kind: 'decision-aid'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 **Concurrent** means multiple threads can safely access the queue. **Blocking** means

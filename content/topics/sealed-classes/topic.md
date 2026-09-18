@@ -3,7 +3,11 @@ id: '97341609-b898-4072-8f4f-2823fc366ce1'
 title: 'Sealed classes'
 summary: 'Define a closed set of permitted direct subtypes for a class or interface hierarchy.'
 iconKey: 'architecture'
+domains:
+  - 'java'
+kind: 'operations'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 Java 17 finalized sealed classes and interfaces. Use them when a hierarchy should be

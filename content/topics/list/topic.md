@@ -3,6 +3,11 @@ id: '6d028a15-f716-4862-80e7-ea5e3b89d946'
 title: 'List'
 summary: 'Choose and use an ordered, indexed collection that permits repeated elements.'
 iconKey: 'list'
+domains:
+  - 'java'
+  - 'collections'
+  - 'algorithms-data-structures'
+kind: 'concept'
 childTopicIds:
   - '080e9bef-0cdf-49a8-b812-2a65ff06d78b'
   - '8df831eb-e81b-450e-9f40-0ec30afaace3'
@@ -10,6 +15,7 @@ childTopicIds:
   - 'a2fc39d5-9564-4260-b247-f38d53bedecc'
   - 'fd0a59c5-ab12-4492-b862-05bb9e50e3b9'
   - '5b36622e-a904-4891-a546-93bfe53ea51a'
+relatedTopicIds: []
 ---
 
 A `List<E>` is an **ordered sequence** with **zero-based indexes**. Use one when

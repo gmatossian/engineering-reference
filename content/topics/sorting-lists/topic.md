@@ -3,7 +3,12 @@ id: 'fd0a59c5-ab12-4492-b862-05bb9e50e3b9'
 title: 'Sorting lists'
 summary: 'Sort a modifiable list by natural, reverse, or property-based order.'
 iconKey: 'ordering'
+domains:
+  - 'java'
+  - 'collections'
+kind: 'operations'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 `List.sort(...)` rearranges the **existing list** and requires the list to support

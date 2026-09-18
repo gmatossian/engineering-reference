@@ -46,8 +46,12 @@ async function writeContentTree(sourceRoot: string): Promise<void> {
       'title: "Java"',
       'summary: "Core language and platform concepts."',
       'iconKey: "java"',
+      'domains:',
+      '  - "java"',
+      'kind: "area"',
       'childTopicIds:',
       `  - "${queueTopicId}"`,
+      'relatedTopicIds: []',
       '---',
       '',
     ].join('\n'),
@@ -59,7 +63,12 @@ async function writeContentTree(sourceRoot: string): Promise<void> {
       '---',
       `id: "${queueTopicId}"`,
       'title: "Queue"',
+      'domains:',
+      '  - "java"',
+      '  - "collections"',
+      'kind: "concept"',
       'childTopicIds: []',
+      'relatedTopicIds: []',
       '---',
       '',
       'A queue processes elements in a defined order.',
@@ -168,7 +177,7 @@ describe('content pipeline', () => {
     ).toEqual([`${incompleteDirectory}: Topic directory does not contain topic.md`]);
   });
 
-  it('reports a Topic that no landing Topic can reach', async () => {
+  it('accepts a Topic that no landing Topic can reach', async () => {
     temporaryRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-pipeline-'));
 
     const sourceRoot = join(temporaryRoot, 'content');
@@ -183,7 +192,11 @@ describe('content pipeline', () => {
         '---',
         'id: "55555555-5555-4555-8555-555555555555"',
         'title: "Orphan"',
+        'domains:',
+        '  - "java"',
+        'kind: "concept"',
         'childTopicIds: []',
+        'relatedTopicIds: []',
         '---',
         '',
         'Orphan content.',
@@ -195,21 +208,6 @@ describe('content pipeline', () => {
 
     expect(contentSource.topics.map((topic) => topic.title)).toEqual(['Java', 'Orphan', 'Queue']);
 
-    let thrownError: unknown;
-
-    try {
-      validateContentGraph(contentSource);
-    } catch (error: unknown) {
-      thrownError = error;
-    }
-
-    expect(thrownError).toBeInstanceOf(AggregateError);
-    expect(
-      (thrownError as AggregateError).errors.map((error: unknown) =>
-        error instanceof Error ? error.message : String(error),
-      ),
-    ).toEqual([
-      `${join(orphanDirectory, 'topic.md')}: Unreachable Topic 55555555-5555-4555-8555-555555555555`,
-    ]);
+    expect(validateContentGraph(contentSource)).toBe(contentSource);
   });
 });

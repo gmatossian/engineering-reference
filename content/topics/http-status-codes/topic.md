@@ -3,7 +3,11 @@ id: 'b97384d3-f986-4850-a6b0-a1c3b893ee86'
 title: 'HTTP status codes'
 summary: 'Choose common response codes and recognize their headers, redirect behavior, and retry implications.'
 iconKey: 'operations'
+domains:
+  - 'http'
+kind: 'operations'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 A status code reports the **outcome of handling one HTTP request**. Use response

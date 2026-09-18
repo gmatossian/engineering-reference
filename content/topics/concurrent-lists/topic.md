@@ -3,7 +3,13 @@ id: '5b36622e-a904-4891-a546-93bfe53ea51a'
 title: 'Concurrent lists'
 summary: 'Choose between copy-on-write reads and synchronized access when a list is shared across threads.'
 iconKey: 'concurrency'
+domains:
+  - 'java'
+  - 'collections'
+  - 'concurrency'
+kind: 'decision-aid'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 Choose a concurrent list only when the program genuinely requires **shared indexed

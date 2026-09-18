@@ -3,7 +3,11 @@ id: 'cb9514d7-b891-46f4-98b8-4a5d0847b332'
 title: 'Stream pitfalls'
 summary: 'Avoid consumed streams, invisible laziness, unsafe side effects, immutable results, and duplicate map keys.'
 iconKey: 'operations'
+domains:
+  - 'java'
+kind: 'operations'
 childTopicIds: []
+relatedTopicIds: []
 ---
 
 | Trap                                     | Consequence                                     |
