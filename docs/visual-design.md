@@ -1,11 +1,21 @@
-# Engineering Reference MVP Visual Design
+# Engineering Reference Visual Design
 
 ## Status and authority
 
-This document defines the accepted visual direction for the MVP. It translates
+This document defines the accepted visual direction. It translates
 the [product brief](product-brief.md), [content model](content-model.md), and
 [navigation and responsive interaction model](interaction-model.md) into an
 implementation-facing presentation system.
+
+The accepted MVP references remain authoritative for the existing shell,
+landing cards, child navigation, and Topic content. Direction C extends that
+system with a finder, classified all-Topics browsing, Browse contexts, and
+Related Topics. Those new surfaces follow the constraints below; they do not
+make synthetic prototype details authoritative.
+
+The Direction C sections define accepted target presentation. They are not a
+claim that the current application or reference screenshots already include
+those surfaces; bounded implementation and verification follow separately.
 
 The selected concepts were produced with Google Stitch and accepted during
 [issue #33](https://github.com/gmatossian/engineering-reference/issues/33). The
@@ -30,7 +40,8 @@ The direction was selected because it:
 - distinguishes primary landing destinations from child navigation;
 - uses typography and iconography to improve recognition and hierarchy;
 - supports both short navigation-only Topics and dense content-bearing Topics;
-  and
+- supports direct title retrieval, classified browsing, and contextual onward
+  navigation without turning the product into a dashboard; and
 - avoids resembling a word-processing document, generic dashboard, terminal,
   or documentation-site template.
 
@@ -62,10 +73,10 @@ Large saturated fills are not part of this direction. Color must not be the
 only way an item communicates its meaning or state.
 
 These families guide the shared visual and icon system; they are not Topic
-metadata. The content model does not define categories from which an accent
-could be derived, and authors do not select colors. An icon key may receive a
-consistent default treatment in the UI, but color does not carry domain
-meaning.
+metadata, and authors do not select colors. Although the content model now
+defines domains and kinds, accent color is not derived from them and does not
+carry classification meaning. An icon key may receive a consistent default
+treatment in the UI.
 
 ### Typography
 
@@ -109,14 +120,18 @@ The header is compact and persistent across views:
 - **Back** remains visible and retains the browser-history behavior defined by
   the interaction model. It is presented as unavailable when it has no
   destination.
+- **All topics** is a persistent text destination for the complete browse and
+  search surface. It must not be represented by an unexplained icon.
 - The landing reference omits Back, but implementation must preserve the
   visible unavailable state required by the interaction model.
 
-Do not add global Topic shortcuts, an `INDEX` destination, breadcrumbs, search,
-filters, profile controls, or secondary navigation. The terminal-like mark in
-some desktop concepts is illustrative; the open-book mark in the mobile
-concepts better expresses a reference product. Final vector execution belongs
-to implementation and must not introduce an external UI framework implicitly.
+Do not add per-domain global shortcuts, a canonical breadcrumb, profile
+controls, or an application navigation drawer. The accepted All topics link is
+plain product navigation rather than the synthetic `INDEX` label shown in some
+prototypes. The terminal-like mark in some desktop concepts is illustrative;
+the open-book mark in the mobile concepts better expresses a reference product.
+Final vector execution belongs to implementation and must not introduce an
+external UI framework implicitly.
 
 ## Landing presentation
 
@@ -125,6 +140,13 @@ The landing page begins with:
 - the `Engineering Reference` title;
 - the subtitle `Concise technical knowledge for software engineering.`; and
 - the action hint `Choose a topic to explore.`
+
+A bounded **Find a topic** form follows the introduction. It uses a visible
+label, a conventional single-line search input, and a text submit action. An
+adjacent or immediately following **Browse all topics** link provides the
+non-search path. The finder is prominent enough to recognize without visually
+outweighing the product title or turning the landing page into a search-engine
+facsimile.
 
 Landing Topics are presented as equal-weight cards in catalog order. Cards use
 equal dimensions within a layout row so size does not imply importance,
@@ -149,15 +171,31 @@ a hard-coded application mapping or a missing-summary presentation state.
 A Topic view preserves the order required by the interaction model:
 
 1. Topic title;
-2. complete main content, when present; and
-3. ordered immediate-child navigation, when present.
+2. compact Browse contexts;
+3. complete main content, when present;
+4. ordered immediate-child navigation, when present; and
+5. curated Related Topics, when present.
+
+Browse contexts are a quiet orientation region, not a dashboard of badges. The
+Topic's kind and domains are native links to their corresponding browse
+filters, and derived parents are Topic links under a clear label such as `Found
+in`. Wide layouts may place the region in a restrained side column; narrow
+layouts keep it in document flow directly after the title. Visual placement
+must preserve semantic and keyboard order.
+
+Related Topics use a labelled region distinct from immediate children. They
+may use the same compact link-row family, but the heading and supporting kind
+or domain text must communicate that the links are lateral rather than
+narrower. Empty context subgroups and an empty Related Topics region are not
+rendered.
 
 ### Navigation-only Topics
 
 Children use compact, uniform, full-width rows rather than landing cards. Each
 row is one native link containing a decorative icon, the child title, and a
-navigation chevron. Rows do not include descriptions, sequence numbers,
-classification codes, or relationship metadata.
+navigation chevron. Rows do not include descriptions, sequence numbers, or
+opaque classification codes. Classification belongs to the all-Topics and
+context surfaces rather than being inferred from a child icon.
 
 Every Topic should display an icon when represented in navigation. Icons may
 be reused, and the UI must provide a generic fallback when a specific icon is
@@ -182,6 +220,33 @@ remain keyboard focusable; the page itself must not gain horizontal overflow.
 Images scale within the content area without losing their alternative text or
 semantic placement.
 
+## All-Topics Presentation
+
+The all-Topics page is a reference index, not a faceted analytics dashboard.
+It begins with a clear `All topics` heading and short orientation text, followed
+by one compact control region containing:
+
+- the labelled title-search input;
+- native domain and kind selectors;
+- the result count; and
+- a visible clear action when constraints are active.
+
+Controls use ordinary form labels and states rather than decorative chips.
+Their boundaries, focus indicators, and selected values remain clear without
+depending on color. At narrow widths they stack to the available measure; they
+do not move into a modal, drawer, or horizontally scrolling toolbar.
+
+The default index is an alphabetical vertical list. A domain view can introduce
+kind section headings in the accepted vocabulary order. Each Topic result is a
+native link whose primary line is the title and whose supporting text names its
+kind and domains so duplicate or ambiguous titles remain understandable. The
+UI does not display UUIDs, storage directories, relevance scores, internal
+taxonomy keys, or result numbers.
+
+Search relevance changes ordering but not card size, color, or prominence.
+The no-results state is calm and explicit, remains within the results region,
+and keeps the search and filter controls available.
+
 ## Interaction states
 
 - Cards and rows must look actionable before interaction; a chevron alone is
@@ -202,6 +267,11 @@ Responsive layouts preserve content, order, semantics, and navigation:
 
 - landing cards move from a multi-column grid to one full-width card per row;
 - child navigation remains a vertical list of full-width rows;
+- finder and browse controls stack in logical document order;
+- grouped index sections and result metadata remain visible rather than
+  collapsing into icon-only or chip-only controls;
+- Browse contexts move into the main flow directly after the Topic title;
+- Related Topics remain a distinct vertical link region;
 - typography and spacing reduce proportionally without becoming cramped;
 - Topic main content follows normal vertical document flow;
 - wide code and tables scroll inside their own bounded regions; and
@@ -214,6 +284,10 @@ navigation drawer.
 ## Accessibility requirements
 
 - Cards and rows retain native link semantics and coherent accessible names.
+- Search and filter controls retain visible labels and native form semantics.
+- Kind and domain context remains available as text; icon and accent treatment
+  never substitute for it.
+- Group headings and result counts remain programmatically exposed.
 - Topic icons are supplementary to visible titles and therefore hidden from
   assistive technology.
 - The application mark and icon buttons receive appropriate accessible names.
@@ -232,8 +306,9 @@ requirements. Exclude:
 - child sequence numbers and counts;
 - `INDEX`, Java, or Queue shortcuts in the global header;
 - technical footer labels and version numbers;
-- Topic-specific profile, copy, filter, search, or status controls;
-- badges, tags, taxonomic chips, timestamps, and classification metadata;
+- Topic-specific profile, copy, or status controls;
+- opaque taxonomy codes, decorative tag clouds, popularity badges, timestamps,
+  and behavior-derived recommendations;
 - swipe instructions and custom swipe behavior; and
 - synthetic Queue content and bespoke content components.
 
@@ -251,11 +326,22 @@ treatment; there is no authored accent-family field.
 This boundary preserves generic rendering and allows ordinary content to use
 the supported presentation vocabulary without Topic-specific Angular code.
 
+Domain and kind labels are likewise generated from the closed shared
+vocabularies. Authors select semantic keys rather than colors, icons, badges,
+or layout variants. Related Topics and Browse contexts resolve the referenced
+Topic's canonical title and presentation metadata rather than duplicating
+display text on relationships.
+
 ## Reference screens
 
 The screenshots are durable visual references rendered from the selected
 Stitch concepts. They contain synthetic content and some explicitly excluded
 prototype details described above.
+
+They predate Direction C and therefore do not specify the finder, all-Topics
+page, Browse contexts, or Related Topics. A focused later Stitch exercise may
+compare wide and narrow compositions for those surfaces using real catalog
+data, but is not required to implement or accept the information model.
 
 ### Landing
 
