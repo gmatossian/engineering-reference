@@ -3,11 +3,12 @@
 ## Status
 
 This document defines the accepted navigation and responsive interaction model.
-It preserves the implemented MVP behavior and extends it with the finder,
-classified browse, Browse contexts, and Related Topics accepted as Direction C
-in the [Topic findability audit](topic-findability-audit.md). It builds on the
-[product brief](product-brief.md), the
-[content model](content-model.md), and the
+It preserves the implemented MVP behavior and extends it with the browse-first
+finder, classified domain entry, Browse contexts, and Related Topics defined as
+the refined Direction C in the [product brief](product-brief.md), building on
+the evidence and original recommendation in the
+[Topic findability audit](topic-findability-audit.md). It also builds on the
+[content model](content-model.md) and the
 [content storage representation](content-storage.md). Its implementation
 boundaries are defined in the
 [application architecture](application-architecture.md).
@@ -27,13 +28,13 @@ the data-foundation change has shipped the new interactions.
 
 Engineering Reference is a conventional addressable web experience:
 
-- the landing page initially shows the ordered landing Topics with no Topic
-  selected automatically;
-- the landing page provides a Topic finder and an All Topics link;
+- the landing page initially provides a Topic finder, every supported domain,
+  an All topics link, and secondary curated Topic paths;
+- selecting a landing domain opens its shareable filtered `/topics` view;
 - the all-Topics view supports deterministic title search plus domain and kind
   browsing without a runtime request;
-- selecting a landing or child Topic replaces the current view with that
-  Topic's view at every viewport size;
+- selecting a curated landing Topic, child Topic, or result replaces the
+  current view with that Topic's view at every viewport size;
 - every Topic has a directly addressable URL;
 - Topic views expose path-independent Browse contexts and curated Related
   Topics;
@@ -49,13 +50,17 @@ swipe navigation, or a separate application-specific navigation history.
 
 ## Landing View
 
-Opening the application at its root URL displays the ordered landing Topics
-from the generated catalog. No landing Topic is selected automatically.
+Opening the application at its root URL displays a browse-first discovery
+surface. No Topic or domain is selected automatically. In semantic document
+order it provides:
 
-The landing view also provides:
-
-- a labelled **Find a topic** title-search form; and
-- an **All topics** native link to the complete browse surface.
+1. the product introduction;
+2. a labelled **Find a topic** title-search form;
+3. an **All topics** native link to the complete browse surface;
+4. a labelled **Browse by domain** region containing every supported domain in
+   canonical vocabulary order; and
+5. a quieter **Curated paths** region containing the ordered landing Topics
+   from the generated catalog.
 
 Submitting a non-empty finder query navigates to `/topics?q=<query>`.
 Whitespace is trimmed before navigation. Submitting an empty query opens
@@ -63,13 +68,25 @@ Whitespace is trimmed before navigation. Submitting an empty query opens
 show an autocomplete popup, maintain private history, or request data from a
 server.
 
-The landing view is a deliberate starting point rather than a permanently
-visible navigation panel. Selecting a landing Topic replaces it with the
-selected Topic's view. The application does not retain the landing Topics in a
-persistent sidebar.
+Each domain entry is a native link to `/topics?domain=<key>`. Domain entries are
+derived from the complete closed vocabulary rather than from Area Topics or
+`landingTopicIds`; every supported domain therefore remains reachable even
+when it has no same-named overview Topic. Selecting a domain starts the
+all-Topics view at the top and applies its normal focus behavior.
 
-Landing Topics use native link semantics. Their eventual visual treatment may
-change without changing their navigation behavior or ordering.
+Curated paths preserve useful broad-to-specific progression without defining
+the complete catalog. Each ordered landing Topic remains a native link to its
+canonical `/topics/<uuid>` view and uses its canonical title and summary. A
+curated path can have the same visible Topic title as a domain label, but its
+**Curated paths** region and supporting text distinguish the direct Topic
+overview from the classified domain browse link.
+
+The landing view is a deliberate starting point rather than a permanently
+visible navigation panel. The application does not retain its domain entries
+or curated paths in a persistent sidebar.
+
+Domain entries and curated Topics use native link semantics. Domain order
+follows the vocabulary; curated Topic order follows `landingTopicIds`.
 
 The application shell provides an All topics link on landing, Topic, index,
 and not-found views so the complete browse surface remains reachable without
@@ -98,9 +115,11 @@ The application does not collapse sections of a Topic's main content.
 Progressive disclosure occurs by navigating to immediate child Topics.
 
 Immediate children are genuine links even if visual design later presents them
-as cards or another navigational form. Native link semantics preserve keyboard
-operation, URL previews, and the user's ability to open a Topic in another tab
-or window.
+as rows or another navigational form. Their labelled region communicates
+**Narrower topics** or another equally clear broad-to-specific relationship;
+it is secondary to the Topic's content and not presented as the route required
+to find those Topics. Native link semantics preserve keyboard operation, URL
+previews, and the user's ability to open a Topic in another tab or window.
 
 Browse contexts are derived from canonical classification and reverse-parent
 data. Domain and kind labels link to their corresponding individual `/topics`
@@ -137,13 +156,21 @@ contains:
 - Topic result links that show title, kind, and domain context.
 
 The default unconstrained state lists every Topic in case-insensitive title
-order, with the UUID as a deterministic tie-breaker for duplicate titles. The
-initial System Design domain view groups its Topics by the accepted kind order
-when no query or kind filter is active, preserving alphabetical order inside
-each group. Other initial domain views remain flat and alphabetical. A kind
-filter, a query, or both always produce one flat result list so the user is not
-required to inspect empty or fragmented groups. Expanding grouped presentation
-to another domain requires evidence that it improves recognition there.
+order, with the UUID as a deterministic tie-breaker for duplicate titles.
+
+An initial domain view with no query or kind filter separates matching
+`area` Topics into a labelled **Overviews** region before the remaining
+results. Each overview remains a canonical Topic result whose visible Area
+kind and domain context distinguish it from the domain view itself. A domain
+with no matching Area Topic omits the region.
+
+After Overviews, the initial System Design domain view groups the remaining
+Topics by the accepted non-Area kind order, preserving alphabetical order
+inside each group. Other initial domain views keep their remaining results in
+one flat alphabetical list. A kind filter, a query, or both always produce one
+flat result list, including any matching Area Topic, so the user is not
+required to inspect empty or fragmented groups. Expanding non-Area grouping to
+another domain requires evidence that it improves recognition there.
 
 ### Matching and ordering
 
@@ -256,11 +283,13 @@ desktop, tablet, and mobile. Responsive layouts may rearrange or resize their
 presentation, but they do not introduce different navigation models or remove
 functionality.
 
-On narrow layouts, finder and filter controls stack in document order, grouped
-results remain under their headings, and Browse contexts remain before Topic
-main content. Wide layouts may place the context region beside main content
-only when CSS preserves its semantic order and a logical keyboard sequence.
-Related Topics and children remain distinct labelled regions at every width.
+On narrow layouts, the landing finder stacks before the complete domain list
+and secondary curated paths; finder and filter controls stack in document
+order; and grouped results remain under their headings. Browse contexts remain
+before Topic main content. Wide layouts may place the context region beside
+main content only when CSS preserves its semantic order and a logical keyboard
+sequence. Related Topics and narrower children remain distinct labelled
+regions at every width.
 
 The page content reflows without page-wide horizontal scrolling at narrow
 viewport widths. Inherently two-dimensional content, specifically code blocks
@@ -332,28 +361,42 @@ keyboard and assistive-technology review.
 
 ## Representative Flows
 
-### Browse from the landing page
+### Browse a domain from the landing page
 
 ```text
-Landing -> Java -> Collections -> Queue
+Landing -> System Design domain -> Exercises -> URL shortener
 ```
 
-Each selection replaces the current view, updates the URL and document title,
-starts the new Topic at the top, and moves focus to its main heading.
+Selecting System Design opens `/topics?domain=system-design`, not the System
+Design Area Topic. The domain view starts at the top with focus on its main
+heading and separates its overview, operations, decision aids, and exercises.
+Selecting URL shortener then opens its canonical Topic URL.
+
+### Follow a curated broad-to-specific path
+
+```text
+Landing -> Curated paths: Java -> Collections framework -> Queue
+```
+
+Each Topic selection replaces the current view, updates the URL and document
+title, starts the new Topic at the top, and moves focus to its main heading.
+This remains a useful path, but Queue is also independently reachable by title
+and domain browsing.
 
 ### Return through history
 
-From Queue, Back returns to Collections and restores its prior scroll and
-focus position when possible. A second Back returns to Java. This behavior is
-derived from browser history, not from Queue or Collections storing a parent.
+After the curated path above, Back returns to Collections framework and
+restores its prior scroll and focus position when possible. A second Back
+returns to Java. This behavior is derived from browser history, not from Queue
+or Collections framework storing one canonical parent.
 
 ### Open a Topic directly
 
 Opening a Queue URL directly displays the same Queue content and immediate
-children as reaching it through Collections. Its Browse contexts explain its
-domains and parent Topics without reconstructing the route taken. Home provides
-a path to the landing page; Back follows whatever actual browser history
-preceded the direct visit.
+children as reaching it through Collections framework. Its Browse contexts
+explain its domains and parent Topics without reconstructing the route taken.
+Home provides a path to the landing page; Back follows whatever actual browser
+history preceded the direct visit.
 
 ### Find a known Topic
 
@@ -365,8 +408,10 @@ moves focus to the Topic heading.
 ### Browse a domain by kind
 
 Opening the System Design domain view groups its Topics by content kind when no
-query or kind filter is active. Exercises are distinguishable from concepts and
-decision aids by visible headings and labels rather than icon or color alone.
+query or kind filter is active. The System Design Area Topic appears first as a
+clearly labelled overview result rather than as the gateway to the domain.
+Exercises are distinguishable from operations and decision aids by visible
+headings and labels rather than icon or color alone.
 
 ### Load an invalid Topic URL
 
@@ -378,8 +423,8 @@ the URL or pretending the failure is an empty catalog.
 This interaction model does not decide:
 
 - exact responsive breakpoints and font-delivery strategy;
-- final visual composition for the new finder, browse, context, and related
-  regions beyond the constraints recorded here and in the visual design;
+- component-level styling beyond the accepted browse-first wide and narrow
+  compositions and the constraints recorded here and in the visual design;
 - deployment infrastructure.
 
 The resolved implementation choices are recorded in the application

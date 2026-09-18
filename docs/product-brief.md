@@ -14,12 +14,14 @@ the technical boundary is documented in the
 The accepted presentation direction is documented in the
 [Visual Design](visual-design.md).
 
-The accepted post-MVP retrieval direction is **Direction C** from the
-[Topic findability audit](topic-findability-audit.md): retain broad-to-specific
-browsing while adding a Topic finder, an all-Topics browse surface,
-classification-aware domain views, path-independent Browse contexts, and
-curated Related Topics. These capabilities are delivered incrementally and do
-not replace the completed MVP baseline.
+The accepted post-MVP retrieval direction is a **browse-first hybrid**
+refinement of Direction C from the
+[Topic findability audit](topic-findability-audit.md): make title retrieval and
+classification-aware domain browsing the primary discovery paths while
+retaining useful broad-to-specific navigation as a secondary curated path.
+The complete all-Topics surface, path-independent Browse contexts, and curated
+Related Topics complement those entry points. These capabilities are delivered
+incrementally and do not invalidate the completed MVP baseline.
 
 ## Product Purpose
 
@@ -30,8 +32,8 @@ It addresses a common limitation of compact reference material: showing too
 little leaves important operations unclear, while putting every related topic
 on one page makes the reference slow to scan. Engineering Reference presents
 concise content for the selected Topic and provides several complementary
-retrieval paths: broad-to-specific navigation, title search, classified
-browsing, and contextual links to narrower or related Topics.
+retrieval paths: title search, classified browsing, broad-to-specific curated
+navigation, and contextual links to narrower or related Topics.
 
 ## Intended User
 
@@ -51,26 +53,40 @@ course platform, or learning-progress tracker.
 
 ## Experience Principles
 
-### Broad to specific
+### Browse first
 
-Users begin with broad technical areas and navigate through progressively
-narrower topics. A representative path is:
+Users can begin from the title they remember or the technical domain they
+recognize. The landing page makes both paths immediately available and keeps
+the complete catalog directly reachable. A user does not need to know a
+Topic's parent, container Topic, or one canonical taxonomy path before finding
+it.
+
+Domain browsing is classification-based rather than a traversal through a
+container Topic. Selecting System Design, for example, opens its filtered
+browse view, where content kinds make exercises and decision aids recognizable.
+
+### Curated broad-to-specific progression
+
+Ordered child relationships remain useful when they express genuine
+progression from a broad reference to narrower material. A representative path
+is:
 
 ```text
-Java -> Collections -> Queue
+Java -> Collections framework -> Queue
 ```
 
-The navigation model must support a deliberately sparse catalog. Adding a
-Topic should not require special-case routes, menus, or relationship logic
-in application code.
+This hierarchy is an optional retrieval path rather than the catalog's entry
+structure. The navigation model must support a deliberately sparse catalog,
+and adding a Topic should not require special-case routes, menus, or
+relationship logic in application code.
 
 ### Multiple retrieval paths
 
-Hierarchy remains a useful path, not the complete information architecture.
-The same canonical Topic can also be found by title, browsed through one or
-more technical domains, distinguished by its primary content kind, reached
-through a derived Browse context, or selected from a small curated Related
-Topics list.
+The same canonical Topic can be found by title, browsed through one or more
+technical domains, distinguished by its primary content kind, reached through
+a derived Browse context, selected through a useful ordered-child path, or
+selected from a small curated Related Topics list. Finder and domain entry
+points are primary; hierarchy is deliberately secondary.
 
 These paths answer different questions:
 
@@ -82,6 +98,25 @@ These paths answer different questions:
 
 Classification and relationships improve retrieval without changing Topic
 identity or copying canonical content into several locations.
+
+### Discovery direction decision
+
+The accepted presentation is **browse-first hybrid**:
+
+- title finder and complete domain entry are the primary landing paths;
+- the alphabetical/filterable index is always directly available;
+- ordered-child hierarchy remains as secondary curated progression; and
+- Topic context and Related Topics provide onward navigation after selection.
+
+A hierarchy-first presentation was rejected because adding search beside the
+existing cards would leave parent guessing and mixed container lists visually
+dominant. An index/facets-only presentation was rejected because it would
+discard useful curated progression and make every exploratory journey begin in
+the complete catalog. Pure search-first, pure flat-catalog, and graph/network
+navigation are also rejected as primary experiences: each serves fewer of the
+accepted retrieval jobs or introduces unnecessary complexity. They can be
+reconsidered only with evidence that the browse-first hybrid fails a concrete
+job.
 
 ### Concise and focused
 
@@ -127,14 +162,16 @@ The completed MVP provides:
 - stable identity for every Topic; and
 - support for broad navigational Topics that do not require main content.
 
-The product remains useful through browsing alone. Search supplements rather
-than replaces that path.
+The product remains useful without search through domain browsing and the
+complete catalog. Search complements those browse paths, while ordered-child
+navigation remains available where curated progression adds value.
 
 ### Direction C retrieval expansion
 
 The accepted incremental expansion adds:
 
 - a landing-page Topic finder;
+- landing-page entry points for the complete supported domain vocabulary;
 - an addressable all-Topics browse and search surface;
 - a deliberately small domain and content-kind classification;
 - domain browsing grouped by kind where that improves recognition, beginning
@@ -150,19 +187,20 @@ evidence and decisions.
 
 ### Initial content catalog
 
-The initial catalog is deliberately small. Java is a landing Topic with
-immediate children that include:
+The initial catalog is deliberately small. Java remains a curated landing
+Topic with immediate children that include:
 
 - Arrays;
-- Collections;
+- Collections framework;
 - Concurrency; and
 - JPA.
 
-Queue and List are the first concrete children of Collections used to validate
-the content and presentation model. The landing page can later include other
-broad subject areas such as System Design and Algorithms. The catalog will grow
-incrementally in response to real reference needs; completeness is not an MVP
-requirement.
+Queue and List are the first concrete children of Collections framework used
+to validate the content and presentation model. The landing page derives its
+primary domain entry points from the complete supported domain vocabulary and
+presents the catalog's ordered landing Topics as secondary curated paths. The
+catalog will grow incrementally in response to real reference needs;
+completeness is not an MVP requirement.
 
 Each Topic is authoritative for its own concise reference content. The
 content is purpose-built for this product rather than copied from another
@@ -173,17 +211,19 @@ artifact.
 The same core browsing and reference experience must work on desktop, tablet,
 and mobile layouts.
 
-Accessibility is a product requirement, not a final polishing step. Content and
-hierarchical navigation must remain understandable and operable for keyboard
-and assistive-technology users. The interaction model establishes WCAG 2.2
-Level AA as the target, and the application architecture defines the automated
+Accessibility is a product requirement, not a final polishing step. Content,
+finder and filter controls, domain browsing, and secondary hierarchical
+navigation must remain understandable and operable for keyboard and
+assistive-technology users. The interaction model establishes WCAG 2.2 Level
+AA as the target, and the application architecture defines the automated
 checks and manual verification expected for the MVP.
 
 ### Other quality expectations
 
 The product should:
 
-- preserve a consistent information hierarchy across viewport sizes;
+- preserve consistent discovery priorities and information relationships
+  across viewport sizes;
 - avoid requiring application-code changes for ordinary content additions;
 - keep the default branch in a releasable state once implementation begins;
 - include verification appropriate to each implemented behavior; and
@@ -250,11 +290,10 @@ The following remain possibilities rather than commitments:
 
 The product brief does not settle:
 
-- remaining implementation details for the accepted visual direction, beyond
-  the presentation metadata governed by the content and visual-design
-  authorities;
-- whether a focused Stitch exercise is useful for the new wide and narrow
-  compositions after the information model is accepted;
+- exact responsive breakpoints and component-level styling within the accepted
+  browse-first wide and narrow compositions;
+- whether a focused Stitch exercise would improve those accepted compositions
+  without reopening the information model;
 - deployment packaging and hosting details;
 - personal-state storage, if personal state is later justified;
 - migration and rollout sequencing beyond the initial catalog;
@@ -265,10 +304,11 @@ They must not be inferred from exploratory implementation.
 
 ## Product Success
 
-The product succeeds when a user can browse from a broad landing Topic such as
-Java, retrieve a known Topic by title without knowing its parent, distinguish
-different kinds of references within a domain, understand the context of a
-directly opened Topic, and move to narrower or related material. Those journeys
-must remain accessible and coherent on desktop, tablet, and mobile, and new
-content must continue to use the generic model without Topic-specific
+The product succeeds when a user can retrieve a known Topic by title without
+knowing its parent, enter a complete technical domain directly, distinguish
+different kinds of references within that domain, follow a useful curated path
+such as Java to Collections framework to Queue, understand the context of a
+directly opened Topic, and move to narrower or related material. Those
+journeys must remain accessible and coherent on desktop, tablet, and mobile,
+and new content must continue to use the generic model without Topic-specific
 application behavior.

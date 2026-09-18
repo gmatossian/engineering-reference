@@ -56,7 +56,7 @@ Topic's title, content, or ordered children.
 - Add each domain in which a reader could reasonably browse for the Topic. Do not
   copy the current ancestor chain mechanically, and do not add a domain merely
   because it is adjacent to the subject.
-- Choose the kind by the Topic's primary retrieval job: an organizing entry point,
+- Choose the kind by the Topic's primary retrieval job: an organizing overview,
   explanatory concept, operational lookup, decision aid, exercise, or reusable
   pattern. Classify how the reader uses the Topic rather than how the page happens
   to be formatted.

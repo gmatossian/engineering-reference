@@ -5,8 +5,9 @@
 This document defines the accepted application architecture and build pipeline.
 It preserves the implemented MVP boundary and specifies the incremental
 classification, index, search, context, and relationship responsibilities
-required by Direction C. It implements the decisions in the
-[product brief](product-brief.md), [content model](content-model.md),
+required by the browse-first refinement of Direction C. It implements the
+decisions in the [product brief](product-brief.md),
+[content model](content-model.md),
 [content storage representation](content-storage.md), and
 [navigation interaction model](interaction-model.md).
 
@@ -40,6 +41,8 @@ generated catalog is imported into the application bundle.
 - A read-only catalog service performs deterministic client-side title search,
   classification filtering, and context lookup over the bundled artifact; no
   backend or additional runtime request is introduced.
+- The landing view derives primary domain entries from the closed runtime
+  vocabulary and uses `landingTopicIds` only for secondary curated Topic paths.
 - Angular's sanitizer remains active when generated HTML is rendered.
 - Plain CSS, automated tests, accessibility checks, and one reproducible CI
   command support the initial implementation.
@@ -167,11 +170,11 @@ change plus styling, sanitization, and test coverage.
 
 Custom catalog validation enforces UUID identity, required classification,
 supported vocabulary keys, child and related references, authored ordering,
-uniqueness, child-graph acyclicity, and the requirement that every landing
-Topic has a summary. Child-graph reachability from a landing Topic is no longer
-required because every valid Topic is present in the all-Topics and domain
-indexes. The generator reports all discovered validation errors in one run and
-exits unsuccessfully when any are present.
+uniqueness, child-graph acyclicity, and the requirement that every curated
+landing Topic has a summary. Child-graph reachability from a curated landing
+Topic is not required because every valid Topic is present in the all-Topics
+and domain indexes. The generator reports all discovered validation errors in
+one run and exits unsuccessfully when any are present.
 
 ### Generated boundary
 
@@ -277,6 +280,8 @@ redirect to the landing page.
 for:
 
 - resolving the ordered landing Topics;
+- resolving the complete supported domain vocabulary in canonical display
+  order;
 - resolving every Topic in generated alphabetical order;
 - looking up a Topic by UUID; and
 - resolving a Topic's ordered child and Related Topic UUIDs;
@@ -312,23 +317,29 @@ from the Topic graph.
   controls, the All topics link, and router outlet. It treats Back as unavailable when
   `window.history.length <= 1`; this is a documented browser-history
   approximation rather than a guarantee about the destination.
-- `LandingPageComponent` displays the finder and ordered landing Topics.
+- `LandingPageComponent` displays the finder, All topics link, complete ordered
+  domain entry set, and secondary ordered landing Topics. Domain entries link
+  to `/topics?domain=<key>`; curated Topics link to their canonical UUID routes.
 - `TopicFinderComponent` owns the labelled landing or index search form without
   owning catalog data or navigation history.
 - `TopicIndexPageComponent` normalizes query parameters, composes search and
-  filters, exposes the result count, and selects alphabetical, relevance, or
-  grouped-domain presentation. The browse feature's closed grouped-domain set
-  initially contains only `system-design`; changing it requires interaction
-  review rather than a Topic metadata edit.
-- `TopicResultListComponent` renders grouped or flat Topic results as native
-  links with kind and domain context.
+  filters, exposes the result count, and selects alphabetical, relevance,
+  overview-plus-flat, or overview-plus-grouped presentation. A domain view with
+  no query or kind filter separates Area Topics into Overviews. The browse
+  feature's closed non-Area grouped-domain set initially contains only
+  `system-design`; changing it requires interaction review rather than a Topic
+  metadata edit.
+- `TopicResultListComponent` renders overview, grouped, or flat Topic results
+  as native links with kind and domain context.
 - `TopicPageComponent` resolves the route input, sets view metadata, and
   composes the selected Topic presentation.
 - `TopicContentComponent` renders a Topic's generated main-content HTML.
 - `TopicContextComponent` renders kind, domain links, and reverse-parent links
   from derived catalog data; it does not reconstruct browser history.
-- `TopicLinkListComponent` renders ordered landing or child Topics as native
-  links.
+- `TopicLinkListComponent` renders ordered curated landing or child Topics as
+  native links using an explicit presentation mode. Curated-path rows include
+  summaries; child rows omit descriptions. The component does not infer its
+  mode from Topic identity or placement metadata.
 - `RelatedTopicListComponent` renders the authored related UUID order as a
   separately labelled native-link region.
 - `TopicNotFoundComponent` provides the explicit unknown-route or unknown-Topic
@@ -358,8 +369,10 @@ The MVP uses plain CSS with CSS custom properties and component-scoped styles.
 It does not add Angular Material, another component framework, Tailwind, or a
 Sass compilation layer.
 
-Responsive implementation preserves the same content and navigation across
-viewports. The generator places Topic-content tables and code blocks inside
+Responsive implementation preserves the same content and discovery priority
+across viewports. The landing finder precedes the complete domain-entry grid
+and quieter curated paths in both DOM and keyboard order. The generator places
+Topic-content tables and code blocks inside
 labelled, keyboard-focusable presentation wrappers. These wrappers own bounded
 horizontal overflow without changing the native semantics of the enclosed
 `table`, `pre`, or `code` elements or making the full page scroll horizontally.
@@ -425,10 +438,11 @@ attributes semantically; it does not require byte-identical HTML serialization.
 Direction C coverage also includes domain and kind validation, related
 relationship validation, derived index determinism, reverse-parent context,
 duplicate-title ordering, exact/prefix/substring title ranking, query-parameter
-normalization, grouped domain browsing, no-results behavior, result-count
-announcements, direct Topic context, and Related Topics. Browser tests exercise
-these journeys at representative wide and narrow viewports, including keyboard
-focus and automated accessibility checks.
+normalization, complete landing-domain links, Area-overview separation, grouped
+System Design browsing, no-results behavior, result-count announcements,
+secondary curated-path navigation, direct Topic context, and Related Topics.
+Browser tests exercise these journeys at representative wide and narrow
+viewports, including keyboard focus and automated accessibility checks.
 
 Automated tooling supplements rather than replaces manual keyboard and
 assistive-technology review. The completed MVP verification included a manual
@@ -533,8 +547,9 @@ Direction C is delivered through bounded, dependency-ordered slices:
    generator, derived runtime indexes, and every published Topic; keep the code
    and classification/relationship migration of all 67 Topics in the decision
    baseline as distinct review sections even though they merge together;
-2. add the `/topics` route, landing finder, title search, filters, and grouped
-   domain browsing;
+2. add the browse-first landing finder, complete domain entries, secondary
+   curated paths, `/topics` route, title search, filters, Area-overview
+   treatment, and grouped System Design browsing;
 3. add Browse contexts and Related Topics to the Topic view; and
 4. complete focused responsive, cross-browser, keyboard, screen-reader, and
    accessibility verification for the new journeys.
@@ -544,15 +559,16 @@ runtime data without reopening the authored contract or deriving duplicate
 indexes in application code.
 
 Later slices may begin only when their required runtime data exists. Each slice
-must preserve usable hierarchical browsing and keep the default branch
-releasable.
+must preserve useful hierarchical paths as secondary navigation without making
+them a prerequisite for discovery, and keep the default branch releasable.
 
 ## Deliberately Unresolved
 
 This decision does not select:
 
 - a deployment provider, domain, or hosting rewrite configuration;
-- detailed branding, typography, spacing, breakpoints, or visual composition;
+- exact component styling and responsive breakpoints within the accepted
+  browse-first compositions;
 - image optimization beyond deterministic copying and cache-busting names; or
 - fuzzy or semantic search, search aliases, authored ordered collections, or
   typed relationships.

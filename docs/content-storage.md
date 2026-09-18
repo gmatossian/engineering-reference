@@ -24,7 +24,8 @@ redeploying it.
 - Each Topic is authored as Markdown with YAML front matter.
 - Each Topic has its own human-readable directory under `content/topics/`.
 - Local image assets live alongside the Topic that owns them.
-- `content/catalog.yaml` contains the ordered landing Topic UUIDs.
+- `content/catalog.yaml` contains the ordered secondary curated landing Topic
+  UUIDs.
 - The build discovers Topic files rather than relying on a central registry.
 - Topic front matter owns domain membership, one content kind, ordered
   children, and ordered curated Related Topics.
@@ -71,7 +72,8 @@ both `Complexity`.
 
 ## Catalog Source
 
-`content/catalog.yaml` contains only the ordered landing Topic UUIDs:
+`content/catalog.yaml` contains only the ordered secondary curated landing
+Topic UUIDs:
 
 ```yaml
 landingTopicIds:
@@ -83,8 +85,9 @@ collection, avoiding a duplicated registry that would need to be maintained
 for every content change.
 
 `landingTopicIds` must contain at least one UUID. Its order is significant and
-controls landing-page presentation. Every UUID must resolve to a discovered
-Topic.
+controls the landing page's secondary Curated paths presentation. Primary
+domain entries are derived from the closed domain vocabulary rather than this
+list. Every UUID must resolve to a discovered Topic.
 
 ## Topic Source
 
@@ -118,10 +121,10 @@ Six properties are required:
 
 Two presentation properties are optional for a Topic generally:
 
-- `summary` is concise landing-card text. It is trimmed, must be a non-empty
-  single line of at most 160 characters, and is treated as plain text rather
-  than Markdown or HTML. Complete-catalog validation requires it for every
-  Topic referenced by `landingTopicIds`.
+- `summary` is concise curated landing-Topic text. It is trimmed, must be a
+  non-empty single line of at most 160 characters, and is treated as plain text
+  rather than Markdown or HTML. Complete-catalog validation requires it for
+  every Topic referenced by `landingTopicIds`.
 - `iconKey` selects a decorative icon from the supported vocabulary. It is a
   registry key rather than a filename, URL, or markup fragment. When omitted,
   the UI supplies its generic icon fallback.

@@ -7,9 +7,11 @@ the [product brief](product-brief.md), [content model](content-model.md), and
 [navigation and responsive interaction model](interaction-model.md) into an
 implementation-facing presentation system.
 
-The accepted MVP references remain authoritative for the existing shell,
-landing cards, child navigation, and Topic content. Direction C extends that
-system with a finder, classified all-Topics browsing, Browse contexts, and
+The accepted MVP references remain authoritative for the existing shell, child
+navigation, Topic content, palette, typography, and surface language. Their
+hierarchy-prominent landing composition is superseded by the browse-first
+Direction C landing below. Direction C extends the system with a finder,
+primary domain entry, classified all-Topics browsing, Browse contexts, and
 Related Topics. Those new surfaces follow the constraints below; they do not
 make synthetic prototype details authoritative.
 
@@ -37,7 +39,8 @@ The direction was selected because it:
 
 - gives a deliberately sparse catalog enough visual structure without adding
   product functionality;
-- distinguishes primary landing destinations from child navigation;
+- distinguishes primary domain discovery from secondary curated paths and
+  child navigation;
 - uses typography and iconography to improve recognition and hierarchy;
 - supports both short navigation-only Topics and dense content-bearing Topics;
 - supports direct title retrieval, classified browsing, and contextual onward
@@ -106,8 +109,9 @@ third-party request privacy becomes a requirement.
   pixels for cards and rows.
 - Separate surfaces primarily with spacing, hairline borders, and small
   contrast changes.
-- Use only subtle shadows. Clickable landing cards may lift by approximately 2
-  pixels on hover when motion preferences allow it.
+- Use only subtle shadows. Clickable landing domain entries and curated Topic
+  rows may lift by approximately 2 pixels on hover when motion preferences
+  allow it.
 - Keep a generous but bounded central canvas. Prose should retain a readable
   line length while tables, code blocks, and images may use the wider content
   measure.
@@ -139,32 +143,104 @@ The landing page begins with:
 
 - the `Engineering Reference` title;
 - the subtitle `Concise technical knowledge for software engineering.`; and
-- the action hint `Choose a topic to explore.`
+- the action hint `Find a topic or browse by domain.`
 
 A bounded **Find a topic** form follows the introduction. It uses a visible
 label, a conventional single-line search input, and a text submit action. An
-adjacent or immediately following **Browse all topics** link provides the
-non-search path. The finder is prominent enough to recognize without visually
-outweighing the product title or turning the landing page into a search-engine
-facsimile.
+adjacent or immediately following **All topics** link provides the
+unconstrained catalog path. The finder is the first retrieval control and is
+prominent enough to recognize without outweighing the product title or turning
+the landing page into a search-engine facsimile.
 
-Landing Topics are presented as equal-weight cards in catalog order. Cards use
-equal dimensions within a layout row so size does not imply importance,
-popularity, or hierarchy. The whole card is one native Topic link containing:
+A **Browse by domain** region follows. It presents every supported domain in
+canonical vocabulary order as equal-weight native links to the corresponding
+filtered all-Topics view. Domain entries are compact browse controls rather
+than Topic cards: they show the domain display label and a navigation cue, but
+do not borrow the icon, summary, or identity of an Area Topic. At spacious
+widths they form a balanced multi-column grid; they reflow through fewer
+columns to one full-width entry per row when content fit requires it.
 
-- a decorative Topic icon;
-- the Topic title;
-- concise supporting text; and
-- a navigation chevron.
+A visually quieter **Curated paths** region follows the primary discovery
+controls. Its heading and supporting copy identify the entries as selected
+Topic overviews with optional narrower paths. It renders the ordered
+`landingTopicIds` as direct canonical Topic links using each Topic's title,
+summary, and optional decorative icon. These entries preserve useful
+broad-to-specific journeys without resembling another set of domain controls.
+They use compact rows or a restrained small grid and must not visually
+outweigh the finder or domain region.
 
-At spacious widths, the cards form a three-column grid. The same ordered list
-may reflow through two columns before becoming a single column on narrow
-screens. Exact thresholds should be chosen from where the content stops fitting
-comfortably, not from device names.
+The separation between **Browse by domain** and **Curated paths** is conveyed
+by headings and supporting text, not color or icons alone. A domain link and a
+same-named Area Topic may both be present: `System Design` under Browse by
+domain opens `/topics?domain=system-design`, while `System Design` under
+Curated paths opens its canonical Topic overview.
 
-Supporting text comes from the Topic's plain-text `summary`. Complete-catalog
-validation requires a summary for each landing Topic, so the UI does not need
-a hard-coded application mapping or a missing-summary presentation state.
+### Accepted low-fidelity compositions
+
+The wide landing composition uses the real closed domain vocabulary and the
+current curated landing Topics:
+
+```text
+Engineering Reference
+Concise technical knowledge for software engineering.
+
+Find a topic
+[ choosing storage or Java Set                   ] [ Find topic ]
+All topics
+
+Browse by domain
+[ Java ]         [ Collections ]   [ Concurrency ]   [ Persistence ]
+[ Databases ]    [ HTTP ]          [ System Design ] [ Algorithms and data structures ]
+
+Curated paths
+Selected Topic overviews with optional narrower paths
+[ Java — Core language, collections, concurrency, and persistence concepts. ]
+[ System Design — Estimate workloads and choose structures and services that meet scale and reliability needs. ]
+[ HTTP — Common response status codes, redirects, required headers, and retry implications. ]
+[ Databases — Use SQL window functions for ranking, running calculations, and row-to-row comparisons. ]
+```
+
+The narrow composition preserves the same priority and document order rather
+than introducing mobile-only navigation:
+
+```text
+Engineering Reference
+Concise technical knowledge for software engineering.
+
+Find a topic
+[ choosing storage or Java Set ]
+[ Find topic                    ]
+All topics
+
+Browse by domain
+[ Java ]
+[ Collections ]
+[ Concurrency ]
+[ Persistence ]
+[ Databases ]
+[ HTTP ]
+[ System Design ]
+[ Algorithms and data structures ]
+
+Curated paths
+Selected Topic overviews with optional narrower paths
+[ Java
+  Core language, collections, concurrency,
+  and persistence concepts. ]
+[ System Design
+  Estimate workloads and choose structures and
+  services that meet scale and reliability needs. ]
+[ HTTP
+  Common response status codes, redirects,
+  required headers, and retry implications. ]
+[ Databases
+  Use SQL window functions for ranking, running
+  calculations, and row-to-row comparisons. ]
+```
+
+Exact wrapping thresholds, field widths, and decorative icon choices remain
+implementation details. The order, relative emphasis, destinations, and
+distinction between domain browsing and curated Topic paths do not.
 
 ## Topic presentation
 
@@ -191,11 +267,17 @@ rendered.
 
 ### Navigation-only Topics
 
-Children use compact, uniform, full-width rows rather than landing cards. Each
-row is one native link containing a decorative icon, the child title, and a
-navigation chevron. Rows do not include descriptions, sequence numbers, or
-opaque classification codes. Classification belongs to the all-Topics and
-context surfaces rather than being inferred from a child icon.
+Children use compact, uniform, full-width rows distinct from primary domain
+entries and curated-path rows. Each row is one native link containing a
+decorative icon, the child title, and a navigation chevron. Rows do not include
+descriptions, sequence numbers, or opaque classification codes. Classification
+belongs to the all-Topics and context surfaces rather than being inferred from
+a child icon.
+
+The region uses a relationship heading such as **Narrower topics**. It remains
+visually secondary to main content and must not resemble the primary landing
+domain grid or imply that following the hierarchy is necessary to find a
+Topic.
 
 Every Topic should display an icon when represented in navigation. Icons may
 be reused, and the UI must provide a generic fallback when a specific icon is
@@ -236,16 +318,79 @@ Their boundaries, focus indicators, and selected values remain clear without
 depending on color. At narrow widths they stack to the available measure; they
 do not move into a modal, drawer, or horizontally scrolling toolbar.
 
-The default index is an alphabetical vertical list. A domain view can introduce
-kind section headings in the accepted vocabulary order. Each Topic result is a
-native link whose primary line is the title and whose supporting text names its
-kind and domains so duplicate or ambiguous titles remain understandable. The
-UI does not display UUIDs, storage directories, relevance scores, internal
-taxonomy keys, or result numbers.
+The default index is an alphabetical vertical list. A domain view with no query
+or kind filter first separates matching Area Topics into a labelled
+**Overviews** region. Those rows retain the canonical title and visibly
+identify their Area kind, so a result such as the System Design Topic is
+recognizable as an optional overview rather than a second domain gateway.
+
+The System Design domain then uses kind section headings for its remaining
+results in accepted vocabulary order. Other domain views keep their remaining
+results flat unless later evidence supports further grouping. Each Topic result
+is a native link whose primary line is the title and whose supporting text
+names its kind and domains so duplicate or ambiguous titles remain
+understandable. The UI does not display UUIDs, storage directories, relevance
+scores, internal taxonomy keys, or result numbers.
 
 Search relevance changes ordering but not card size, color, or prominence.
 The no-results state is calm and explicit, remains within the results region,
 and keeps the search and filter controls available.
+
+The accepted wide System Design view uses the real current classification:
+
+```text
+All topics
+[ Search titles ]  [ Domain: System Design ]  [ Kind: All ]  [ Clear filters ]
+7 topics
+
+Overviews
+  System Design                              Area · System Design
+
+Operations
+  Scale and estimation                       Operations · System Design
+
+Decision aids
+  Choosing storage                           Decision aid · System Design
+  Pagination: offset vs cursor               Decision aid · System Design
+  Short URL identifiers                      Decision aid · System Design
+  Trade-off triggers                         Decision aid · System Design
+
+Exercises
+  URL shortener                              Exercise · System Design
+```
+
+At narrow widths the same controls and sections stack without hiding context:
+
+```text
+All topics
+[ Search titles                  ]
+[ Domain: System Design          ]
+[ Kind: All                      ]
+[ Clear filters                  ]
+7 topics
+
+Overviews
+[ System Design
+  Area · System Design           ]
+
+Operations
+[ Scale and estimation
+  Operations · System Design     ]
+
+Decision aids
+[ Choosing storage
+  Decision aid · System Design   ]
+[ Pagination: offset vs cursor
+  Decision aid · System Design   ]
+[ Short URL identifiers
+  Decision aid · System Design   ]
+[ Trade-off triggers
+  Decision aid · System Design   ]
+
+Exercises
+[ URL shortener
+  Exercise · System Design       ]
+```
 
 ## Interaction states
 
@@ -265,7 +410,8 @@ and keeps the search and filter controls available.
 
 Responsive layouts preserve content, order, semantics, and navigation:
 
-- landing cards move from a multi-column grid to one full-width card per row;
+- landing domain entries move from a multi-column grid to one full-width link
+  per row, followed by the secondary curated paths;
 - child navigation remains a vertical list of full-width rows;
 - finder and browse controls stack in logical document order;
 - grouped index sections and result metadata remain visible rather than
@@ -317,10 +463,12 @@ governing product documents prevail.
 
 ## Resolved presentation metadata
 
-The generic content pipeline represents landing-card text through `summary`
-and an optional specific icon through `iconKey`. Both values travel from Topic
-front matter through validation and deterministic generation into the shared
-runtime contract. The UI owns the generic icon fallback and all accent
+The generic content pipeline represents curated landing-Topic text through
+`summary` and an optional specific icon through `iconKey`. Both values travel
+from Topic front matter through validation and deterministic generation into
+the shared runtime contract. Primary domain entries instead use the closed
+domain vocabulary's generated labels and order; they do not borrow Topic
+presentation metadata. The UI owns the generic icon fallback and all accent
 treatment; there is no authored accent-family field.
 
 This boundary preserves generic rendering and allows ordinary content to use
@@ -338,10 +486,13 @@ The screenshots are durable visual references rendered from the selected
 Stitch concepts. They contain synthetic content and some explicitly excluded
 prototype details described above.
 
-They predate Direction C and therefore do not specify the finder, all-Topics
-page, Browse contexts, or Related Topics. A focused later Stitch exercise may
-compare wide and narrow compositions for those surfaces using real catalog
-data, but is not required to implement or accept the information model.
+They predate Direction C and therefore do not specify the browse-first landing
+composition, finder, all-Topics page, Browse contexts, or Related Topics. The
+landing screenshots remain references for palette, typography, surface, and
+interaction language rather than landing information hierarchy. A focused
+later Stitch exercise may refine the accepted wide and narrow compositions
+using real catalog data, but cannot reopen their discovery priority or
+navigation semantics without another accepted product decision.
 
 ### Landing
 
