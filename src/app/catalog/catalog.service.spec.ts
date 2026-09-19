@@ -116,6 +116,20 @@ describe('CatalogService', () => {
     ]);
   });
 
+  it('projects the unconstrained catalog as the complete root forest', () => {
+    const view = service.getTopicBrowseView({ query: '', domain: null, kind: null });
+
+    expect(view.mode).toBe('hierarchy');
+    expect(view.resultCount).toBe(67);
+    expect(view.sections).toEqual([]);
+    expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
+      'Java',
+      'System Design',
+      'HTTP',
+      'Databases',
+    ]);
+  });
+
   it('intersects domain and kind filters', () => {
     const view = service.getTopicBrowseView({
       query: '',
@@ -124,10 +138,12 @@ describe('CatalogService', () => {
     });
 
     expect(view.resultCount).toBe(1);
+    expect(view.mode).toBe('results');
+    expect(view.resultHeading).toBe('Exercises in System Design');
     expect(view.sections[0].topics.map(({ title }) => title)).toEqual(['URL shortener']);
   });
 
-  it('separates Area overviews and groups the default System Design view by kind', () => {
+  it('projects an unconstrained root domain as a hierarchy', () => {
     const view = service.getTopicBrowseView({
       query: '',
       domain: 'system-design',
@@ -135,29 +151,57 @@ describe('CatalogService', () => {
     });
 
     expect(view.resultCount).toBe(7);
-    expect(view.sections.map(({ label }) => label)).toEqual([
-      'Overviews',
-      'Operations',
-      'Decision aids',
-      'Exercises',
-    ]);
-    expect(view.sections[0].topics.map(({ title }) => title)).toEqual(['System Design']);
-    expect(view.sections[2].topics.map(({ title }) => title)).toEqual([
-      'Choosing storage for a URL shortener',
-      'Pagination: offset vs cursor',
-      'Short URL identifiers',
+    expect(view.mode).toBe('hierarchy');
+    expect(view.sections).toEqual([]);
+    expect(view.hierarchyRoots.map(({ title }) => title)).toEqual(['System Design']);
+    expect(view.hierarchyRoots[0].matchingTopicCount).toBe(7);
+    expect(view.hierarchyRoots[0].children.map(({ title }) => title)).toEqual([
+      'Scale and estimation',
+      'URL shortener',
       'Trade-off triggers',
+      'Pagination: offset vs cursor',
     ]);
   });
 
-  it('keeps non-grouped domain results flat after optional overviews', () => {
+  it('keeps a small root domain in the same hierarchy presentation', () => {
     const view = service.getTopicBrowseView({ query: '', domain: 'http', kind: null });
 
-    expect(view.sections.map(({ label }) => label)).toEqual(['Overviews', null]);
-    expect(view.sections.flatMap(({ topics }) => topics.map(({ title }) => title))).toEqual([
-      'HTTP',
+    expect(view.mode).toBe('hierarchy');
+    expect(view.hierarchyRoots.map(({ title }) => title)).toEqual(['HTTP']);
+    expect(view.hierarchyRoots[0].children.map(({ title }) => title)).toEqual([
       'HTTP status codes',
     ]);
+  });
+
+  it('retains non-matching ancestors as context for a non-root domain', () => {
+    const view = service.getTopicBrowseView({ query: '', domain: 'collections', kind: null });
+    const java = view.hierarchyRoots[0];
+
+    expect(view.resultCount).toBe(28);
+    expect(java.title).toBe('Java');
+    expect(java.matchesDomain).toBe(false);
+    expect(java.matchingTopicCount).toBe(28);
+    expect(java.children.map(({ title }) => title)).toEqual([
+      'Arrays',
+      'Collections framework',
+      'Java language evolution',
+    ]);
+    expect(java.children[0].matchesDomain).toBe(false);
+    expect(java.children[1].matchesDomain).toBe(true);
+    expect(java.children[2].matchesDomain).toBe(false);
+    expect(java.children[2].children.map(({ title }) => title)).toEqual(['Sequenced collections']);
+  });
+
+  it('describes filtered and searched result context explicitly', () => {
+    expect(
+      service.getTopicBrowseView({ query: '', domain: 'java', kind: 'concept' }).resultHeading,
+    ).toBe('Concepts in Java');
+    expect(
+      service.getTopicBrowseView({ query: 'queue', domain: 'java', kind: 'concept' }).resultHeading,
+    ).toBe('Concepts matching “queue” in Java');
+    expect(
+      service.getTopicBrowseView({ query: 'queue', domain: null, kind: null }).resultHeading,
+    ).toBe('Results for “queue”');
   });
 
   it('resolves child Topics in their declared order', () => {

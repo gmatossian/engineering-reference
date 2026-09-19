@@ -46,7 +46,10 @@ export interface TopicResultSection {
 
 export interface TopicBrowseView {
   readonly criteria: TopicBrowseCriteria;
+  readonly hierarchyRoots: readonly TopicBrowseHierarchyNode[];
+  readonly mode: 'hierarchy' | 'results';
   readonly resultCount: number;
+  readonly resultHeading: string | null;
   readonly sections: readonly TopicResultSection[];
 }
 
@@ -54,14 +57,21 @@ export interface TopicHierarchyNode extends TopicSummary {
   readonly children: readonly TopicHierarchyNode[];
 }
 
+export interface TopicBrowseHierarchyNode extends TopicBrowseResult {
+  readonly children: readonly TopicBrowseHierarchyNode[];
+  readonly matchesDomain: boolean;
+  readonly matchingTopicCount: number;
+}
+
 export type TopicPath = readonly TopicSummary[];
 
-const TOPIC_KIND_GROUP_LABELS: Readonly<Record<Exclude<TopicKindKey, 'area'>, string>> = {
+const TOPIC_KIND_RESULT_LABELS: Readonly<Record<TopicKindKey, string>> = {
+  area: 'Overviews',
   concept: 'Concepts',
   operations: 'Operations',
   'decision-aid': 'Decision aids',
   exercise: 'Exercises',
-  pattern: 'Patterns and techniques',
+  pattern: 'Patterns',
 };
 
 const compareText = (left: string, right: string): number =>
@@ -107,44 +117,26 @@ export class CatalogService {
 
   getTopicBrowseView(criteria: TopicBrowseCriteria): TopicBrowseView {
     const matchingTopics = this.getMatchingTopics(criteria);
-    const shouldSeparateOverviews =
-      criteria.domain !== null && criteria.query === '' && criteria.kind === null;
+    const shouldShowHierarchy = criteria.query === '' && criteria.kind === null;
 
-    if (!shouldSeparateOverviews) {
+    if (shouldShowHierarchy) {
       return {
         criteria,
+        hierarchyRoots: this.getBrowseHierarchy(criteria.domain),
+        mode: 'hierarchy',
         resultCount: matchingTopics.length,
-        sections: [{ key: 'results', label: null, topics: matchingTopics }],
+        resultHeading: null,
+        sections: [],
       };
-    }
-
-    const overviewTopics = matchingTopics.filter((topic) => topic.kind.key === 'area');
-    const remainingTopics = matchingTopics.filter((topic) => topic.kind.key !== 'area');
-    const sections: TopicResultSection[] = [];
-
-    if (overviewTopics.length > 0) {
-      sections.push({ key: 'overviews', label: 'Overviews', topics: overviewTopics });
-    }
-
-    if (criteria.domain === 'system-design') {
-      for (const kind of TOPIC_KIND_KEYS) {
-        if (kind === 'area') {
-          continue;
-        }
-
-        const topics = remainingTopics.filter((topic) => topic.kind.key === kind);
-        if (topics.length > 0) {
-          sections.push({ key: kind, label: TOPIC_KIND_GROUP_LABELS[kind], topics });
-        }
-      }
-    } else if (remainingTopics.length > 0) {
-      sections.push({ key: 'results', label: null, topics: remainingTopics });
     }
 
     return {
       criteria,
+      hierarchyRoots: [],
+      mode: 'results',
       resultCount: matchingTopics.length,
-      sections,
+      resultHeading: this.getResultHeading(criteria),
+      sections: [{ key: 'results', label: null, topics: matchingTopics }],
     };
   }
 
@@ -174,6 +166,13 @@ export class CatalogService {
 
   getHierarchyRoots(): readonly TopicHierarchyNode[] {
     return this.getRootTopicIds().map((id) => this.buildHierarchyNode(id));
+  }
+
+  getBrowseHierarchy(domain: TopicDomainKey | null): readonly TopicBrowseHierarchyNode[] {
+    return this.getRootTopicIds().flatMap((id) => {
+      const result = this.buildDomainHierarchyNode(id, domain);
+      return result === null ? [] : [result.node];
+    });
   }
 
   getTopicPaths(topicId: string): readonly TopicPath[] {
@@ -224,6 +223,26 @@ export class CatalogService {
     return foldedTitle.startsWith(foldedQuery) ? 1 : 2;
   }
 
+  private getResultHeading(criteria: TopicBrowseCriteria): string | null {
+    if (criteria.query === '' && criteria.kind === null) {
+      return null;
+    }
+
+    const domainLabel = criteria.domain === null ? null : TOPIC_DOMAIN_LABELS[criteria.domain];
+    const kindLabel = criteria.kind === null ? null : TOPIC_KIND_RESULT_LABELS[criteria.kind];
+    const domainSuffix = domainLabel === null ? '' : ` in ${domainLabel}`;
+
+    if (criteria.query !== '' && kindLabel !== null) {
+      return `${kindLabel} matching “${criteria.query}”${domainSuffix}`;
+    }
+
+    if (criteria.query !== '') {
+      return `Results for “${criteria.query}”${domainSuffix}`;
+    }
+
+    return `${kindLabel}${domainSuffix}`;
+  }
+
   private getRequiredBrowseResult(id: string): TopicBrowseResult {
     const topic = this.getTopic(id);
 
@@ -269,6 +288,53 @@ export class CatalogService {
     return {
       ...this.getRequiredSummary(id),
       children: topic.childTopicIds.map((childId) => this.buildHierarchyNode(childId)),
+    };
+  }
+
+  private buildDomainHierarchyNode(
+    id: string,
+    domain: TopicDomainKey | null,
+  ): { readonly matchingIds: ReadonlySet<string>; readonly node: TopicBrowseHierarchyNode } | null {
+    const topic = this.getTopic(id);
+
+    if (topic === undefined) {
+      throw new Error(`Generated catalog references unknown Topic ${id}`);
+    }
+
+    const childResults = topic.childTopicIds
+      .map((childId) => this.buildDomainHierarchyNode(childId, domain))
+      .filter(
+        (
+          result,
+        ): result is {
+          readonly matchingIds: ReadonlySet<string>;
+          readonly node: TopicBrowseHierarchyNode;
+        } => result !== null,
+      );
+    const matchesDomain = domain === null || topic.domains.includes(domain);
+
+    if (!matchesDomain && childResults.length === 0) {
+      return null;
+    }
+
+    const matchingIds = new Set<string>();
+    if (matchesDomain) {
+      matchingIds.add(id);
+    }
+    for (const child of childResults) {
+      for (const matchingId of child.matchingIds) {
+        matchingIds.add(matchingId);
+      }
+    }
+
+    return {
+      matchingIds,
+      node: {
+        ...this.getRequiredBrowseResult(id),
+        children: childResults.map(({ node }) => node),
+        matchesDomain,
+        matchingTopicCount: matchingIds.size,
+      },
     };
   }
 

@@ -106,6 +106,7 @@ lands:
 │       ├── catalog/
 │       │   └── catalog.service.ts
 │       ├── browse/
+│       │   ├── domain-topic-hierarchy.*
 │       │   ├── topic-index-page.*
 │       │   ├── topic-finder.*
 │       │   └── topic-result-list.*
@@ -350,14 +351,16 @@ derived from the Topic graph.
 - `TopicFinderComponent` owns the labelled persistent header search form without
   owning catalog data or navigation history.
 - `TopicIndexPageComponent` normalizes query parameters, composes search and
-  filters, exposes the result count, and selects alphabetical, relevance,
-  overview-plus-flat, or overview-plus-grouped presentation. A domain view with
-  no query or kind filter separates Area Topics into Overviews. The browse
-  feature's closed non-Area grouped-domain set initially contains only
-  `system-design`; changing it requires interaction review rather than a Topic
-  metadata edit.
-- `TopicResultListComponent` renders overview, grouped, or flat Topic results
-  as native links with kind and domain context.
+  filters, exposes the result count, and selects hierarchy or flat-results
+  presentation. No query and no kind filter selects hierarchy presentation;
+  any title query or kind filter selects flat results with an explicit heading.
+- `DomainTopicHierarchy` renders the complete or domain-pruned catalog forest
+  as nested lists with native Topic links and independent disclosure controls.
+  It starts every real root expanded, leaves deeper branches collapsed, retains
+  out-of-domain ancestors when they provide necessary structural context, and
+  reports unique matching Topic counts per branch.
+- `TopicResultListComponent` renders flat search or kind-filter results as
+  native links with kind and domain context.
 - `TopicPageComponent` resolves the route input, sets view metadata, and
   composes the selected Topic header, contextual paths, hierarchy, content,
   immediate children, and Related Topics. Its header spans the wide layout so
