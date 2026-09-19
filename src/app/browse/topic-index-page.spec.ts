@@ -64,7 +64,7 @@ describe('TopicIndexPage', () => {
 
     expect(host.querySelector('legend')?.textContent).toContain('Topic type');
     expect(labels).toEqual([
-      'All',
+      'All types',
       'Overviews',
       'Concepts',
       'Operations',
