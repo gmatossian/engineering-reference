@@ -12,37 +12,39 @@ relatedTopicIds:
   - '8cd3c5fb-eea7-4398-ba7e-8b6496ec431f'
 ---
 
-Choose storage per **workload**, not once for the entire system. A URL shortener can
-use different stores for authoritative mappings, fast redirects, and analytics.
+Choose storage per **workload**, not once for the entire system. Start with the
+simplest store that meets current requirements; specialize only when measured
+access patterns or scale justify the added cost.
 
-## Separate the workloads
+## Workload → starting point
 
-| Workload                        | Starting point                           | Why                                                        |
-| ------------------------------- | ---------------------------------------- | ---------------------------------------------------------- |
-| Create and manage short URLs    | Relational database                      | Constraints, transactions, ownership, and flexible queries |
-| Resolve `shortCode → longUrl`   | Indexed relational lookup                | Simple, sufficient default before scale proves otherwise   |
-| Resolve at demonstrated scale   | Cache or distributed key-value store     | Direct lookup, partitioning by key, and horizontal scale   |
-| Store and query redirect events | Analytics database, off the request path | Large scans, grouping, aggregation, and retention          |
+- **Create and manage short URLs → Relational database.** Constraints,
+  transactions, ownership, and flexible queries.
+- **Resolve `shortCode → longUrl` → Indexed relational lookup.** A simple,
+  sufficient default before scale proves otherwise.
+- **Repeated hot redirects → Cache.** Reduce authoritative-store reads without
+  changing the system of record.
+- **Partitioned direct lookup at demonstrated scale → Distributed key-value
+  store.** Partition by key and add capacity horizontally.
+- **Store and query redirect events → Analytics database.** Support large scans,
+  grouping, aggregation, and retention off the request path.
 
-Event capture may first pass through a queue or durable event stream. The analytics
-database is where those events are stored and queried; it should not delay the
-critical redirect path.
+Keep event capture off the synchronous redirect path. A queue or durable event
+stream can buffer events; the analytics database stores and queries them.
 
 ## Relational or key-value?
 
-| Concern            | Relational database                                 | Key-value store                                        |
-| ------------------ | --------------------------------------------------- | ------------------------------------------------------ |
-| Primary access     | Key lookup plus flexible queries and joins          | Direct lookup by a known key                           |
-| Integrity          | Unique constraints and mature transactions          | Usually narrower or implementation-specific controls   |
-| Query flexibility  | Secondary indexes, joins, and ad hoc queries        | Access patterns must usually be designed in advance    |
-| Initial operation  | One general-purpose system may be enough            | Adds a specialized system and its operational cost     |
-| Scaling path       | Scale up, index, replicate reads, cache, then shard | Partition by key and add capacity horizontally         |
-| Scaling difficulty | Cross-shard joins and transactions become harder    | Hot keys, consistency, and repartitioning still matter |
+- **Relational database:** key lookup plus flexible queries, joins, unique
+  constraints, and mature transactions. Start with one general-purpose system;
+  scale up, index, replicate reads, cache, then shard if evidence requires it.
+- **Key-value store:** direct lookup by a known key and straightforward horizontal
+  partitioning. Access patterns, secondary queries, cross-record changes, hot keys,
+  consistency, and repartitioning require deliberate handling.
 
 A relational primary-key lookup is already a key lookup. Do not introduce a
 key-value store merely because the redirect path uses a key.
 
-## A practical starting design
+## Starting relational shape
 
 Store the authoritative mapping relationally:
 
@@ -54,23 +56,20 @@ created_at
 expires_at
 ```
 
-Then evolve from evidence:
+## Evidence → next move → cost
 
-1. Index and measure the redirect lookup.
-2. Cache hot mappings if database reads become significant.
-3. Keep analytics event ingestion away from the synchronous redirect path.
-4. Consider a distributed key-value primary store only when throughput,
-   availability, or partitioning requirements justify its constraints.
+- **Redirect lookups miss the latency target → Inspect the query plan and verify
+  the primary-key index.** Another index adds write and storage overhead only if
+  the access pattern actually needs one.
+- **A small set of mappings receives repeated reads → Cache hot mappings.** Name
+  invalidation, eviction, hot-key, and stale-data behavior.
+- **Read load exceeds the primary's practical capacity → Scale up or add read
+  replicas.** Name instance cost, replica lag, and failover behavior.
+- **Analytics work threatens redirect latency → Buffer events and write them to an
+  analytics store.** Name lag, retries, retention, and pipeline operations.
+- **Measured scale requires partitioned direct lookup → Consider a distributed
+  key-value authoritative store.** Name narrower queries, repartitioning, and
+  consistency work.
 
-## Scaling trade-offs
-
-Relational databases can scale a long way through **indexes, larger instances, read
-replicas, and caching**. Sharding is possible, but relationships, constraints, and
-transactions become harder when their data spans shards.
-
-Key-value stores often make horizontal partitioning more direct because the key
-determines placement. In exchange, secondary access patterns, cross-record changes,
-and consistency behavior require more deliberate design.
-
-The decision is not “which database scales?” It is **which trade-offs match the
-measured workload without adding unjustified complexity?**
+Choose the option whose constraints match the measured workload, not the datastore
+with the broadest scaling claim.
