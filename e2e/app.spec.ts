@@ -7,6 +7,9 @@ const QUEUE_TOPIC_ID = '8cbea92a-606e-4ed3-839c-c7fff67f0909';
 const COMPLEXITY_TOPIC_ID = 'bf417331-9329-42b4-9517-351ef6af3b85';
 const HTTP_STATUS_CODES_TOPIC_ID = 'b97384d3-f986-4850-a6b0-a1c3b893ee86';
 const TRADEOFF_TRIGGERS_TOPIC_ID = '9009159b-54aa-4724-94a2-5189a1e21437';
+const ARRAYS_AND_LISTS_TOPIC_ID = 'a2fc39d5-9564-4260-b247-f38d53bedecc';
+const STREAMS_TOPIC_ID = '2d23f8e8-66db-4d0a-b5bc-bfc0536d5ab8';
+const OPERATIONS_AND_COLLECTORS_TOPIC_ID = '45d1ae48-9ecf-4186-8df2-2e199ebcb4b4';
 
 test.describe('cross-browser smoke', { tag: '@smoke' }, () => {
   test('renders the landing page and its bundled Topics', async ({ page }) => {
@@ -66,7 +69,10 @@ test.describe('cross-browser smoke', { tag: '@smoke' }, () => {
     await expect(page).toHaveTitle('Java | Engineering Reference');
     await expect(page.locator('.topic-content')).toHaveCount(0);
 
-    await page.getByRole('link', { name: 'Collections framework', exact: true }).click();
+    await page
+      .getByRole('navigation', { name: 'Narrower topics' })
+      .getByRole('link', { name: 'Collections framework', exact: true })
+      .click();
 
     await expect(page).toHaveURL(`/topics/${COLLECTIONS_TOPIC_ID}`);
     await expect(
@@ -96,10 +102,19 @@ test('navigates through bundled Topic detail with native history', async ({ page
     'Choose the interface by the behavior the program requires',
   );
 
-  await page.getByRole('link', { name: 'Queue', exact: true }).click();
+  await page
+    .getByRole('navigation', { name: 'Narrower topics' })
+    .getByRole('link', { name: 'Queue', exact: true })
+    .click();
 
   await expect(page).toHaveURL(`/topics/${QUEUE_TOPIC_ID}`);
   await expect(page.getByRole('heading', { level: 1, name: 'Queue' })).toBeFocused();
+  await expect(
+    page
+      .locator('.topic-hierarchy-wide')
+      .getByRole('navigation', { name: 'Browse surrounding topics' })
+      .getByRole('link', { name: 'Queue', exact: true }),
+  ).toHaveAttribute('aria-current', 'page');
   await expect(
     page.getByRole('img', {
       name: 'Elements entering at the tail and leaving from the head of a queue',
@@ -109,17 +124,17 @@ test('navigates through bundled Topic detail with native history', async ({ page
   await expect(page.locator('.topic-content')).toContainText(
     'A queue holds elements before processing',
   );
-  await expect(page.getByRole('link', { name: 'Complexity', exact: true })).toHaveAttribute(
-    'href',
-    `/topics/${COMPLEXITY_TOPIC_ID}`,
-  );
+  const complexityLink = page
+    .getByRole('navigation', { name: 'Narrower topics' })
+    .getByRole('link', { name: 'Complexity', exact: true });
+  await expect(complexityLink).toHaveAttribute('href', `/topics/${COMPLEXITY_TOPIC_ID}`);
 
-  await page.getByRole('link', { name: 'Complexity', exact: true }).click();
+  await complexityLink.click();
 
   await expect(page).toHaveURL(`/topics/${COMPLEXITY_TOPIC_ID}`);
   await expect(page.getByRole('heading', { level: 1, name: 'Complexity' })).toBeFocused();
   await expect(page.locator('.topic-content table')).toBeVisible();
-  await expect(page.getByRole('navigation', { name: 'Subtopics' })).toHaveCount(0);
+  await expect(page.getByRole('navigation', { name: 'Narrower topics' })).toHaveCount(0);
 
   await page.getByRole('button', { name: 'Back', exact: true }).click();
 
@@ -138,6 +153,130 @@ test('navigates through bundled Topic detail with native history', async ({ page
   await expect(
     page.getByRole('heading', { level: 1, name: 'Engineering Reference' }),
   ).toBeFocused();
+});
+
+test('projects every real path and repeated occurrence for a multi-parent Topic', async ({
+  page,
+}) => {
+  await page.goto(`/topics/${ARRAYS_AND_LISTS_TOPIC_ID}`);
+
+  const paths = page.getByRole('navigation', { name: 'Topic paths' });
+  await expect(paths.getByRole('list')).toHaveCount(2);
+  await expect(paths.getByRole('list', { name: 'Path 1 of 2' })).toContainText(
+    /Java\s*Arrays\s*Arrays and lists/,
+  );
+  await expect(paths.getByRole('list', { name: 'Path 2 of 2' })).toContainText(
+    /Java\s*Collections framework\s*List\s*Arrays and lists/,
+  );
+
+  const hierarchy = page
+    .locator('.topic-hierarchy-wide')
+    .getByRole('navigation', { name: 'Browse surrounding topics' });
+  const currentOccurrences = hierarchy.getByRole('link', { name: 'Arrays and lists' });
+  await expect(currentOccurrences).toHaveCount(2);
+  await expect(currentOccurrences.nth(0)).toHaveAttribute(
+    'href',
+    `/topics/${ARRAYS_AND_LISTS_TOPIC_ID}`,
+  );
+  await expect(currentOccurrences.nth(1)).toHaveAttribute('aria-current', 'page');
+  const disclosureListIds = await page
+    .locator('[id*="-topic-children-"]')
+    .evaluateAll((lists) => lists.map(({ id }) => id));
+  expect(new Set(disclosureListIds).size).toBe(disclosureListIds.length);
+
+  const classification = page.getByRole('navigation', { name: 'Topic classification' });
+  await expect(classification.getByRole('link', { name: 'Operations' })).toHaveAttribute(
+    'href',
+    '/topics?kind=operations',
+  );
+  await expect(classification.getByRole('link', { name: 'Collections' })).toHaveAttribute(
+    'href',
+    '/topics?domain=collections',
+  );
+
+  await page.reload();
+  await expect(paths.getByRole('list')).toHaveCount(2);
+  await expect(currentOccurrences).toHaveCount(2);
+});
+
+test('keeps disclosure state independent for repeated hierarchy occurrences', async ({ page }) => {
+  await page.goto(`/topics/${STREAMS_TOPIC_ID}`);
+
+  const hierarchy = page
+    .locator('.topic-hierarchy-wide')
+    .getByRole('navigation', { name: 'Browse surrounding topics' });
+  await expect(hierarchy.getByRole('button', { name: 'Collapse Streams' })).toHaveCount(2);
+  const historyLength = await page.evaluate(() => history.length);
+
+  await hierarchy.getByRole('button', { name: 'Collapse Streams' }).first().click();
+
+  await expect(hierarchy.getByRole('button', { name: 'Expand Streams' })).toHaveCount(1);
+  await expect(hierarchy.getByRole('button', { name: 'Collapse Streams' })).toHaveCount(1);
+  await expect(page).toHaveURL(`/topics/${STREAMS_TOPIC_ID}`);
+  expect(await page.evaluate(() => history.length)).toBe(historyLength);
+
+  await page.setViewportSize({ width: 375, height: 720 });
+  const narrowExplorer = page.locator('.topic-hierarchy-narrow');
+  await narrowExplorer.locator('summary').click();
+  await expect(narrowExplorer.getByRole('button', { name: 'Expand Streams' })).toHaveCount(1);
+  await expect(narrowExplorer.getByRole('button', { name: 'Collapse Streams' })).toHaveCount(1);
+});
+
+test(
+  'collapses narrow hierarchy context after Topic navigation and focuses the new heading',
+  { tag: '@smoke' },
+  async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 720 });
+    await page.goto(`/topics/${STREAMS_TOPIC_ID}`);
+
+    const explorer = page.locator('.topic-hierarchy-narrow');
+    await expect(explorer).not.toHaveAttribute('open', '');
+    await expect(explorer.locator('summary')).toContainText('2 paths');
+    await explorer.locator('summary').click();
+    await expect(explorer).toHaveAttribute('open', '');
+
+    await explorer
+      .getByRole('link', { name: 'Operations and collectors', exact: true })
+      .first()
+      .click();
+
+    await expect(page).toHaveURL(`/topics/${OPERATIONS_AND_COLLECTORS_TOPIC_ID}`);
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Operations and collectors' }),
+    ).toBeFocused();
+    await expect(explorer).not.toHaveAttribute('open', '');
+
+    await explorer.locator('summary').click();
+    await expect(explorer.getByRole('link', { name: 'Operations and collectors' })).toHaveCount(2);
+    await expect(
+      explorer.getByRole('link', { name: 'Operations and collectors' }).first(),
+    ).toHaveAttribute('aria-current', 'page');
+    await expect(explorer.getByRole('button', { name: 'Collapse Streams' })).toHaveCount(2);
+  },
+);
+
+test('provides a wide-layout hierarchy bypass to the first Topic content region', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 420 });
+  await page.goto(`/topics/${QUEUE_TOPIC_ID}`);
+
+  const skipLink = page.getByRole('link', { name: 'Skip to topic content' });
+  const initialUrl = page.url();
+  const historyLength = await page.evaluate(() => history.length);
+  await skipLink.focus();
+  await expect(skipLink).toBeVisible();
+  await skipLink.click();
+  const primaryContent = page.locator('#topic-primary-content');
+  await expect(primaryContent).toBeFocused();
+  await expect(page).toHaveURL(initialUrl);
+  expect(await page.evaluate(() => history.length)).toBe(historyLength);
+  expect(
+    await primaryContent.evaluate((element) => {
+      const bounds = element.getBoundingClientRect();
+      return bounds.top >= 0 && bounds.top < window.innerHeight;
+    }),
+  ).toBe(true);
 });
 
 test('finds a Topic from the landing page without knowing its parent', async ({ page }) => {
@@ -400,8 +539,14 @@ test('renders the application without detectable accessibility violations', asyn
       `/topics/${COMPLEXITY_TOPIC_ID}`,
       `/topics/${HTTP_STATUS_CODES_TOPIC_ID}`,
       `/topics/${TRADEOFF_TRIGGERS_TOPIC_ID}`,
+      `/topics/${ARRAYS_AND_LISTS_TOPIC_ID}`,
+      `/topics/${STREAMS_TOPIC_ID}`,
     ]) {
       await page.goto(path);
+
+      if (viewport.name === 'narrow' && path === `/topics/${STREAMS_TOPIC_ID}`) {
+        await page.locator('.topic-hierarchy-narrow summary').click();
+      }
 
       const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
 

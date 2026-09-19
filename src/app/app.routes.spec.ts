@@ -58,7 +58,7 @@ describe('application routes', () => {
 
     const routeElement = harness.routeNativeElement;
     const childLink = routeElement?.querySelector<HTMLAnchorElement>(
-      `nav[aria-label="Subtopics"] a[href="/topics/${COLLECTIONS_TOPIC_ID}"]`,
+      `nav[aria-label="Narrower topics"] a[href="/topics/${COLLECTIONS_TOPIC_ID}"]`,
     );
 
     expect(topicPage.id()).toBe(JAVA_TOPIC_ID);
@@ -77,7 +77,7 @@ describe('application routes', () => {
     const routeElement = harness.routeNativeElement;
     const content = routeElement?.querySelector('.topic-content');
     const childLink = routeElement?.querySelector<HTMLAnchorElement>(
-      'nav[aria-label="Subtopics"] a',
+      'nav[aria-label="Narrower topics"] a',
     );
 
     expect(content?.textContent).toContain(
@@ -95,7 +95,28 @@ describe('application routes', () => {
     const routeElement = harness.routeNativeElement;
 
     expect(routeElement?.querySelector('.topic-content table')).not.toBeNull();
-    expect(routeElement?.querySelector('nav[aria-label="Subtopics"]')).toBeNull();
+    expect(routeElement?.querySelector('nav[aria-label="Narrower topics"]')).toBeNull();
+  });
+
+  it('renders every contextual path and linked classification for a multi-parent Topic', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/topics/a2fc39d5-9564-4260-b247-f38d53bedecc', TopicPage);
+    await harness.fixture.whenStable();
+
+    const routeElement = harness.routeNativeElement;
+    const paths = routeElement?.querySelectorAll('nav[aria-label="Topic paths"] ol');
+    const currentPathItems = routeElement?.querySelectorAll(
+      'nav[aria-label="Topic paths"] [aria-current="page"]',
+    );
+    const classificationLinks = routeElement?.querySelectorAll(
+      'nav[aria-label="Topic classification"] a',
+    );
+
+    expect(paths).toHaveLength(2);
+    expect(paths?.[0].getAttribute('aria-label')).toBe('Path 1 of 2');
+    expect(paths?.[1].textContent).toContain('Collections framework');
+    expect(currentPathItems).toHaveLength(2);
+    expect(classificationLinks).toHaveLength(3);
   });
 
   it('presents an unknown Topic without redirecting', async () => {

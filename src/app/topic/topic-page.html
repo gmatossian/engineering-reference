@@ -2,19 +2,58 @@
   <article class="topic-page">
     <header class="topic-page__header">
       <h1 tabindex="-1">{{ resolvedTopic.title }}</h1>
+
+      @if (topicPaths(); as paths) {
+        @if (paths.length > 0 && paths[0].length > 1) {
+          <app-topic-breadcrumbs [currentTopicId]="id()" [paths]="paths" />
+        }
+      }
+
+      @if (topicKind(); as kind) {
+        <app-topic-classification [domains]="topicDomains()" [kind]="kind" />
+      }
     </header>
 
-    @if (resolvedTopic.mainContentHtml !== null) {
-      <app-topic-content [html]="resolvedTopic.mainContentHtml" />
-    }
-
-    @if (childTopics(); as children) {
-      @if (children.length > 0) {
-        <div class="topic-page__children">
-          <app-topic-link-list ariaLabel="Subtopics" [topics]="children" />
-        </div>
+    <div class="topic-page__layout">
+      @if (hasPrimaryRegion()) {
+        <a
+          class="topic-page__skip"
+          [href]="'/topics/' + id() + '#topic-primary-content'"
+          (click)="skipToPrimaryContent($event)"
+        >
+          Skip to topic content
+        </a>
       }
-    }
+
+      <app-topic-hierarchy
+        [currentTopicId]="id()"
+        [paths]="topicPaths()"
+        [roots]="hierarchyRoots"
+      />
+
+      <div class="topic-page__primary">
+        @if (resolvedTopic.mainContentHtml !== null) {
+          <app-topic-content
+            id="topic-primary-content"
+            tabindex="-1"
+            [html]="resolvedTopic.mainContentHtml"
+          />
+        }
+
+        @if (childTopics(); as children) {
+          @if (children.length > 0) {
+            <section
+              class="topic-page__children"
+              tabindex="-1"
+              [attr.id]="resolvedTopic.mainContentHtml === null ? 'topic-primary-content' : null"
+            >
+              <h2>Narrower topics</h2>
+              <app-topic-link-list ariaLabel="Narrower topics" [topics]="children" />
+            </section>
+          }
+        }
+      </div>
+    </div>
   </article>
 } @else {
   <app-topic-not-found />

@@ -1,0 +1,17 @@
+<nav class="topic-paths" aria-label="Topic paths">
+  <p>Found in</p>
+
+  @for (path of paths(); track $index) {
+    <ol [attr.aria-label]="'Path ' + ($index + 1) + ' of ' + paths().length">
+      @for (pathTopic of path; track pathTopic.id) {
+        <li>
+          @if (pathTopic.id === currentTopicId()) {
+            <span aria-current="page">{{ pathTopic.title }}</span>
+          } @else {
+            <a [routerLink]="['/topics', pathTopic.id]">{{ pathTopic.title }}</a>
+          }
+        </li>
+      }
+    </ol>
+  }
+</nav>

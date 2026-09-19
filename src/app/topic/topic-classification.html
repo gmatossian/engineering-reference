@@ -1,0 +1,9 @@
+<nav aria-label="Topic classification">
+  <a [routerLink]="['/topics']" [queryParams]="{ kind: kind().key }">{{ kind().label }}</a>
+  @for (domain of domains(); track domain.key) {
+    <span aria-hidden="true">·</span>
+    <a [routerLink]="['/topics']" [queryParams]="{ domain: domain.key }">
+      {{ domain.label }}
+    </a>
+  }
+</nav>
