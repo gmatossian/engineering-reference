@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import type { RuntimeCatalog, RuntimeTopic } from '../../../contracts/runtime-catalog';
 import generatedCatalog from '../../../.generated/catalog.json';
+import type { TopicBrowseHierarchyNode } from './catalog.service';
 import { CatalogService } from './catalog.service';
 
 const JAVA_TOPIC_ID = 'd3ef7c8b-ee6b-48f5-9039-2aa94d03c19c';
@@ -14,7 +15,13 @@ const PERSIST_MERGE_AND_SAVE_TOPIC_ID = 'd1a3f0d1-92a1-4c65-87a0-ee7d8d10131e';
 const ENTITY_MANAGER_LIFECYCLE_TOPIC_ID = '072fc2b2-2755-45ec-aabe-d8a4740fa4e9';
 const DIRTY_CHECKING_TOPIC_ID = '62196430-caa5-48c7-bb68-c064209d6291';
 const ARRAYS_AND_LISTS_TOPIC_ID = 'a2fc39d5-9564-4260-b247-f38d53bedecc';
+const STREAMS_TOPIC_ID = '2d23f8e8-66db-4d0a-b5bc-bfc0536d5ab8';
 const catalog = generatedCatalog as RuntimeCatalog;
+
+const flattenHierarchy = (
+  nodes: readonly TopicBrowseHierarchyNode[],
+): readonly TopicBrowseHierarchyNode[] =>
+  nodes.flatMap((node) => [node, ...flattenHierarchy(node.children)]);
 
 const createRootTopic = (title: string): RuntimeTopic => ({
   title,
@@ -128,6 +135,15 @@ describe('CatalogService', () => {
       'HTTP',
       'Databases',
     ]);
+  });
+
+  it('preserves every occurrence of a multi-parent Topic with one canonical id', () => {
+    const roots = service.getBrowseHierarchy(null);
+    const occurrences = flattenHierarchy(roots).filter(({ id }) => id === STREAMS_TOPIC_ID);
+
+    expect(occurrences).toHaveLength(2);
+    expect(occurrences.every(({ id }) => id === STREAMS_TOPIC_ID)).toBe(true);
+    expect(roots[0].matchingTopicCount).toBe(56);
   });
 
   it('intersects domain and kind filters', () => {
