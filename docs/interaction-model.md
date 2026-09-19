@@ -4,8 +4,9 @@
 
 This document defines the accepted navigation and responsive interaction model.
 It preserves the implemented MVP behavior and extends it with the browse-first
-persistent title search, classified domain entry, Browse contexts, and Related Topics defined as
-the refined Direction C in the [product brief](product-brief.md), building on
+persistent title search, classified domain entry, graph-projected Topic
+context, and Related Topics defined as the refined Direction C in the
+[product brief](product-brief.md), building on
 the evidence and original recommendation in the
 [Topic findability audit](topic-findability-audit.md). It also builds on the
 [content model](content-model.md) and the
@@ -18,11 +19,12 @@ Detailed presentation decisions are defined separately in the
 navigation behavior, responsive semantics, and accessibility expectations. It
 does not define deployment infrastructure.
 
-The Direction C interactions below are accepted target behavior. The bundled
-runtime data foundation is implemented, while the application continues to
-provide the completed MVP behavior until the bounded UI slices are implemented
-and verified. This document authorizes those follow-ups; it does not imply that
-the data-foundation change has shipped the new interactions.
+The Direction C data foundation and browse-first landing, search, and index
+interactions are implemented. The graph-projected Topic context behavior below
+remains accepted target behavior until its bounded UI follow-up is implemented
+and verified. Related Topics remain a separately accepted future Topic-view
+capability and are not part of that hierarchy follow-up. This document does not
+imply that the documentation change has shipped either interaction.
 
 ## Interaction Summary
 
@@ -38,8 +40,8 @@ Engineering Reference is a conventional addressable web experience:
 - selecting a curated landing Topic, child Topic, or result replaces the
   current view with that Topic's view at every viewport size;
 - every Topic has a directly addressable URL;
-- Topic views expose path-independent Browse contexts and curated Related
-  Topics;
+- Topic views expose every real ancestor path, an expandable multi-root context
+  forest, path-independent classification, and curated Related Topics;
 - Home returns to the landing page;
 - Back follows actual browser history rather than navigating to a Topic's
   conceptual parent;
@@ -47,8 +49,9 @@ Engineering Reference is a conventional addressable web experience:
 - navigation uses the same model on desktop, tablet, and mobile; and
 - accessibility targets WCAG 2.2 Level AA.
 
-The application does not use modal Topic views, canonical breadcrumbs, custom
-swipe navigation, or a separate application-specific navigation history.
+The application does not use modal Topic views, one falsely canonical
+breadcrumb, custom swipe navigation, or a separate application-specific
+navigation history.
 
 ## Landing View
 
@@ -88,6 +91,10 @@ The landing view is a deliberate starting point rather than a permanently
 visible navigation panel. The application does not retain its domain entries
 or curated paths in a persistent sidebar.
 
+This does not prohibit the Topic-local hierarchy explorer defined below. That
+explorer projects the complete child graph around the selected Topic; it is not
+a persistent copy of the landing domain entries or curated-path list.
+
 Domain entries and curated Topics use native link semantics. Domain order
 follows the vocabulary; curated Topic order follows `landingTopicIds`.
 
@@ -97,20 +104,34 @@ returning Home first. Home and Back retain their existing meanings.
 
 ## Topic View
 
-A selected Topic view presents, in semantic document order:
+A selected Topic view presents:
 
 1. the Topic title;
-2. a compact Browse contexts region containing its kind, domain links, and
-   derived parent links;
-3. its complete main content, when present;
-4. its ordered immediate children, when present; and
-5. its ordered Related Topics, when present.
+2. every derived ancestor path as contextual breadcrumb navigation, when the
+   Topic has an ancestor;
+3. compact classification containing its kind and domain links;
+4. an expandable hierarchy explorer containing the complete root forest;
+5. its complete main content, when present;
+6. its ordered immediate children, when present; and
+7. its ordered Related Topics, when that separate capability is implemented
+   and the list is non-empty.
+
+The Topic header containing title, breadcrumbs, and classification comes first
+in DOM order. The hierarchy navigation follows it, then the Topic content and
+onward-link regions. On spacious layouts CSS places the hierarchy beside the
+content and supplies a visible-on-focus **Skip to topic content** link. Its
+target is the first region after the hierarchy: main content when present,
+otherwise immediate-child navigation. On narrow layouts the same hierarchy
+occupies its DOM position as the collapsed in-page disclosure defined below and
+does not add a skip link for that single collapsed control.
 
 This produces the following valid presentations:
 
-- a navigation-only Topic displays its title, Browse contexts, and children;
-- a content-only Topic displays its title, Browse contexts, and main content
-  without an empty child-navigation region; and
+- a navigation-only Topic displays its title, paths or root placement,
+  classification, hierarchy context, and children;
+- a content-only Topic displays its title, paths or root placement,
+  classification, hierarchy context, and main content without an empty
+  child-navigation region; and
 - a Topic with content and children retains complete main content before its
   ordered child navigation.
 
@@ -124,16 +145,20 @@ it is secondary to the Topic's content and not presented as the route required
 to find those Topics. Native link semantics preserve keyboard operation, URL
 previews, and the user's ability to open a Topic in another tab or window.
 
-Browse contexts are derived from canonical classification and reverse-parent
-data. Domain and kind labels link to their corresponding individual `/topics`
-browse filters; both filters can be applied to reach their intersection.
-Parent labels link to canonical Topic URLs. Several contexts can be displayed,
-and none is presented as the one canonical path or as the route the user took.
+Classification is derived from canonical domain and kind data. Domain and kind
+labels link to their corresponding individual `/topics` browse filters; both
+filters can be applied to reach their intersection. Hierarchy paths and the
+explorer are derived separately from child and reverse-parent data, so
+classification never masquerades as ancestry.
 
 Related Topics are genuine Topic links in authored order. They remain visually
-and semantically distinct from narrower children and Browse contexts. The
-region is omitted when the list is empty; the UI does not invent links from
-shared domains, kinds, or browsing behavior.
+and semantically distinct from narrower children, hierarchy context, and
+classification. The region is omitted when the list is empty; the UI does not
+invent links from shared domains, kinds, or browsing behavior.
+
+Defining that separation does not add Related Topics rendering to the
+graph-context implementation slice. That future UI remains independent and
+must not be inferred from the hierarchy explorer.
 
 ## Topic Navigation
 
@@ -147,6 +172,55 @@ next/previous control.
 A Topic's meaning does not depend on the route used to reach it. If the same
 Topic is reachable through more than one parent, its directly addressed view
 is the same in every case.
+
+## Hierarchy Explorer and Contextual Paths
+
+The hierarchy explorer projects the directed acyclic child graph as a forest
+of peer root Topics. It does not add one synthetic application root. Roots that
+also occur in `landingTopicIds` follow that authored order; any remaining roots
+follow deterministic title and UUID order.
+
+On each Topic view:
+
+- every root remains available;
+- every branch from a root through the current Topic starts expanded;
+- the current Topic's own occurrence starts expanded when it has children;
+- roots and branches unrelated to the current Topic start collapsed;
+- the current Topic is visibly and programmatically marked in every occurrence;
+- siblings are the other ordered children beneath that occurrence's parent;
+- Topics with children use independent disclosure controls, while their titles
+  remain ordinary canonical links; and
+- Topics without children are ordinary canonical links.
+
+A Topic referenced by several parents appears in every real branch. Duplicate
+occurrences are not aliases or copies: each opens the same `/topics/<uuid>` URL.
+The interface may add a quiet supplementary cue that another occurrence exists,
+but the repeated title, current state, and path structure must remain
+understandable without that cue.
+
+Contextual breadcrumbs list every derived root-to-current path. Each trail uses
+native ancestor links and ends in the current Topic as non-linked text with
+`aria-current="page"`. One navigation landmark labelled **Topic paths** contains
+all trails. Each trail is an ordered list with an accessible label such as
+**Path 1 of 2**. The trails remain visible together; the UI does not choose a
+preferred path based on navigation history. A root Topic has no ancestor trail,
+so the breadcrumb region is omitted rather than displaying a self-only path.
+
+Disclosure changes do not change the URL or add browser-history entries.
+Manual expansion is transient view state: it is neither persisted locally nor
+encoded in the URL. Navigating to another Topic computes that Topic's required
+open branches anew. Refresh and direct visits therefore reconstruct the same
+deterministic context from the canonical Topic URL.
+
+Disclosure state is keyed by occurrence path rather than Topic UUID. Expanding
+one occurrence of a multi-parent Topic does not expand another occurrence, and
+each disclosure controls a uniquely identified child list.
+
+The explorer uses a navigation landmark labelled **Browse surrounding topics**
+with conventional nested navigation, native links, and disclosure buttons. It
+is not an ARIA `tree`: the product needs normal link behavior, independent
+disclosure, and browser affordances more than the specialized focus and
+arrow-key model of a desktop tree widget.
 
 ## All-Topics Browse and Search
 
@@ -233,10 +307,10 @@ than a guarantee about the identity of a preceding destination. The application
 does not construct a separate history stack or reinterpret Back using the Topic
 graph.
 
-The application does not display a canonical breadcrumb. Because a Topic may
-have multiple parents and domains, a single breadcrumb would imply an authority
-the model does not have. Browse contexts instead expose all relevant derived
-parents and classifications without depending on navigation history.
+The application displays contextual breadcrumb trails derived from every real
+ancestor path. It never chooses one as the canonical parent path or reconstructs
+the route the user happened to take. Back therefore remains browser history,
+not hierarchy navigation.
 
 ## URLs and Browser Behavior
 
@@ -289,11 +363,21 @@ functionality.
 
 On narrow layouts, the header search collapses to a labelled control that
 expands a full-width field within the header; index filter controls stack in
-document order; and grouped results remain under their headings. Browse contexts remain
-before Topic main content. Wide layouts may place the context region beside
-main content only when CSS preserves its semantic order and a logical keyboard
-sequence. Related Topics and narrower children remain distinct labelled
-regions at every width.
+document order; and grouped results remain under their headings. Contextual
+breadcrumbs and classification remain near the Topic title. The hierarchy
+forest moves into an in-page **Browse surrounding topics** disclosure that is
+collapsed initially, reports the number of applicable current paths when that
+number exceeds one, and exposes the same roots, occurrences, links, and
+disclosure behavior when opened. It is not moved into a modal, off-canvas
+drawer, or mobile-only navigation model. Related Topics and narrower children
+remain distinct labelled regions at every width when the separate Related
+Topics capability is implemented.
+
+Following a Topic link from the narrow explorer performs normal Topic
+navigation, moves focus to the new Topic heading, and resets the enclosing
+**Browse surrounding topics** disclosure to collapsed. Its newly selected
+Topic paths are nevertheless expanded inside the disclosure and become visible
+when it is opened again.
 
 The page content reflows without page-wide horizontal scrolling at narrow
 viewport widths. Inherently two-dimensional content, specifically code blocks
@@ -323,9 +407,9 @@ fails generation or the application build rather than becoming a user-facing
 runtime condition.
 
 Topic navigation is local and does not show per-Topic loading indicators.
-Title search, filtering, Browse contexts, and Related Topics are also computed
-from the bundled catalog and do not introduce loading, retry, or offline error
-states.
+Title search, filtering, hierarchy paths, classification, and Related Topics
+are also computed from the bundled catalog and do not introduce loading,
+retry, or offline error states.
 
 ### Topic not found
 
@@ -350,6 +434,12 @@ At minimum, the interaction must provide:
 - native links for Topic and external-link navigation;
 - explicitly labelled native search and filter controls;
 - programmatically associated kind and domain context for browse results;
+- one labelled breadcrumb-navigation landmark containing every real ancestor
+  path as a separately labelled ordered list;
+- a labelled hierarchy-navigation landmark with native links, disclosure
+  buttons, and `aria-current="page"` on every current occurrence;
+- an explicit bypass or equivalent verified focus strategy when expanded
+  hierarchy precedes Topic content in keyboard order;
 - status announcements for result-count changes without announcing the full
   result list;
 - visible focus indicators;
@@ -397,10 +487,20 @@ or Collections framework storing one canonical parent.
 ### Open a Topic directly
 
 Opening a Queue URL directly displays the same Queue content and immediate
-children as reaching it through Collections framework. Its Browse contexts
-explain its domains and parent Topics without reconstructing the route taken.
-Home provides a path to the landing page; Back follows whatever actual browser
-history preceded the direct visit.
+children as reaching it through Collections framework. Its breadcrumb trail
+and expanded Java → Collections framework → Queue branch provide hierarchy
+context without reconstructing the route taken. Its classification links still
+explain its domains and kind. Home provides a path to the landing page; Back
+follows whatever actual browser history preceded the direct visit.
+
+### Open a multi-parent Topic directly
+
+Opening Equality and hash codes displays both real contextual paths through Set
+and Map. The Java and Collections framework branches plus both parent branches
+start expanded in the forest, and both current occurrences link to the same
+canonical URL. Each occurrence exposes its own sibling group. Related Topics
+remain in their separately labelled lateral-navigation region when that future
+capability is implemented.
 
 ### Find a known Topic
 
@@ -433,7 +533,7 @@ This interaction model does not decide:
 
 The resolved implementation choices are recorded in the application
 architecture. Remaining choices must preserve the interaction and
-accessibility behavior defined above. Canonical breadcrumbs, modal Topic
-navigation, custom swipe navigation, and an application-specific history stack
-remain outside the accepted product unless a later product decision explicitly
-introduces them.
+accessibility behavior defined above. A single canonical parent breadcrumb,
+modal Topic navigation, custom swipe navigation, and an application-specific
+history stack remain outside the accepted product unless a later product
+decision explicitly introduces them.
