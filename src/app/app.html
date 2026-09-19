@@ -1,5 +1,9 @@
 <header class="application-header">
-  <nav class="application-navigation" aria-label="Application navigation">
+  <nav
+    class="application-navigation"
+    [class.application-navigation--search-expanded]="headerSearchExpanded()"
+    aria-label="Application navigation"
+  >
     <button class="back-control" type="button" [disabled]="backUnavailable" (click)="goBack()">
       <span class="back-control__arrow" aria-hidden="true">←</span>
       <span>Back</span>
@@ -9,6 +13,34 @@
       <img class="application-mark" src="icons/application-mark.svg" alt="" />
       <span>Engineering Reference</span>
     </a>
+
+    <app-topic-finder
+      #headerFinder
+      class="header-search"
+      [class.header-search--expanded]="headerSearchExpanded()"
+      appearance="compact"
+      inputId="header-topic-search"
+      label="Search topics"
+      placeholder="Search topics…"
+      [value]="headerSearchQuery()"
+      (searchSubmit)="searchTopics($event)"
+    />
+
+    <button
+      class="header-search-toggle"
+      type="button"
+      aria-controls="header-topic-search"
+      [attr.aria-expanded]="headerSearchExpanded()"
+      (click)="toggleHeaderSearch()"
+    >
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <circle cx="10.5" cy="10.5" r="6.5" />
+        <path d="m15.5 15.5 5 5" />
+      </svg>
+      <span class="visually-hidden">Search topics</span>
+    </button>
+
+    <a class="all-topics-link" routerLink="/topics">All topics</a>
   </nav>
 </header>
 

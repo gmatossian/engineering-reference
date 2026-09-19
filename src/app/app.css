@@ -39,6 +39,53 @@
   width: 1.5rem;
 }
 
+.header-search {
+  flex: 1 1 14rem;
+  margin-inline-start: auto;
+  max-width: 19rem;
+  min-width: 10rem;
+}
+
+.header-search-toggle {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-small);
+  color: var(--color-secondary);
+  cursor: pointer;
+  display: none;
+  flex: 0 0 auto;
+  justify-content: center;
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  padding: var(--space-2);
+}
+
+.header-search-toggle:hover {
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+}
+
+.header-search-toggle svg {
+  fill: none;
+  height: 1.25rem;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 1.8;
+  width: 1.25rem;
+}
+
+.all-topics-link {
+  align-items: center;
+  color: var(--color-link);
+  display: inline-flex;
+  font-weight: 650;
+  min-height: 2.75rem;
+  padding: var(--space-2);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
 .back-control {
   align-items: center;
   background: transparent;
@@ -74,9 +121,54 @@
   padding: clamp(2.5rem, 6vw, 5rem) var(--page-gutter) 6rem;
 }
 
-@media (width <= 40rem) {
+.visually-hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+@media (width <= 48rem) {
   .application-navigation {
     gap: var(--space-2);
+  }
+
+  .application-navigation--search-expanded {
+    flex-wrap: wrap;
+  }
+
+  .header-search {
+    display: none;
+    flex: 1 0 100%;
+    margin-inline-start: 0;
+    max-width: none;
+    order: 5;
+  }
+
+  .header-search--expanded {
+    display: block;
+  }
+
+  .header-search-toggle {
+    display: inline-flex;
+    margin-inline-start: auto;
+  }
+}
+
+@media (width <= 40rem) {
+  .application-navigation {
+    gap: var(--space-1);
+  }
+
+  .application-name {
+    flex: 0 1 6.5rem;
+    line-height: 1.15;
+    max-width: 6.5rem;
   }
 
   .back-control span:last-child {
@@ -89,5 +181,23 @@
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
+  }
+}
+
+@media (width <= 22rem) {
+  .application-name {
+    flex: 0 0 auto;
+  }
+
+  .application-name span {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
   }
 }

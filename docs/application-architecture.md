@@ -314,13 +314,13 @@ from the Topic graph.
 ### Component responsibilities
 
 - `AppComponent` supplies the application shell, visible Home and Back
-  controls, the All topics link, and router outlet. It treats Back as unavailable when
+  controls, persistent title search, the All topics link, and router outlet. It treats Back as unavailable when
   `window.history.length <= 1`; this is a documented browser-history
   approximation rather than a guarantee about the destination.
-- `LandingPageComponent` displays the finder, All topics link, complete ordered
-  domain entry set, and secondary ordered landing Topics. Domain entries link
+- `LandingPageComponent` displays the complete ordered domain entry set and
+  secondary ordered landing Topics. Domain entries link
   to `/topics?domain=<key>`; curated Topics link to their canonical UUID routes.
-- `TopicFinderComponent` owns the labelled landing or index search form without
+- `TopicFinderComponent` owns the labelled persistent header search form without
   owning catalog data or navigation history.
 - `TopicIndexPageComponent` normalizes query parameters, composes search and
   filters, exposes the result count, and selects alphabetical, relevance,
@@ -370,14 +370,15 @@ It does not add Angular Material, another component framework, Tailwind, or a
 Sass compilation layer.
 
 Responsive implementation preserves the same content and discovery priority
-across viewports. The landing finder precedes the complete domain-entry grid
-and quieter curated paths in both DOM and keyboard order. The generator places
+across viewports. The landing page presents the complete domain-entry grid
+before quieter curated paths, while persistent search remains in the shell.
+The generator places
 Topic-content tables and code blocks inside
 labelled, keyboard-focusable presentation wrappers. These wrappers own bounded
 horizontal overflow without changing the native semantics of the enclosed
 `table`, `pre`, or `code` elements or making the full page scroll horizontally.
 
-Finder and index controls use native form elements. Query and filter changes
+Search and index controls use native form elements. Query and filter changes
 retain focus and publish only the result count through a polite status region.
 Responsive CSS may move the Browse contexts region beside Topic content at wide
 sizes, but DOM and keyboard order remain title, context, content, children, and
@@ -547,7 +548,7 @@ Direction C is delivered through bounded, dependency-ordered slices:
    generator, derived runtime indexes, and every published Topic; keep the code
    and classification/relationship migration of all 67 Topics in the decision
    baseline as distinct review sections even though they merge together;
-2. add the browse-first landing finder, complete domain entries, secondary
+2. add the browse-first persistent header search, complete landing domain entries, secondary
    curated paths, `/topics` route, title search, filters, Area-overview
    treatment, and grouped System Design browsing;
 3. add Browse contexts and Related Topics to the Topic view; and

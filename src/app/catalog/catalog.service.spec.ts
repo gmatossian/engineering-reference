@@ -56,6 +56,93 @@ describe('CatalogService', () => {
     expect(catalog.parentTopicIdsById[URL_SHORTENER_TOPIC_ID]).toEqual([SYSTEM_DESIGN_TOPIC_ID]);
   });
 
+  it('exposes the closed domain and kind vocabularies in canonical order', () => {
+    expect(service.getDomainOptions().map(({ key }) => key)).toEqual([
+      'java',
+      'collections',
+      'concurrency',
+      'persistence',
+      'databases',
+      'http',
+      'system-design',
+      'algorithms-data-structures',
+    ]);
+    expect(service.getDomainTopicCount('system-design')).toBe(7);
+    expect(service.getDomainTopicCount('http')).toBe(2);
+    expect(service.getKindOptions().map(({ key }) => key)).toEqual([
+      'area',
+      'concept',
+      'operations',
+      'decision-aid',
+      'exercise',
+      'pattern',
+    ]);
+  });
+
+  it('normalizes whitespace and removes unsupported browse values', () => {
+    expect(
+      service.normalizeBrowseCriteria({
+        query: '  Queue  ',
+        domain: 'not-a-domain',
+        kind: 'not-a-kind',
+      }),
+    ).toEqual({ query: 'Queue', domain: null, kind: null });
+  });
+
+  it('ranks exact, prefix, and remaining title matches deterministically', () => {
+    const view = service.getTopicBrowseView({ query: 'queue', domain: null, kind: null });
+
+    expect(view.sections[0].topics.map(({ title }) => title)).toEqual([
+      'Queue',
+      'Concurrent queues',
+      'PriorityQueue',
+    ]);
+  });
+
+  it('intersects domain and kind filters', () => {
+    const view = service.getTopicBrowseView({
+      query: '',
+      domain: 'system-design',
+      kind: 'exercise',
+    });
+
+    expect(view.resultCount).toBe(1);
+    expect(view.sections[0].topics.map(({ title }) => title)).toEqual(['URL shortener']);
+  });
+
+  it('separates Area overviews and groups the default System Design view by kind', () => {
+    const view = service.getTopicBrowseView({
+      query: '',
+      domain: 'system-design',
+      kind: null,
+    });
+
+    expect(view.resultCount).toBe(7);
+    expect(view.sections.map(({ label }) => label)).toEqual([
+      'Overviews',
+      'Operations',
+      'Decision aids',
+      'Exercises',
+    ]);
+    expect(view.sections[0].topics.map(({ title }) => title)).toEqual(['System Design']);
+    expect(view.sections[2].topics.map(({ title }) => title)).toEqual([
+      'Choosing storage',
+      'Pagination: offset vs cursor',
+      'Short URL identifiers',
+      'Trade-off triggers',
+    ]);
+  });
+
+  it('keeps non-grouped domain results flat after optional overviews', () => {
+    const view = service.getTopicBrowseView({ query: '', domain: 'http', kind: null });
+
+    expect(view.sections.map(({ label }) => label)).toEqual(['Overviews', null]);
+    expect(view.sections.flatMap(({ topics }) => topics.map(({ title }) => title))).toEqual([
+      'HTTP',
+      'HTTP status codes',
+    ]);
+  });
+
   it('resolves child Topics in their declared order', () => {
     const javaTopic = service.getTopic(JAVA_TOPIC_ID);
 

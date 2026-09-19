@@ -1,0 +1,31 @@
+<div class="result-sections">
+  @for (section of sections(); track section.key) {
+    <section
+      class="result-section"
+      [attr.aria-labelledby]="section.label === null ? null : section.key"
+    >
+      @if (section.label !== null) {
+        <h2 [id]="section.key">{{ section.label }}</h2>
+      }
+
+      <ul>
+        @for (topic of section.topics; track topic.id) {
+          <li>
+            <a [routerLink]="['/topics', topic.id]">
+              <app-topic-icon [iconKey]="topic.iconKey" />
+
+              <span class="result__copy">
+                <span class="result__title">{{ topic.title }}</span>
+                <span class="result__context">
+                  {{ topic.kind.label }} · {{ topic.domainLabel }}
+                </span>
+              </span>
+
+              <span class="result__chevron" aria-hidden="true"></span>
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+</div>

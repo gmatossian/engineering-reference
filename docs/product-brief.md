@@ -85,8 +85,9 @@ relationship logic in application code.
 The same canonical Topic can be found by title, browsed through one or more
 technical domains, distinguished by its primary content kind, reached through
 a derived Browse context, selected through a useful ordered-child path, or
-selected from a small curated Related Topics list. Finder and domain entry
-points are primary; hierarchy is deliberately secondary.
+selected from a small curated Related Topics list. Domain entry and the
+complete catalog are primary; persistent title search complements them, while
+hierarchy is deliberately secondary.
 
 These paths answer different questions:
 
@@ -103,7 +104,8 @@ identity or copying canonical content into several locations.
 
 The accepted presentation is **browse-first hybrid**:
 
-- title finder and complete domain entry are the primary landing paths;
+- complete domain entry is the primary landing path;
+- compact persistent title search remains available from every view;
 - the alphabetical/filterable index is always directly available;
 - ordered-child hierarchy remains as secondary curated progression; and
 - Topic context and Related Topics provide onward navigation after selection.
@@ -170,7 +172,7 @@ navigation remains available where curated progression adds value.
 
 The accepted incremental expansion adds:
 
-- a landing-page Topic finder;
+- a compact persistent Topic title search in the application header;
 - landing-page entry points for the complete supported domain vocabulary;
 - an addressable all-Topics browse and search surface;
 - a deliberately small domain and content-kind classification;
@@ -179,7 +181,7 @@ The accepted incremental expansion adds:
 - path-independent Browse contexts on every Topic; and
 - a small, explicitly curated Related Topics region.
 
-The initial finder performs deterministic client-side title matching over the
+The initial header search performs deterministic client-side title matching over the
 bundled catalog. It does not require a backend, network request, account,
 personalization, analytics, or behavioral tracking. Richer aliases, full-text
 ranking, typed relationships, and authored collections require separate
@@ -212,7 +214,7 @@ The same core browsing and reference experience must work on desktop, tablet,
 and mobile layouts.
 
 Accessibility is a product requirement, not a final polishing step. Content,
-finder and filter controls, domain browsing, and secondary hierarchical
+search and filter controls, domain browsing, and secondary hierarchical
 navigation must remain understandable and operable for keyboard and
 assistive-technology users. The interaction model establishes WCAG 2.2 Level
 AA as the target, and the application architecture defines the automated

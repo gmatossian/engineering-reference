@@ -4,7 +4,7 @@
 
 This document defines the accepted navigation and responsive interaction model.
 It preserves the implemented MVP behavior and extends it with the browse-first
-finder, classified domain entry, Browse contexts, and Related Topics defined as
+persistent title search, classified domain entry, Browse contexts, and Related Topics defined as
 the refined Direction C in the [product brief](product-brief.md), building on
 the evidence and original recommendation in the
 [Topic findability audit](topic-findability-audit.md). It also builds on the
@@ -28,8 +28,10 @@ the data-foundation change has shipped the new interactions.
 
 Engineering Reference is a conventional addressable web experience:
 
-- the landing page initially provides a Topic finder, every supported domain,
-  an All topics link, and secondary curated Topic paths;
+- the landing page initially provides every supported domain and secondary
+  curated Topic paths;
+- the application header provides persistent title search and an All topics
+  link from every view;
 - selecting a landing domain opens its shareable filtered `/topics` view;
 - the all-Topics view supports deterministic title search plus domain and kind
   browsing without a runtime request;
@@ -55,24 +57,25 @@ surface. No Topic or domain is selected automatically. In semantic document
 order it provides:
 
 1. the product introduction;
-2. a labelled **Find a topic** title-search form;
-3. an **All topics** native link to the complete browse surface;
-4. a labelled **Browse by domain** region containing every supported domain in
+2. a labelled **Browse by domain** region containing every supported domain in
    canonical vocabulary order; and
-5. a quieter **Curated paths** region containing the ordered landing Topics
+3. a quieter **Curated paths** region containing the ordered landing Topics
    from the generated catalog.
 
-Submitting a non-empty finder query navigates to `/topics?q=<query>`.
-Whitespace is trimmed before navigation. Submitting an empty query opens
-`/topics`, which is the same destination as All topics. The finder does not
-show an autocomplete popup, maintain private history, or request data from a
-server.
+The compact application-header search is the single title-search entry point.
+Submitting a non-empty query navigates to `/topics?q=<query>`. Whitespace is
+trimmed before navigation. Submitting an empty query opens `/topics` or, when
+already on the index, removes only its query while preserving active filters.
+The search does not show an autocomplete popup, maintain private history, or
+request data from a server.
 
 Each domain entry is a native link to `/topics?domain=<key>`. Domain entries are
 derived from the complete closed vocabulary rather than from Area Topics or
 `landingTopicIds`; every supported domain therefore remains reachable even
 when it has no same-named overview Topic. Selecting a domain starts the
-all-Topics view at the top and applies its normal focus behavior.
+all-Topics view at the top and applies its normal focus behavior. Its visible
+Topic count is derived from the bundled domain index and is informative rather
+than a ranking or importance signal.
 
 Curated paths preserve useful broad-to-specific progression without defining
 the complete catalog. Each ordered landing Topic remains a native link to its
@@ -88,8 +91,8 @@ or curated paths in a persistent sidebar.
 Domain entries and curated Topics use native link semantics. Domain order
 follows the vocabulary; curated Topic order follows `landingTopicIds`.
 
-The application shell provides an All topics link on landing, Topic, index,
-and not-found views so the complete browse surface remains reachable without
+The application shell provides the search and an All topics link on landing,
+Topic, index, and not-found views so retrieval remains available without
 returning Home first. Home and Back retain their existing meanings.
 
 ## Topic View
@@ -150,7 +153,7 @@ is the same in every case.
 `/topics` is an addressable browse surface over the bundled catalog. It
 contains:
 
-- one labelled title-search input;
+- one labelled title-search input in the persistent application header;
 - labelled domain and content-kind filters;
 - a visible way to clear the query and filters; and
 - Topic result links that show title, kind, and domain context.
@@ -174,7 +177,7 @@ another domain requires evidence that it improves recognition there.
 
 ### Matching and ordering
 
-The initial finder searches titles only. It trims surrounding whitespace and
+The initial header search searches titles only. It trims surrounding whitespace and
 uses case-insensitive substring matching. It does not search UUIDs, rendered
 content, domains, kinds, aliases, or browsing behavior.
 
@@ -264,9 +267,10 @@ and moves keyboard focus to its main heading. This makes the change of view
 apparent to keyboard and assistive-technology users.
 
 Forward navigation to the all-Topics view likewise starts at the top and moves
-focus to its main heading. The search field follows that heading in the tab
-order; it is not focused automatically. Query or filter updates keep focus on
-the control the user is operating and announce only the updated result count.
+focus to its main heading. The persistent search remains in the preceding
+application-navigation landmark and is not focused automatically. Query or
+filter updates keep focus on the control the reader is operating and announce
+only the updated result count.
 
 Back restores the preceding view's prior scroll position where the browser
 supports restoration. Focus moves to the returned view's main heading using
@@ -283,9 +287,9 @@ desktop, tablet, and mobile. Responsive layouts may rearrange or resize their
 presentation, but they do not introduce different navigation models or remove
 functionality.
 
-On narrow layouts, the landing finder stacks before the complete domain list
-and secondary curated paths; finder and filter controls stack in document
-order; and grouped results remain under their headings. Browse contexts remain
+On narrow layouts, the header search collapses to a labelled control that
+expands a full-width field within the header; index filter controls stack in
+document order; and grouped results remain under their headings. Browse contexts remain
 before Topic main content. Wide layouts may place the context region beside
 main content only when CSS preserves its semantic order and a logical keyboard
 sequence. Related Topics and narrower children remain distinct labelled
@@ -400,7 +404,7 @@ history preceded the direct visit.
 
 ### Find a known Topic
 
-Submitting `Choosing storage` from the landing finder opens the all-Topics view
+Submitting `Choosing storage` from the persistent header search opens the all-Topics view
 with that query represented in the URL. The exact title match appears before
 any broader substring matches. Selecting it opens the canonical Topic URL and
 moves focus to the Topic heading.

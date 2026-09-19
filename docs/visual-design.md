@@ -10,7 +10,7 @@ implementation-facing presentation system.
 The accepted MVP references remain authoritative for the existing shell, child
 navigation, Topic content, palette, typography, and surface language. Their
 hierarchy-prominent landing composition is superseded by the browse-first
-Direction C landing below. Direction C extends the system with a finder,
+Direction C landing below. Direction C extends the system with persistent search,
 primary domain entry, classified all-Topics browsing, Browse contexts, and
 Related Topics. Those new surfaces follow the constraints below; they do not
 make synthetic prototype details authoritative.
@@ -75,11 +75,12 @@ Accents belong on icons, narrow rules, borders, and subtle tinted surfaces.
 Large saturated fills are not part of this direction. Color must not be the
 only way an item communicates its meaning or state.
 
-These families guide the shared visual and icon system; they are not Topic
-metadata, and authors do not select colors. Although the content model now
-defines domains and kinds, accent color is not derived from them and does not
-carry classification meaning. An icon key may receive a consistent default
-treatment in the UI.
+These families guide the shared visual and icon system; they are not authored
+Topic metadata, and authors do not select colors. The landing page assigns a
+stable icon and accent treatment to each supported domain as UI presentation
+so the destinations are easier to recognize. Color does not carry
+classification meaning by itself. A Topic icon key likewise receives a
+consistent default treatment in the UI.
 
 ### Typography
 
@@ -126,6 +127,9 @@ The header is compact and persistent across views:
   destination.
 - **All topics** is a persistent text destination for the complete browse and
   search surface. It must not be represented by an unexplained icon.
+- **Search topics** is a compact inline field on spacious layouts. At narrow
+  widths it becomes a labelled icon control that expands the field within the
+  header.
 - The landing reference omits Back, but implementation must preserve the
   visible unavailable state required by the interaction model.
 
@@ -142,23 +146,16 @@ external UI framework implicitly.
 The landing page begins with:
 
 - the `Engineering Reference` title;
-- the subtitle `Concise technical knowledge for software engineering.`; and
-- the action hint `Find a topic or browse by domain.`
+- the subtitle `Concise technical knowledge for software engineering.`
 
-A bounded **Find a topic** form follows the introduction. It uses a visible
-label, a conventional single-line search input, and a text submit action. An
-adjacent or immediately following **All topics** link provides the
-unconstrained catalog path. The finder is the first retrieval control and is
-prominent enough to recognize without outweighing the product title or turning
-the landing page into a search-engine facsimile.
-
-A **Browse by domain** region follows. It presents every supported domain in
-canonical vocabulary order as equal-weight native links to the corresponding
-filtered all-Topics view. Domain entries are compact browse controls rather
-than Topic cards: they show the domain display label and a navigation cue, but
-do not borrow the icon, summary, or identity of an Area Topic. At spacious
-widths they form a balanced multi-column grid; they reflow through fewer
-columns to one full-width entry per row when content fit requires it.
+A **Browse by domain** region follows the introduction directly. It presents
+every supported domain in canonical vocabulary order as native links to the
+corresponding filtered all-Topics view. Domain entries are compact browse
+controls rather than Topic cards: they show a stable domain icon and accent,
+the domain display label, the current matching-Topic count, and a navigation
+cue. Their icons are UI vocabulary rather than borrowed Area Topic identity.
+At spacious widths they form a balanced multi-column grid; they reflow through
+fewer columns to one full-width entry per row when content fit requires it.
 
 A visually quieter **Curated paths** region follows the primary discovery
 controls. Its heading and supporting copy identify the entries as selected
@@ -167,7 +164,7 @@ Topic overviews with optional narrower paths. It renders the ordered
 summary, and optional decorative icon. These entries preserve useful
 broad-to-specific journeys without resembling another set of domain controls.
 They use compact rows or a restrained small grid and must not visually
-outweigh the finder or domain region.
+outweigh the domain region.
 
 The separation between **Browse by domain** and **Curated paths** is conveyed
 by headings and supporting text, not color or icons alone. A domain link and a
@@ -183,10 +180,6 @@ current curated landing Topics:
 ```text
 Engineering Reference
 Concise technical knowledge for software engineering.
-
-Find a topic
-[ choosing storage or Java Set                   ] [ Find topic ]
-All topics
 
 Browse by domain
 [ Java ]         [ Collections ]   [ Concurrency ]   [ Persistence ]
@@ -206,11 +199,6 @@ than introducing mobile-only navigation:
 ```text
 Engineering Reference
 Concise technical knowledge for software engineering.
-
-Find a topic
-[ choosing storage or Java Set ]
-[ Find topic                    ]
-All topics
 
 Browse by domain
 [ Java ]
@@ -308,10 +296,12 @@ The all-Topics page is a reference index, not a faceted analytics dashboard.
 It begins with a clear `All topics` heading and short orientation text, followed
 by one compact control region containing:
 
-- the labelled title-search input;
-- native domain and kind selectors;
+- native domain and kind controls;
 - the result count; and
 - a visible clear action when constraints are active.
+
+The labelled title-search input remains in the persistent application header
+rather than competing with the browse controls in the main content.
 
 Controls use ordinary form labels and states rather than decorative chips.
 Their boundaries, focus indicators, and selected values remain clear without
@@ -340,7 +330,7 @@ The accepted wide System Design view uses the real current classification:
 
 ```text
 All topics
-[ Search titles ]  [ Domain: System Design ]  [ Kind: All ]  [ Clear filters ]
+[ Domain: System Design ]  [ Kind: All ]  [ Clear all ]
 7 topics
 
 Overviews
@@ -363,10 +353,9 @@ At narrow widths the same controls and sections stack without hiding context:
 
 ```text
 All topics
-[ Search titles                  ]
 [ Domain: System Design          ]
 [ Kind: All                      ]
-[ Clear filters                  ]
+[ Clear all                      ]
 7 topics
 
 Overviews
@@ -413,7 +402,8 @@ Responsive layouts preserve content, order, semantics, and navigation:
 - landing domain entries move from a multi-column grid to one full-width link
   per row, followed by the secondary curated paths;
 - child navigation remains a vertical list of full-width rows;
-- finder and browse controls stack in logical document order;
+- the header search expands within the header, while browse controls stack in
+  logical document order;
 - grouped index sections and result metadata remain visible rather than
   collapsing into icon-only or chip-only controls;
 - Browse contexts move into the main flow directly after the Topic title;
@@ -487,7 +477,7 @@ Stitch concepts. They contain synthetic content and some explicitly excluded
 prototype details described above.
 
 They predate Direction C and therefore do not specify the browse-first landing
-composition, finder, all-Topics page, Browse contexts, or Related Topics. The
+composition, persistent search, all-Topics page, Browse contexts, or Related Topics. The
 landing screenshots remain references for palette, typography, surface, and
 interaction language rather than landing information hierarchy. A focused
 later Stitch exercise may refine the accepted wide and narrow compositions

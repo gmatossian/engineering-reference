@@ -1,0 +1,73 @@
+<section class="topic-index" aria-labelledby="topic-index-heading">
+  <header class="topic-index__header">
+    <h1 id="topic-index-heading" tabindex="-1">All topics</h1>
+    <p>Browse the complete catalog by domain and topic type.</p>
+  </header>
+
+  <div class="topic-index__controls" aria-label="Topic filters">
+    <div class="topic-index__filter">
+      <label for="topic-domain">Domain</label>
+      <select id="topic-domain" (change)="changeDomain($event)">
+        <option value="" [selected]="criteria().domain === null">All domains</option>
+        @for (domain of domainOptions; track domain.key) {
+          <option [value]="domain.key" [selected]="criteria().domain === domain.key">
+            {{ domain.label }}
+          </option>
+        }
+      </select>
+    </div>
+
+    <fieldset class="topic-index__kind-filter">
+      <legend>Topic type</legend>
+      <div class="topic-index__kind-options">
+        <label class="topic-index__kind-option">
+          <input
+            type="radio"
+            name="topic-kind"
+            value=""
+            [checked]="criteria().kind === null"
+            (change)="changeKind($event)"
+          />
+          <span>All types</span>
+        </label>
+
+        @for (kind of kindOptions; track kind.key) {
+          <label class="topic-index__kind-option">
+            <input
+              type="radio"
+              name="topic-kind"
+              [value]="kind.key"
+              [checked]="criteria().kind === kind.key"
+              (change)="changeKind($event)"
+            />
+            <span>{{ kind.label }}</span>
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    @if (hasConstraints()) {
+      <button class="topic-index__clear" type="button" (click)="clearConstraints()">
+        Clear all
+      </button>
+    }
+  </div>
+
+  <section class="topic-index__results" aria-labelledby="topic-results-heading">
+    <h2 id="topic-results-heading" class="visually-hidden">Topic results</h2>
+    <p class="topic-index__count" role="status" aria-live="polite" aria-atomic="true">
+      {{ browseView().resultCount }}
+      {{ browseView().resultCount === 1 ? 'topic' : 'topics' }}
+    </p>
+
+    @if (browseView().resultCount > 0) {
+      <app-topic-result-list [sections]="browseView().sections" />
+    } @else {
+      <div class="topic-index__empty">
+        <h3>No matching topics</h3>
+        <p>{{ emptyStateMessage() }}</p>
+        <button type="button" (click)="clearConstraints()">Clear search and filters</button>
+      </div>
+    }
+  </section>
+</section>

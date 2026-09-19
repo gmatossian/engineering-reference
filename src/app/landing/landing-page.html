@@ -2,8 +2,45 @@
   <header class="landing__introduction">
     <h1 id="landing-heading" tabindex="-1">Engineering Reference</h1>
     <p class="landing__subtitle">Concise technical knowledge for software engineering.</p>
-    <p class="landing__hint">Choose a topic to explore.</p>
   </header>
 
-  <app-topic-link-list ariaLabel="Topics" presentation="cards" [topics]="topics" />
+  <section class="landing__domains" aria-labelledby="domains-heading">
+    <div class="landing__section-heading">
+      <h2 id="domains-heading">Browse by domain</h2>
+    </div>
+
+    <nav aria-label="Domains">
+      <ul>
+        @for (domain of domains; track domain.key) {
+          <li>
+            <a
+              routerLink="/topics"
+              [queryParams]="{ domain: domain.key }"
+              [attr.data-tone]="domain.tone"
+            >
+              <span class="landing__domain-icon" aria-hidden="true">
+                <img [src]="'icons/topics/' + domain.icon + '.svg'" alt="" />
+              </span>
+              <span class="landing__domain-copy">
+                <strong>{{ domain.label }}</strong>
+                <small
+                  >{{ domain.topicCount }} {{ domain.topicCount === 1 ? 'topic' : 'topics' }}</small
+                >
+              </span>
+              <span class="landing__domain-arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+  </section>
+
+  <section class="landing__curated" aria-labelledby="curated-heading">
+    <div class="landing__section-heading">
+      <h2 id="curated-heading">Curated paths</h2>
+      <p>Selected overviews with useful narrower paths.</p>
+    </div>
+
+    <app-topic-link-list ariaLabel="Curated paths" presentation="curated" [topics]="topics" />
+  </section>
 </section>

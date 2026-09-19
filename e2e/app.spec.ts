@@ -18,11 +18,44 @@ test.describe('cross-browser smoke', { tag: '@smoke' }, () => {
         name: 'Engineering Reference',
       }),
     ).toBeVisible();
-    await expect(page.getByRole('navigation', { name: 'Topics' })).toBeVisible();
-    await expect(page.getByRole('link', { name: /^Java/ })).toHaveAttribute(
-      'href',
-      `/topics/${JAVA_TOPIC_ID}`,
+    await expect(page.getByRole('search')).toBeVisible();
+    await expect(page.getByRole('searchbox', { name: 'Search topics' })).toBeVisible();
+    await expect(page.locator('main').getByRole('search')).toHaveCount(0);
+    await expect(page.getByRole('link', { name: 'All topics' })).toHaveAttribute('href', '/topics');
+    await expect(page.getByRole('navigation', { name: 'Domains' }).getByRole('link')).toHaveCount(
+      8,
     );
+    await expect(
+      page.getByRole('navigation', { name: 'Domains' }).getByRole('link', {
+        name: /^Java/,
+      }),
+    ).toHaveAttribute('href', '/topics?domain=java');
+    await expect(
+      page.getByRole('navigation', { name: 'Curated paths' }).getByRole('link', { name: /^Java/ }),
+    ).toHaveAttribute('href', `/topics/${JAVA_TOPIC_ID}`);
+  });
+
+  test('searches and filters the complete Topic index', async ({ page }) => {
+    await page.goto('/topics');
+
+    await expect(page.getByRole('heading', { level: 1, name: 'All topics' })).toBeVisible();
+    await expect(page.getByRole('status')).toContainText('67 topics');
+
+    const search = page.getByRole('searchbox', { name: 'Search topics' });
+    await search.fill('Queue');
+    await search.press('Enter');
+    await expect(page).toHaveURL('/topics?q=Queue');
+    await expect(page.getByRole('status')).toContainText('3 topics');
+    await expect(page.locator('.result__title')).toHaveText([
+      'Queue',
+      'Concurrent queues',
+      'PriorityQueue',
+    ]);
+
+    await page.getByLabel('Domain').selectOption('java');
+    await page.getByRole('radio', { name: 'Concepts' }).check();
+    await expect(page).toHaveURL('/topics?q=Queue&domain=java&kind=concept');
+    await expect(page.getByRole('status')).toContainText('2 topics');
   });
 
   test('loads a direct Topic URL and follows child navigation', async ({ page }) => {
@@ -105,6 +138,99 @@ test('navigates through bundled Topic detail with native history', async ({ page
   await expect(
     page.getByRole('heading', { level: 1, name: 'Engineering Reference' }),
   ).toBeFocused();
+});
+
+test('finds a Topic from the landing page without knowing its parent', async ({ page }) => {
+  await page.goto('/');
+  const search = page.getByRole('searchbox', { name: 'Search topics' });
+  await search.fill('  Choosing storage  ');
+  await search.press('Enter');
+
+  await expect(page).toHaveURL(/\/topics\?q=Choosing(?:%20|\+)storage$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'All topics' })).toBeFocused();
+  await expect(page.getByRole('status')).toContainText('1 topic');
+  await expect(page.locator('.result__title')).toHaveText(['Choosing storage']);
+});
+
+test('presents Area overviews and grouped System Design results', async ({ page }) => {
+  await page.goto('/');
+  await page
+    .getByRole('navigation', { name: 'Domains' })
+    .getByRole('link', { name: /^System Design/ })
+    .click();
+
+  await expect(page).toHaveURL('/topics?domain=system-design');
+  await expect(page.getByRole('heading', { level: 1, name: 'All topics' })).toBeFocused();
+  await expect(page.getByRole('status')).toContainText('7 topics');
+  await expect(page.locator('app-topic-result-list h2')).toHaveText([
+    'Overviews',
+    'Operations',
+    'Decision aids',
+    'Exercises',
+  ]);
+  await expect(page.locator('.result__title')).toHaveText([
+    'System Design',
+    'Scale and estimation',
+    'Choosing storage',
+    'Pagination: offset vs cursor',
+    'Short URL identifiers',
+    'Trade-off triggers',
+    'URL shortener',
+  ]);
+});
+
+test('keeps control focus and replaces URL state while searching and filtering', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: 'All topics' }).click();
+  const historyLength = await page.evaluate(() => history.length);
+  const search = page.getByRole('searchbox', { name: 'Search topics' });
+
+  await search.fill('Queue');
+  await search.press('Enter');
+  await expect(search).toBeFocused();
+  await expect(page).toHaveURL('/topics?q=Queue');
+  const domain = page.getByLabel('Domain');
+  await domain.focus();
+  await domain.selectOption('collections');
+  await expect(domain).toBeFocused();
+  const kind = page.getByRole('radio', { name: 'Concepts' });
+  await kind.focus();
+  await kind.check();
+  await expect(kind).toBeFocused();
+  expect(await page.evaluate(() => history.length)).toBe(historyLength);
+
+  await page.goBack();
+  await expect(page).toHaveURL('/');
+});
+
+test('normalizes invalid filters and provides a useful no-results state', async ({ page }) => {
+  await page.goto('/topics?q=%20missing%20&domain=invalid&kind=invalid&other=value');
+
+  await expect(page).toHaveURL('/topics?q=missing');
+  await expect(page.getByRole('status')).toContainText('0 topics');
+  await expect(page.getByRole('heading', { level: 3, name: 'No matching topics' })).toBeVisible();
+  await expect(page.getByText('No topics match the title “missing”.')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Clear search and filters' }).click();
+  await expect(page).toHaveURL('/topics');
+  await expect(page.getByRole('status')).toContainText('67 topics');
+});
+
+test('keeps the complete index usable at a narrow viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 640 });
+  await page.goto('/topics?domain=system-design');
+
+  await page.getByRole('button', { name: 'Search topics' }).click();
+  await expect(page.getByRole('searchbox', { name: 'Search topics' })).toBeVisible();
+  await expect(page.getByLabel('Domain')).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Topic type' })).toBeVisible();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+    ),
+  ).toBe(true);
 });
 
 test('restores scroll position without displacing focus on browser history navigation', async ({
@@ -267,6 +393,9 @@ test('renders the application without detectable accessibility violations', asyn
 
     for (const path of [
       '/',
+      '/topics',
+      '/topics?domain=system-design',
+      '/topics?q=does-not-exist',
       `/topics/${QUEUE_TOPIC_ID}`,
       `/topics/${COMPLEXITY_TOPIC_ID}`,
       `/topics/${HTTP_STATUS_CODES_TOPIC_ID}`,
