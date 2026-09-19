@@ -356,13 +356,15 @@ test(
 test('finds a Topic from the landing page without knowing its parent', async ({ page }) => {
   await page.goto('/');
   const search = page.getByRole('searchbox', { name: 'Search topics' });
-  await search.fill('  Choosing storage  ');
+  await search.fill('  Choosing storage for a URL shortener  ');
   await search.press('Enter');
 
-  await expect(page).toHaveURL(/\/topics\?q=Choosing(?:%20|\+)storage$/);
+  await expect(page).toHaveURL(
+    /\/topics\?q=Choosing(?:%20|\+)storage(?:%20|\+)for(?:%20|\+)a(?:%20|\+)URL(?:%20|\+)shortener$/,
+  );
   await expect(page.getByRole('heading', { level: 1, name: 'All topics' })).toBeFocused();
   await expect(page.getByRole('status')).toContainText('1 topic');
-  await expect(page.locator('.result__title')).toHaveText(['Choosing storage']);
+  await expect(page.locator('.result__title')).toHaveText(['Choosing storage for a URL shortener']);
 });
 
 test('presents Area overviews and grouped System Design results', async ({ page }) => {
@@ -384,7 +386,7 @@ test('presents Area overviews and grouped System Design results', async ({ page 
   await expect(page.locator('.result__title')).toHaveText([
     'System Design',
     'Scale and estimation',
-    'Choosing storage',
+    'Choosing storage for a URL shortener',
     'Pagination: offset vs cursor',
     'Short URL identifiers',
     'Trade-off triggers',

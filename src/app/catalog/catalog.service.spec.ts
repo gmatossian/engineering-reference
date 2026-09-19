@@ -143,7 +143,7 @@ describe('CatalogService', () => {
     ]);
     expect(view.sections[0].topics.map(({ title }) => title)).toEqual(['System Design']);
     expect(view.sections[2].topics.map(({ title }) => title)).toEqual([
-      'Choosing storage',
+      'Choosing storage for a URL shortener',
       'Pagination: offset vs cursor',
       'Short URL identifiers',
       'Trade-off triggers',

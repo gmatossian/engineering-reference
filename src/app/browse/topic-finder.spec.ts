@@ -18,12 +18,12 @@ describe('TopicFinder', () => {
     const host = fixture.nativeElement as HTMLElement;
     const input = host.querySelector('input') as HTMLInputElement;
     const form = host.querySelector('form') as HTMLFormElement;
-    input.value = 'Choosing storage';
+    input.value = 'Choosing storage for a URL shortener';
     input.dispatchEvent(new Event('input'));
     form.dispatchEvent(new SubmitEvent('submit'));
 
     expect(host.querySelector('label')?.getAttribute('for')).toBe('finder');
     expect(input.type).toBe('search');
-    expect(submittedQueries).toEqual(['Choosing storage']);
+    expect(submittedQueries).toEqual(['Choosing storage for a URL shortener']);
   });
 });
