@@ -4,20 +4,20 @@ import { Title } from '@angular/platform-browser';
 import { CatalogService } from '../catalog/catalog.service';
 import type { TopicSummary } from '../catalog/catalog.service';
 import { TopicBreadcrumbs } from './topic-breadcrumbs';
-import { TopicClassification } from './topic-classification';
 import { TopicNotFound } from './topic-not-found';
 import { TopicContent } from './topic-content';
 import { TopicHierarchy } from './topic-hierarchy';
 import { TopicLinkList } from './topic-link-list';
+import { RelatedTopicList } from './related-topic-list';
 
 @Component({
   imports: [
     TopicBreadcrumbs,
-    TopicClassification,
     TopicContent,
     TopicHierarchy,
     TopicLinkList,
     TopicNotFound,
+    RelatedTopicList,
   ],
   selector: 'app-topic-page',
   styleUrl: './topic-page.css',
@@ -35,16 +35,12 @@ export class TopicPage {
     const topic = this.topic();
     return topic === undefined ? [] : this.catalogService.getChildTopics(topic);
   });
+  protected readonly relatedTopics = computed(() => {
+    const topic = this.topic();
+    return topic === undefined ? [] : this.catalogService.getRelatedTopics(topic);
+  });
   protected readonly hierarchyRoots = this.catalogService.getHierarchyRoots();
   protected readonly topicPaths = computed(() => this.catalogService.getTopicPaths(this.id()));
-  protected readonly topicDomains = computed(() => {
-    const topic = this.topic();
-    return topic === undefined ? [] : this.catalogService.getTopicDomains(topic);
-  });
-  protected readonly topicKind = computed(() => {
-    const topic = this.topic();
-    return topic === undefined ? null : this.catalogService.getTopicKind(topic);
-  });
   protected readonly hasPrimaryRegion = computed(() => {
     const topic = this.topic();
     return topic !== undefined && (topic.mainContentHtml !== null || this.childTopics().length > 0);

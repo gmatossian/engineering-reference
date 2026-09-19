@@ -8,10 +8,6 @@
           <app-topic-breadcrumbs [currentTopicId]="id()" [paths]="paths" />
         }
       }
-
-      @if (topicKind(); as kind) {
-        <app-topic-classification [domains]="topicDomains()" [kind]="kind" />
-      }
     </header>
 
     <div class="topic-page__layout">
@@ -47,9 +43,15 @@
               tabindex="-1"
               [attr.id]="resolvedTopic.mainContentHtml === null ? 'topic-primary-content' : null"
             >
-              <h2>Narrower topics</h2>
-              <app-topic-link-list ariaLabel="Narrower topics" [topics]="children" />
+              <h2>Explore this topic</h2>
+              <app-topic-link-list ariaLabel="Explore this topic" [topics]="children" />
             </section>
+          }
+        }
+
+        @if (relatedTopics(); as related) {
+          @if (related.length > 0) {
+            <app-related-topic-list [topics]="related" />
           }
         }
       </div>
