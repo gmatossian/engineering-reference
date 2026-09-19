@@ -1,0 +1,22 @@
+<nav class="related-topics" aria-labelledby="related-topics-heading">
+  <h2 id="related-topics-heading">Related topics</h2>
+
+  <ul>
+    @for (topic of topics(); track topic.id) {
+      <li>
+        <a [routerLink]="['/topics', topic.id]">
+          <app-topic-icon [iconKey]="topic.iconKey" />
+
+          <span class="related-topic__copy">
+            <span class="related-topic__title">{{ topic.title }}</span>
+            <span class="related-topic__context">
+              {{ topic.kind.label }} · {{ topic.domainLabel }}
+            </span>
+          </span>
+
+          <span class="related-topic__chevron" aria-hidden="true"></span>
+        </a>
+      </li>
+    }
+  </ul>
+</nav>

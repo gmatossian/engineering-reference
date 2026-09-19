@@ -11,6 +11,9 @@ import { TopicPage } from './topic/topic-page';
 const JAVA_TOPIC_ID = 'd3ef7c8b-ee6b-48f5-9039-2aa94d03c19c';
 const COLLECTIONS_TOPIC_ID = 'c29c5725-0b1f-480d-88f4-5c9d3b7f0dc5';
 const COMPLEXITY_TOPIC_ID = 'bf417331-9329-42b4-9517-351ef6af3b85';
+const URL_SHORTENER_TOPIC_ID = 'b19de3ee-dc7d-4d9d-9b82-06d997a825e1';
+const SCALE_AND_ESTIMATION_TOPIC_ID = '17e411bb-2c99-49e8-93ec-18b767e4a890';
+const TRADEOFF_TRIGGERS_TOPIC_ID = '9009159b-54aa-4724-94a2-5189a1e21437';
 
 describe('application routes', () => {
   beforeEach(() => {
@@ -58,7 +61,7 @@ describe('application routes', () => {
 
     const routeElement = harness.routeNativeElement;
     const childLink = routeElement?.querySelector<HTMLAnchorElement>(
-      `nav[aria-label="Narrower topics"] a[href="/topics/${COLLECTIONS_TOPIC_ID}"]`,
+      `nav[aria-label="Explore this topic"] a[href="/topics/${COLLECTIONS_TOPIC_ID}"]`,
     );
 
     expect(topicPage.id()).toBe(JAVA_TOPIC_ID);
@@ -77,7 +80,7 @@ describe('application routes', () => {
     const routeElement = harness.routeNativeElement;
     const content = routeElement?.querySelector('.topic-content');
     const childLink = routeElement?.querySelector<HTMLAnchorElement>(
-      'nav[aria-label="Narrower topics"] a',
+      'nav[aria-label="Explore this topic"] a',
     );
 
     expect(content?.textContent).toContain(
@@ -95,10 +98,33 @@ describe('application routes', () => {
     const routeElement = harness.routeNativeElement;
 
     expect(routeElement?.querySelector('.topic-content table')).not.toBeNull();
-    expect(routeElement?.querySelector('nav[aria-label="Narrower topics"]')).toBeNull();
+    expect(routeElement?.querySelector('nav[aria-label="Explore this topic"]')).toBeNull();
+    expect(routeElement?.querySelector('nav[aria-labelledby="related-topics-heading"]')).toBeNull();
   });
 
-  it('renders every contextual path and linked classification for a multi-parent Topic', async () => {
+  it('renders ordered Related Topics after content and immediate children', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl(`/topics/${URL_SHORTENER_TOPIC_ID}`, TopicPage);
+    await harness.fixture.whenStable();
+
+    const routeElement = harness.routeNativeElement;
+    const children = routeElement?.querySelector('nav[aria-label="Explore this topic"]');
+    const related = routeElement?.querySelector('nav[aria-labelledby="related-topics-heading"]');
+    const links = related?.querySelectorAll<HTMLAnchorElement>('a');
+
+    expect(related?.querySelector('h2')?.textContent).toBe('Related topics');
+    expect(links).toHaveLength(2);
+    expect(Array.from(links ?? []).map((link) => link.getAttribute('href'))).toEqual([
+      `/topics/${SCALE_AND_ESTIMATION_TOPIC_ID}`,
+      `/topics/${TRADEOFF_TRIGGERS_TOPIC_ID}`,
+    ]);
+    expect(links?.[0].textContent).toContain('Scale and estimation');
+    expect(links?.[0].textContent).toContain('Operations · System Design');
+    expect(links?.[1].textContent).toContain('Decision aid · System Design');
+    expect(children?.compareDocumentPosition(related!)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+
+  it('renders every contextual path for a multi-parent Topic without duplicate classification', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/topics/a2fc39d5-9564-4260-b247-f38d53bedecc', TopicPage);
     await harness.fixture.whenStable();
@@ -108,15 +134,11 @@ describe('application routes', () => {
     const currentPathItems = routeElement?.querySelectorAll(
       'nav[aria-label="Topic paths"] [aria-current="page"]',
     );
-    const classificationLinks = routeElement?.querySelectorAll(
-      'nav[aria-label="Topic classification"] a',
-    );
-
     expect(paths).toHaveLength(2);
     expect(paths?.[0].getAttribute('aria-label')).toBe('Path 1 of 2');
     expect(paths?.[1].textContent).toContain('Collections framework');
     expect(currentPathItems).toHaveLength(2);
-    expect(classificationLinks).toHaveLength(3);
+    expect(routeElement?.querySelector('nav[aria-label="Topic classification"]')).toBeNull();
   });
 
   it('presents an unknown Topic without redirecting', async () => {

@@ -8,6 +8,11 @@ const ARRAYS_TOPIC_ID = '2fe75411-92f0-4e6f-bfd0-1756dc08ebe2';
 const COLLECTIONS_TOPIC_ID = 'c29c5725-0b1f-480d-88f4-5c9d3b7f0dc5';
 const SYSTEM_DESIGN_TOPIC_ID = '43a1a5e8-f5b7-46b7-bbd6-0fb212d7212b';
 const URL_SHORTENER_TOPIC_ID = 'b19de3ee-dc7d-4d9d-9b82-06d997a825e1';
+const SCALE_AND_ESTIMATION_TOPIC_ID = '17e411bb-2c99-49e8-93ec-18b767e4a890';
+const TRADEOFF_TRIGGERS_TOPIC_ID = '9009159b-54aa-4724-94a2-5189a1e21437';
+const PERSIST_MERGE_AND_SAVE_TOPIC_ID = 'd1a3f0d1-92a1-4c65-87a0-ee7d8d10131e';
+const ENTITY_MANAGER_LIFECYCLE_TOPIC_ID = '072fc2b2-2755-45ec-aabe-d8a4740fa4e9';
+const DIRTY_CHECKING_TOPIC_ID = '62196430-caa5-48c7-bb68-c064209d6291';
 const ARRAYS_AND_LISTS_TOPIC_ID = 'a2fc39d5-9564-4260-b247-f38d53bedecc';
 const catalog = generatedCatalog as RuntimeCatalog;
 
@@ -166,6 +171,44 @@ describe('CatalogService', () => {
       '750d6258-e1be-4813-9487-18c6ba78af0a',
       '57b0dc57-7a64-4c09-9140-2a470748da38',
       '78b29290-d46f-45b2-aaba-c31597ceb6d4',
+    ]);
+  });
+
+  it('resolves Related Topics in their authored order with canonical metadata', () => {
+    const urlShortener = service.getTopic(URL_SHORTENER_TOPIC_ID);
+
+    expect(urlShortener).toBeDefined();
+    expect(service.getRelatedTopics(urlShortener!)).toEqual([
+      {
+        id: SCALE_AND_ESTIMATION_TOPIC_ID,
+        title: 'Scale and estimation',
+        summary:
+          'Turn traffic, payload, retention, and peak assumptions into useful capacity estimates.',
+        iconKey: 'complexity',
+        domains: [{ key: 'system-design', label: 'System Design' }],
+        domainLabel: 'System Design',
+        kind: { key: 'operations', label: 'Operations' },
+      },
+      {
+        id: TRADEOFF_TRIGGERS_TOPIC_ID,
+        title: 'Trade-off triggers',
+        summary:
+          'Turn system requirements into explicit design choices and name the cost of each bias.',
+        iconKey: 'architecture',
+        domains: [{ key: 'system-design', label: 'System Design' }],
+        domainLabel: 'System Design',
+        kind: { key: 'decision-aid', label: 'Decision aid' },
+      },
+    ]);
+  });
+
+  it('preserves a non-alphabetical authored Related Topics order', () => {
+    const persistMergeAndSave = service.getTopic(PERSIST_MERGE_AND_SAVE_TOPIC_ID);
+
+    expect(persistMergeAndSave).toBeDefined();
+    expect(service.getRelatedTopics(persistMergeAndSave!).map(({ id }) => id)).toEqual([
+      ENTITY_MANAGER_LIFECYCLE_TOPIC_ID,
+      DIRTY_CHECKING_TOPIC_ID,
     ]);
   });
 

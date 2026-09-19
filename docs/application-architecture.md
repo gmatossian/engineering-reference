@@ -115,7 +115,6 @@ lands:
 │           ├── topic-page.*
 │           ├── topic-content.*
 │           ├── topic-breadcrumbs.*
-│           ├── topic-classification.*
 │           ├── topic-hierarchy.*
 │           ├── topic-link-list.*
 │           ├── related-topic-list.*
@@ -361,17 +360,15 @@ derived from the Topic graph.
   as native links with kind and domain context.
 - `TopicPageComponent` resolves the route input, sets view metadata, and
   composes the selected Topic header, contextual paths, hierarchy, content,
-  and immediate children. Its header spans the wide layout so title and path
-  context precede both the hierarchy navigation and main content in document
-  order. Related Topics remain a separate future composition responsibility.
+  immediate children, and Related Topics. Its header spans the wide layout so
+  title and path context precede both the hierarchy navigation and main content
+  in document order.
 - `TopicContentComponent` renders a Topic's generated main-content HTML.
 - `TopicBreadcrumbsComponent` renders one **Topic paths** navigation landmark
   containing every derived root-to-Topic path as a separately labelled ordered
   list. The current Topic ends each path as non-linked text with
   `aria-current="page"`; the component does not select or store a canonical
   path.
-- `TopicClassificationComponent` renders compact kind and domain filter links;
-  it does not represent ancestry.
 - `TopicHierarchyComponent` renders the complete graph-projected forest as
   nested lists with native Topic links and separate disclosure controls. It
   expands every path to the selected Topic, marks each current occurrence,
@@ -381,9 +378,9 @@ derived from the Topic graph.
   native links using an explicit presentation mode. Curated-path rows include
   summaries; child rows omit descriptions. The component does not infer its
   mode from Topic identity or placement metadata.
-- The future `RelatedTopicListComponent` renders the authored related UUID
-  order as a separately labelled native-link region. It is not part of the
-  graph-context implementation slice.
+- `RelatedTopicListComponent` renders the authored related UUID order as a
+  separately labelled native-link region with canonical title, icon, kind, and
+  domain context. It remains independent from the graph-projected hierarchy.
 - `TopicNotFoundComponent` provides the explicit unknown-route or unknown-Topic
   view.
 
@@ -437,8 +434,7 @@ at wide sizes and presents it as an initially collapsed in-page disclosure at
 narrow sizes. DOM and keyboard order remain Topic header and contextual paths,
 hierarchy navigation, content, children, and Related Topics. The hierarchy uses
 indentation and subtle guide rules rather than nested cards or a graph canvas;
-Related Topics remain visually and semantically separate when that future
-capability is implemented.
+Related Topics remain visually and semantically separate.
 
 ## Local Development and Builds
 
@@ -499,8 +495,9 @@ normalization, complete landing-domain links, Area-overview separation, grouped
 System Design browsing, no-results behavior, result-count announcements,
 secondary curated-path navigation, graph-root ordering, all root-to-Topic path
 derivation, path-specific siblings, duplicate occurrences for multi-parent
-Topics, linked Topic classification, and direct Topic context. Related Topics
-UI coverage belongs to its separate future implementation slice. Browser tests
+Topics, compact Topic path context, and direct Topic context. Related Topics UI
+coverage verifies authored order, canonical metadata, directed relationships,
+empty-state omission, and responsive presentation. Browser tests
 exercise a single-path Topic and a multi-parent Topic through direct load,
 in-app navigation, Back, and refresh at representative wide and narrow viewports.
 They also verify automatic current-branch expansion, transient disclosure
@@ -616,18 +613,17 @@ Direction C is delivered through bounded, dependency-ordered slices:
 2. add the browse-first persistent header search, complete landing domain entries, secondary
    curated paths, `/topics` route, title search, filters, Area-overview
    treatment, and grouped System Design browsing;
-3. add all-path contextual breadcrumbs, linked classification, and the
-   graph-projected hierarchy forest to the Topic view;
-4. add the separately accepted Related Topics region through its own future
-   implementation slice; and
+3. add all-path contextual breadcrumbs and the graph-projected hierarchy forest
+   to the Topic view;
+4. add the separately accepted Related Topics region and refine the Topic
+   header's path context through its own implementation slice; and
 5. complete focused responsive, cross-browser, keyboard, screen-reader, and
    accessibility verification for the new journeys.
 
-The first two slices are implemented. The third is specified here and handed
-off through a bounded implementation issue; it may depend on the existing
-bundled runtime data without reopening the authored contract or deriving
-duplicate indexes in application code. The fourth remains unscheduled and is
-not part of the graph-context implementation issue.
+The first three slices are implemented. The fourth is implemented by the
+bounded Related Topics issue using the existing bundled runtime data without
+reopening the authored content contract or deriving duplicate indexes in
+application code.
 
 Later slices may begin only when their required runtime data exists. Each slice
 must preserve useful hierarchical paths as secondary navigation without making

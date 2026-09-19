@@ -19,12 +19,10 @@ Detailed presentation decisions are defined separately in the
 navigation behavior, responsive semantics, and accessibility expectations. It
 does not define deployment infrastructure.
 
-The Direction C data foundation and browse-first landing, search, and index
-interactions are implemented. The graph-projected Topic context behavior below
-remains accepted target behavior until its bounded UI follow-up is implemented
-and verified. Related Topics remain a separately accepted future Topic-view
-capability and are not part of that hierarchy follow-up. This document does not
-imply that the documentation change has shipped either interaction.
+The Direction C data foundation, browse-first landing, search and index,
+graph-projected Topic context, and curated Related Topics interactions are
+implemented. Related Topics remain independent from the hierarchy projection
+even though both appear on the Topic view.
 
 ## Interaction Summary
 
@@ -41,7 +39,7 @@ Engineering Reference is a conventional addressable web experience:
   current view with that Topic's view at every viewport size;
 - every Topic has a directly addressable URL;
 - Topic views expose every real ancestor path, an expandable multi-root context
-  forest, path-independent classification, and curated Related Topics;
+  forest, and curated Related Topics;
 - Home returns to the landing page;
 - Back follows actual browser history rather than navigating to a Topic's
   conceptual parent;
@@ -109,29 +107,26 @@ A selected Topic view presents:
 1. the Topic title;
 2. every derived ancestor path as contextual breadcrumb navigation, when the
    Topic has an ancestor;
-3. compact classification containing its kind and domain links;
-4. an expandable hierarchy explorer containing the complete root forest;
-5. its complete main content, when present;
-6. its ordered immediate children, when present; and
-7. its ordered Related Topics, when that separate capability is implemented
-   and the list is non-empty.
+3. an expandable hierarchy explorer containing the complete root forest;
+4. its complete main content, when present;
+5. its ordered immediate children, when present; and
+6. its ordered Related Topics, when the list is non-empty.
 
-The Topic header containing title, breadcrumbs, and classification comes first
-in DOM order. The hierarchy navigation follows it, then the Topic content and
-onward-link regions. On spacious layouts CSS places the hierarchy beside the
-content and supplies a visible-on-focus **Skip to topic content** link. Its
-target is the first region after the hierarchy: main content when present,
-otherwise immediate-child navigation. On narrow layouts the same hierarchy
-occupies its DOM position as the collapsed in-page disclosure defined below and
-does not add a skip link for that single collapsed control.
+The Topic header containing title and contextual paths comes first in DOM order.
+The hierarchy navigation follows it, then the Topic content and onward-link
+regions. On spacious layouts CSS places the hierarchy beside the content and
+supplies a visible-on-focus **Skip to topic content** link. Its target is the
+first region after the hierarchy: main content when present, otherwise
+immediate-child navigation. On narrow layouts the same hierarchy occupies its
+DOM position as the collapsed in-page disclosure defined below and does not add
+a skip link for that single collapsed control.
 
 This produces the following valid presentations:
 
 - a navigation-only Topic displays its title, paths or root placement,
-  classification, hierarchy context, and children;
-- a content-only Topic displays its title, paths or root placement,
-  classification, hierarchy context, and main content without an empty
-  child-navigation region; and
+  hierarchy context, and children;
+- a content-only Topic displays its title, paths or root placement, hierarchy
+  context, and main content without an empty child-navigation region; and
 - a Topic with content and children retains complete main content before its
   ordered child navigation.
 
@@ -140,25 +135,24 @@ Progressive disclosure occurs by navigating to immediate child Topics.
 
 Immediate children are genuine links even if visual design later presents them
 as rows or another navigational form. Their labelled region communicates
-**Narrower topics** or another equally clear broad-to-specific relationship;
+**Explore this topic** or another equally clear broad-to-specific relationship;
 it is secondary to the Topic's content and not presented as the route required
 to find those Topics. Native link semantics preserve keyboard operation, URL
 previews, and the user's ability to open a Topic in another tab or window.
 
-Classification is derived from canonical domain and kind data. Domain and kind
-labels link to their corresponding individual `/topics` browse filters; both
-filters can be applied to reach their intersection. Hierarchy paths and the
-explorer are derived separately from child and reverse-parent data, so
-classification never masquerades as ancestry.
+Classification remains derived from canonical domain and kind data and remains
+available through domain browsing, result context, and `/topics` filters. Topic
+headers do not repeat those fields as an unlabelled second link row. Hierarchy
+paths and the explorer are derived separately from child and reverse-parent
+data, so classification never masquerades as ancestry.
 
 Related Topics are genuine Topic links in authored order. They remain visually
-and semantically distinct from narrower children, hierarchy context, and
-classification. The region is omitted when the list is empty; the UI does not
-invent links from shared domains, kinds, or browsing behavior.
+and semantically distinct from immediate children and hierarchy context. The
+region is omitted when the list is empty; the UI does not invent links from
+shared domains, kinds, or browsing behavior.
 
-Defining that separation does not add Related Topics rendering to the
-graph-context implementation slice. That future UI remains independent and
-must not be inferred from the hierarchy explorer.
+Related Topics rendering remains independent from the graph-projected hierarchy
+and must not be inferred from the hierarchy explorer.
 
 ## Topic Navigation
 
@@ -364,14 +358,13 @@ functionality.
 On narrow layouts, the header search collapses to a labelled control that
 expands a full-width field within the header; index filter controls stack in
 document order; and grouped results remain under their headings. Contextual
-breadcrumbs and classification remain near the Topic title. The hierarchy
+paths remain near the Topic title. The hierarchy
 forest moves into an in-page **Browse surrounding topics** disclosure that is
 collapsed initially, reports the number of applicable current paths when that
 number exceeds one, and exposes the same roots, occurrences, links, and
 disclosure behavior when opened. It is not moved into a modal, off-canvas
-drawer, or mobile-only navigation model. Related Topics and narrower children
-remain distinct labelled regions at every width when the separate Related
-Topics capability is implemented.
+drawer, or mobile-only navigation model. Related Topics and immediate children
+remain distinct labelled regions at every width.
 
 Following a Topic link from the narrow explorer performs normal Topic
 navigation, moves focus to the new Topic heading, and resets the enclosing
@@ -489,9 +482,9 @@ or Collections framework storing one canonical parent.
 Opening a Queue URL directly displays the same Queue content and immediate
 children as reaching it through Collections framework. Its breadcrumb trail
 and expanded Java → Collections framework → Queue branch provide hierarchy
-context without reconstructing the route taken. Its classification links still
-explain its domains and kind. Home provides a path to the landing page; Back
-follows whatever actual browser history preceded the direct visit.
+context without reconstructing the route taken. Domain and kind discovery
+remain available through All topics. Home provides a path to the landing page;
+Back follows whatever actual browser history preceded the direct visit.
 
 ### Open a multi-parent Topic directly
 
@@ -499,8 +492,7 @@ Opening Equality and hash codes displays both real contextual paths through Set
 and Map. The Java and Collections framework branches plus both parent branches
 start expanded in the forest, and both current occurrences link to the same
 canonical URL. Each occurrence exposes its own sibling group. Related Topics
-remain in their separately labelled lateral-navigation region when that future
-capability is implemented.
+remain in their separately labelled lateral-navigation region.
 
 ### Find a known Topic
 

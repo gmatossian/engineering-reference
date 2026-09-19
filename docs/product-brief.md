@@ -112,8 +112,9 @@ The accepted presentation is **browse-first hybrid**:
 - the alphabetical/filterable index is always directly available;
 - ordered-child hierarchy remains secondary for global discovery and becomes
   an expandable local context forest on Topic views; and
-- contextual paths, classification, and Related Topics provide distinct onward
-  navigation after selection.
+- contextual paths and Related Topics provide distinct onward navigation after
+  selection, while classification remains available through domain browsing and
+  the all-Topics index.
 
 A hierarchy-first presentation was rejected because adding search beside the
 existing cards would leave parent guessing and mixed container lists visually
@@ -183,8 +184,10 @@ The accepted incremental expansion adds:
 - a deliberately small domain and content-kind classification;
 - domain browsing grouped by kind where that improves recognition, beginning
   with System Design;
-- path-independent classification, contextual ancestor paths, and a
-  graph-projected hierarchy forest on every Topic; and
+- path-independent classification through domain browsing and the all-Topics
+  index;
+- contextual ancestor paths and a graph-projected hierarchy forest on every
+  Topic; and
 - a small, explicitly curated Related Topics region.
 
 The initial header search performs deterministic client-side title matching over the

@@ -160,6 +160,10 @@ export class CatalogService {
     return topic.childTopicIds.map((id) => this.getRequiredSummary(id));
   }
 
+  getRelatedTopics(topic: RuntimeTopic): readonly TopicBrowseResult[] {
+    return topic.relatedTopicIds.map((id) => this.getRequiredBrowseResult(id));
+  }
+
   getTopicDomains(topic: RuntimeTopic): readonly CatalogOption<TopicDomainKey>[] {
     return topic.domains.map((key) => ({ key, label: TOPIC_DOMAIN_LABELS[key] }));
   }

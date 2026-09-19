@@ -10,6 +10,8 @@ const TRADEOFF_TRIGGERS_TOPIC_ID = '9009159b-54aa-4724-94a2-5189a1e21437';
 const ARRAYS_AND_LISTS_TOPIC_ID = 'a2fc39d5-9564-4260-b247-f38d53bedecc';
 const STREAMS_TOPIC_ID = '2d23f8e8-66db-4d0a-b5bc-bfc0536d5ab8';
 const OPERATIONS_AND_COLLECTORS_TOPIC_ID = '45d1ae48-9ecf-4186-8df2-2e199ebcb4b4';
+const URL_SHORTENER_TOPIC_ID = 'b19de3ee-dc7d-4d9d-9b82-06d997a825e1';
+const SCALE_AND_ESTIMATION_TOPIC_ID = '17e411bb-2c99-49e8-93ec-18b767e4a890';
 
 test.describe('cross-browser smoke', { tag: '@smoke' }, () => {
   test('renders the landing page and its bundled Topics', async ({ page }) => {
@@ -70,7 +72,7 @@ test.describe('cross-browser smoke', { tag: '@smoke' }, () => {
     await expect(page.locator('.topic-content')).toHaveCount(0);
 
     await page
-      .getByRole('navigation', { name: 'Narrower topics' })
+      .getByRole('navigation', { name: 'Explore this topic' })
       .getByRole('link', { name: 'Collections framework', exact: true })
       .click();
 
@@ -103,7 +105,7 @@ test('navigates through bundled Topic detail with native history', async ({ page
   );
 
   await page
-    .getByRole('navigation', { name: 'Narrower topics' })
+    .getByRole('navigation', { name: 'Explore this topic' })
     .getByRole('link', { name: 'Queue', exact: true })
     .click();
 
@@ -125,7 +127,7 @@ test('navigates through bundled Topic detail with native history', async ({ page
     'A queue holds elements before processing',
   );
   const complexityLink = page
-    .getByRole('navigation', { name: 'Narrower topics' })
+    .getByRole('navigation', { name: 'Explore this topic' })
     .getByRole('link', { name: 'Complexity', exact: true });
   await expect(complexityLink).toHaveAttribute('href', `/topics/${COMPLEXITY_TOPIC_ID}`);
 
@@ -134,7 +136,7 @@ test('navigates through bundled Topic detail with native history', async ({ page
   await expect(page).toHaveURL(`/topics/${COMPLEXITY_TOPIC_ID}`);
   await expect(page.getByRole('heading', { level: 1, name: 'Complexity' })).toBeFocused();
   await expect(page.locator('.topic-content table')).toBeVisible();
-  await expect(page.getByRole('navigation', { name: 'Narrower topics' })).toHaveCount(0);
+  await expect(page.getByRole('navigation', { name: 'Explore this topic' })).toHaveCount(0);
 
   await page.getByRole('button', { name: 'Back', exact: true }).click();
 
@@ -169,6 +171,20 @@ test('projects every real path and repeated occurrence for a multi-parent Topic'
     /Java\s*Collections framework\s*List\s*Arrays and lists/,
   );
 
+  const foundIn = paths.getByText('Found in', { exact: true });
+  const firstPath = paths.getByRole('list', { name: 'Path 1 of 2' });
+  const secondPath = paths.getByRole('list', { name: 'Path 2 of 2' });
+  const [wideLabelBounds, wideFirstPathBounds, wideSecondPathBounds] = await Promise.all([
+    foundIn.boundingBox(),
+    firstPath.boundingBox(),
+    secondPath.boundingBox(),
+  ]);
+  expect(wideLabelBounds).not.toBeNull();
+  expect(wideFirstPathBounds).not.toBeNull();
+  expect(wideSecondPathBounds).not.toBeNull();
+  expect(Math.abs(wideLabelBounds!.y - wideFirstPathBounds!.y)).toBeLessThanOrEqual(4);
+  expect(Math.abs(wideFirstPathBounds!.x - wideSecondPathBounds!.x)).toBeLessThanOrEqual(1);
+
   const hierarchy = page
     .locator('.topic-hierarchy-wide')
     .getByRole('navigation', { name: 'Browse surrounding topics' });
@@ -184,19 +200,29 @@ test('projects every real path and repeated occurrence for a multi-parent Topic'
     .evaluateAll((lists) => lists.map(({ id }) => id));
   expect(new Set(disclosureListIds).size).toBe(disclosureListIds.length);
 
-  const classification = page.getByRole('navigation', { name: 'Topic classification' });
-  await expect(classification.getByRole('link', { name: 'Operations' })).toHaveAttribute(
-    'href',
-    '/topics?kind=operations',
-  );
-  await expect(classification.getByRole('link', { name: 'Collections' })).toHaveAttribute(
-    'href',
-    '/topics?domain=collections',
-  );
+  await expect(page.getByRole('navigation', { name: 'Topic classification' })).toHaveCount(0);
 
   await page.reload();
   await expect(paths.getByRole('list')).toHaveCount(2);
   await expect(currentOccurrences).toHaveCount(2);
+
+  await page.setViewportSize({ width: 320, height: 640 });
+  const [narrowLabelBounds, narrowFirstPathBounds, narrowSecondPathBounds] = await Promise.all([
+    foundIn.boundingBox(),
+    firstPath.boundingBox(),
+    secondPath.boundingBox(),
+  ]);
+  expect(narrowLabelBounds).not.toBeNull();
+  expect(narrowFirstPathBounds).not.toBeNull();
+  expect(narrowSecondPathBounds).not.toBeNull();
+  expect(narrowFirstPathBounds!.y).toBeGreaterThan(narrowLabelBounds!.y);
+  expect(Math.abs(narrowLabelBounds!.x - narrowFirstPathBounds!.x)).toBeLessThanOrEqual(1);
+  expect(Math.abs(narrowFirstPathBounds!.x - narrowSecondPathBounds!.x)).toBeLessThanOrEqual(1);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+    ),
+  ).toBe(true);
 });
 
 test('keeps disclosure state independent for repeated hierarchy occurrences', async ({ page }) => {
@@ -278,6 +304,54 @@ test('provides a wide-layout hierarchy bypass to the first Topic content region'
     }),
   ).toBe(true);
 });
+
+test(
+  'presents authored Related Topics as distinct directed onward navigation',
+  { tag: '@smoke' },
+  async ({ page }) => {
+    await page.goto(`/topics/${URL_SHORTENER_TOPIC_ID}`);
+
+    const related = page.getByRole('navigation', { name: 'Related topics' });
+    const links = related.getByRole('link');
+    await expect(links).toHaveCount(2);
+    await expect(links.nth(0)).toContainText('Scale and estimation');
+    await expect(links.nth(0)).toContainText('Operations · System Design');
+    await expect(links.nth(0)).toHaveAttribute('href', `/topics/${SCALE_AND_ESTIMATION_TOPIC_ID}`);
+    await expect(links.nth(1)).toContainText('Trade-off triggers');
+
+    await links.nth(0).focus();
+    await expect(links.nth(0)).toBeFocused();
+    await page.keyboard.press('Enter');
+
+    await expect(page).toHaveURL(`/topics/${SCALE_AND_ESTIMATION_TOPIC_ID}`);
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Scale and estimation' }),
+    ).toBeFocused();
+    await expect(page.getByRole('navigation', { name: 'Related topics' })).toHaveCount(0);
+
+    await page.goBack();
+    await expect(page).toHaveURL(`/topics/${URL_SHORTENER_TOPIC_ID}`);
+    await expect(page.getByRole('heading', { level: 1, name: 'URL shortener' })).toBeFocused();
+
+    await page.goForward();
+    await expect(page).toHaveURL(`/topics/${SCALE_AND_ESTIMATION_TOPIC_ID}`);
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Scale and estimation' }),
+    ).toBeFocused();
+
+    await page.goBack();
+    await expect(page).toHaveURL(`/topics/${URL_SHORTENER_TOPIC_ID}`);
+    await expect(page.getByRole('heading', { level: 1, name: 'URL shortener' })).toBeFocused();
+
+    await page.setViewportSize({ width: 320, height: 640 });
+    await expect(related).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      ),
+    ).toBe(true);
+  },
+);
 
 test('finds a Topic from the landing page without knowing its parent', async ({ page }) => {
   await page.goto('/');
@@ -541,6 +615,7 @@ test('renders the application without detectable accessibility violations', asyn
       `/topics/${TRADEOFF_TRIGGERS_TOPIC_ID}`,
       `/topics/${ARRAYS_AND_LISTS_TOPIC_ID}`,
       `/topics/${STREAMS_TOPIC_ID}`,
+      `/topics/${URL_SHORTENER_TOPIC_ID}`,
     ]) {
       await page.goto(path);
 

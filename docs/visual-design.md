@@ -241,11 +241,10 @@ what sits beside it, and where else it is found. It presents:
 
 1. the Topic title;
 2. every root-to-Topic breadcrumb trail;
-3. compact linked kind and domain classification;
-4. a graph-projected hierarchy explorer;
-5. complete main content, when present;
-6. ordered immediate-child navigation, when present; and
-7. curated Related Topics, when present.
+3. a graph-projected hierarchy explorer;
+4. complete main content, when present;
+5. ordered immediate-child navigation, when present; and
+6. curated Related Topics, when present.
 
 The hierarchy explorer renders the child graph as a forest without inventing a
 synthetic common root. Its root trees follow the deterministic order defined by
@@ -270,18 +269,20 @@ and show the full path instead of a truncated parent label. When several paths
 lead to the Topic, show the trails together as ordered lists labelled **Path 1
 of 2**, **Path 2 of 2**, and so on, rather than selecting one as canonical. The
 current Topic ends each trail as non-linked text with `aria-current="page"`.
-The Topic's kind and domains remain compact native links to their corresponding
-browse filters; they are classification, not ancestry.
+At wider widths the **Found in** label and first path share a compact line, with
+additional paths aligned beneath the first. Narrow layouts may stack or wrap
+the same content. Topic headers do not add an unlabelled kind-and-domain link
+row that could be mistaken for another path; that classification remains
+available through domain browsing, result context, and all-Topics filters.
 
 Related Topics use a labelled region distinct from immediate children. They
 may use the same compact link-row family, but the heading and supporting kind
 or domain text must communicate that the links are lateral rather than
 narrower. Related Topics never appear inside the hierarchy explorer merely
-because they are related. Empty classification groups and an empty Related
-Topics region are not rendered.
+because they are related. An empty Related Topics region is not rendered.
 
-This document preserves the accepted future Related Topics presentation, but
-the graph-context implementation slice neither introduces nor revises that UI.
+The Related Topics presentation remains independent from the graph-projected
+hierarchy even though both appear on the Topic view.
 
 ### Accepted Topic context compositions
 
@@ -290,13 +291,11 @@ selected Topic remains primary:
 
 ```text
 ArrayList versus LinkedList
-Found in
-Java / Collections framework / List / ArrayList versus LinkedList
-Decision aid · Java · Collections · Algorithms and data structures
+Found in  Java / Collections framework / List / ArrayList versus LinkedList
 
 [ Browse surrounding topics ]  [ Topic content                         ]
 [ ▾ Java                    ]  [ ...                                   ]
-[   ▾ Collections framework ]  [ Narrower topics                       ]
+[   ▾ Collections framework ]  [ Explore this topic                    ]
 [     ▾ List                 ]  [ ...                                   ]
 [       Creating lists       ]
 [       ArrayList versus ... ]  current
@@ -314,9 +313,8 @@ forest:
 
 ```text
 Equality and hash codes
-Found in
-Java / Collections framework / Map / Equality and hash codes
-Java / Collections framework / Set / Equality and hash codes
+Found in  Java / Collections framework / Map / Equality and hash codes
+          Java / Collections framework / Set / Equality and hash codes
 
 [ ▾ Java                         ]
 [   ▾ Collections framework      ]
@@ -337,7 +335,7 @@ descriptions, sequence numbers, or opaque classification codes. Classification
 belongs to the all-Topics and context surfaces rather than being inferred from
 a child icon.
 
-The region uses a relationship heading such as **Narrower topics**. It remains
+The region uses the relationship heading **Explore this topic**. It remains
 visually secondary to main content and must not resemble the primary landing
 domain grid or imply that following the hierarchy is necessary to find a
 Topic.
@@ -482,12 +480,11 @@ Responsive layouts preserve content, order, semantics, and navigation:
 - grouped index sections and result metadata remain visible rather than
   collapsing into icon-only or chip-only controls;
 - the hierarchy explorer becomes a collapsed in-page disclosure labelled
-  **Browse surrounding topics** after the Topic title, breadcrumb trails, and
-  classification; it does not become a drawer or modal;
+  **Browse surrounding topics** after the Topic title and breadcrumb trails; it
+  does not become a drawer or modal;
 - the collapsed hierarchy disclosure reports the number of available paths
   when the current Topic has more than one;
-- Related Topics remain a distinct vertical link region when that separate
-  future capability is implemented;
+- Related Topics remain a distinct vertical link region;
 - typography and spacing reduce proportionally without becoming cramped;
 - Topic main content follows normal vertical document flow;
 - wide code and tables scroll inside their own bounded regions; and
