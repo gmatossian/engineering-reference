@@ -576,3 +576,116 @@ and accepted.
   speculative future content.
 - Search ranking, exact taxonomy vocabulary, relationship authoring rules, and
   final UI composition require acceptance or focused follow-up validation.
+
+## Post-implementation retrieval evaluation
+
+Issue [#72](https://github.com/gmatossian/engineering-reference/issues/72)
+evaluates the implemented Direction C experience against the accepted `main`
+baseline at commit `073a587`. The purpose is to find observed retrieval or
+orientation problems before proposing more navigation work. It does not reopen
+the information model or authorize production changes.
+
+### Method and sample
+
+The evaluation uses the published 67-Topic catalog and excludes untracked
+parked Topics. The sample deliberately crosses all four curated roots, every
+content kind, shallow and deep paths, Topics with multiple parents, Topics with
+children, and Topics with and without curated related links.
+
+For each Topic, the sample condenses the title-only expectations already
+recorded during issue #56 before the new context UI existed. Post-implementation
+observations remain separate from those expectations. The same evaluator had
+prior repository familiarity, so this is a disciplined comparison rather than
+an independent usability study.
+
+| Topic and direct route | Why sampled | Title-only expectation before observing the UI |
+| --- | --- | --- |
+| Java<br>`/topics/d3ef7c8b-ee6b-48f5-9039-2aa94d03c19c` | Root Area | A top-level Java entry and starting point for language, collections, concurrency, and persistence material. |
+| Collections framework<br>`/topics/c29c5725-0b1f-480d-88f4-5c9d3b7f0dc5` | Nested Area | Java → Collections framework, with List, Set, Queue, and Map nearby. |
+| Streams<br>`/topics/2d23f8e8-66db-4d0a-b5bc-bfc0536d5ab8` | Concept with two parents and children | Java → Streams; plausibly also reachable near Collections, with stream operations and pitfalls below or nearby. |
+| Equality and hash codes<br>`/topics/e080cdee-eecc-4c33-92d8-3a75acbf5d34` | Concept with two parents and related links | Java object semantics or Collections → Set/Map; nearby collection correctness and record semantics. |
+| Arrays and lists<br>`/topics/a2fc39d5-9564-4260-b247-f38d53bedecc` | Operations Topic with two parents | Java → Arrays or Collections → List; a bridge between array and list operations. |
+| `persist`, `merge`, and `save`<br>`/topics/d1a3f0d1-92a1-4c65-87a0-ee7d8d10131e` | Decision aid with related links | Java → JPA or Persistence → entity operations; lifecycle, dirty checking, and repository semantics nearby. |
+| URL shortener<br>`/topics/b19de3ee-dc7d-4d9d-9b82-06d997a825e1` | System Design exercise with children and related links | System Design → exercises/design examples → URL shortener; scale, identifiers, and trade-offs available from the exercise. |
+| Choosing storage<br>`/topics/bec92ddc-6f0c-48a5-a576-1e49a92d5c3a` | Cross-domain decision aid with a related link | System Design or Databases → storage decisions; nearby workload estimation and datastore trade-offs. |
+| Pagination: offset vs cursor<br>`/topics/4f4a4da6-3a42-4e60-b3b3-8669ba57cf70` | Cross-domain decision aid | Databases, APIs, or System Design → pagination; scale and query-shape trade-offs nearby. |
+| HTTP status codes<br>`/topics/b97384d3-f986-4850-a6b0-a1c3b893ee86` | Shallow HTTP operations Topic | HTTP → status codes. |
+| SQL window functions<br>`/topics/d7d5d680-00d4-4782-8875-a0fd06dabeb9` | Shallow database operations Topic | Databases → SQL → window functions. |
+| Optimistic locking with `@Version`<br>`/topics/3ee152a5-33e8-4700-8e08-1b35439f5e8e` | Pattern Topic | Java → JPA/Persistence → concurrency or locking patterns; entity lifecycle material nearby. |
+
+The journeys begin from the landing page, the all-Topics index, and a direct
+Topic URL. Material observations record the starting surface, target URL,
+wide or narrow viewport assumption, interaction path, and keyboard or focus
+behavior where it affects retrieval or orientation.
+
+The app ran at `http://127.0.0.1:4200/`. The complete index route was
+`/topics`; representative filtered routes included
+`/topics?domain=system-design`, `/topics?domain=databases`, and
+`/topics?domain=system-design&kind=exercise`. Search evidence used
+`/topics?q=<title fragment>`. Wide observations requested a 1440 × 900 viewport
+override. Compact observations requested 390 × 844; the browser host reported
+487 × 1055 CSS pixels after scaling, still below the accepted compact-layout
+breakpoint.
+
+### Journey results
+
+The routes below were reproduced in the running application from the root URL
+unless another starting point is stated. Each direct URL also reproduced the
+same Topic title, path context, and current-tree expansion after refresh.
+
+| Target | Reproduced retrieval and context | Result |
+| --- | --- | --- |
+| Java | Curated paths → Java. The current root is expanded and **Explore this topic** exposes Arrays, Collections framework, Streams, Concurrency, JPA, and Java language evolution. | Matches the expected root entry. A root appropriately has no **Found in** path. |
+| Collections framework | Curated paths → Java → Collections framework. The direct page reads **Found in Java / Collections framework** and exposes List, Set, Queue, and Map both in context and as children. | Matches the expected hierarchy. |
+| Streams | Curated paths → Java → Streams. Search for `streams` returns Streams, Streams vs loops, and Parallel streams. The direct page exposes both Java → Streams and Java → Java language evolution → Streams, plus four children. | Multiple real placements are visible rather than collapsed into one synthetic location. The expected Java route is strong; a Collections route is not authored. |
+| Equality and hash codes | Java → Collections framework → Set → Equality and hash codes; the Map route is also visible. Search for `hash codes` returns one result. The direct page shows both full paths and related links to sorted maps and sorted sets. | Strong match for the collection contexts. Record semantics mentioned in the content are not a curated lateral link. |
+| Arrays and lists | Java → Arrays → Arrays and lists; Java → Collections framework → List → Arrays and lists is also visible. | Both title-plausible contexts are explicit. |
+| `persist`, `merge`, and `save` | Java → JPA → persist, merge, and save. Search for `persist` returns one result. Related Topics exposes EntityManager and entity lifecycle plus Dirty checking, flush, and commit. | Strong hierarchy and lateral-context match. |
+| URL shortener | Curated paths → System Design → URL shortener. The System Design index places it alone under **Exercises**. Its direct page exposes two children and related links to Scale and estimation and Trade-off triggers. | Resolves the original exercise-versus-loose-topic ambiguity and provides useful onward routes. |
+| Choosing storage | System Design → URL shortener → Choosing storage. Search for `storage` returns one result, and both Databases and System Design domain indexes include it. The direct page exposes only the authored URL-shortener hierarchy path and a related link to Short URL identifiers. | Findable by title and both domains, but direct-page context makes the broadly titled reference appear specific to the URL-shortener exercise. |
+| Pagination: offset vs cursor | Curated paths → System Design → Pagination: offset vs cursor. Search for `pagination` returns one result, and both Databases and System Design indexes include it. The direct page exposes only the System Design hierarchy path and no Related Topics. | Findable, with partial rather than misleading context. Its database classification is visible on indexes but not on the direct page. |
+| HTTP status codes | Curated paths → HTTP → HTTP status codes; search for `status codes` returns one result. | The shallow hierarchy is direct and sufficient. |
+| SQL window functions | Curated paths → Databases → SQL window functions; search for `window functions` returns one result. | The shallow hierarchy is direct and sufficient. |
+| Optimistic locking with `@Version` | Java → JPA → Optimistic locking with `@Version`; search for `optimistic locking` returns one result, and Java, Persistence, and Databases indexes include it. The direct page has no Related Topics. | The JPA route is clear. Expected lifecycle and concurrency neighbors are not exposed laterally. |
+
+### Cross-cutting observations
+
+- The landing page provides eight recognizable domain entries and four curated
+  hierarchy roots without requiring a search term. The hierarchy is no longer
+  the only way to reach a Topic.
+- The complete 67-Topic index is alphabetical and exposes content kind and
+  domains on every row. Domain and kind filters reduce broad lists; in
+  particular, the System Design view separates Overviews, Operations, Decision
+  aids, and Exercises. Selecting **Exercises** leaves only URL shortener.
+- The persistent title search returned the intended target for every sampled
+  known-title query. The broader `streams` query returned three recognizable
+  choices rather than choosing silently.
+- Every non-root sampled direct page exposes **Found in** and an automatically
+  expanded current path in **Browse surrounding topics**. Multi-parent Topics
+  expose each path. Siblings remain visible without being misrepresented as
+  children or Related Topics.
+- Forward navigation from the landing page, hierarchy, and Related Topics
+  focused the destination `h1`. Browser Back restored the originating Topic's
+  `h1` focus and its stored scroll position.
+- At the compact viewport, multiple **Found in** paths stack without horizontal
+  overflow. **Browse surrounding topics** becomes a collapsed native disclosure
+  before the content; Enter opens it and retains focus on its `summary`. The
+  header search becomes a button that reveals and focuses the search field.
+- Related Topics remains deliberately sparse. Its absence does not block
+  hierarchical or index retrieval, but it makes the quality of authored links
+  noticeable on otherwise well-contextualized leaf Topics.
+
+### Findings and disposition checkpoint
+
+| Finding | Classification | Current disposition |
+| --- | --- | --- |
+| Known-title search, domain browsing, System Design kind grouping, and ordinary hierarchy traversal all reached the sampled targets predictably. | No action | Preserve the current behavior. |
+| Direct links now explain authored hierarchy position, siblings, children, and multiple paths; responsive disclosure and focus behavior remained usable in the sampled journeys. | No action | Preserve the current behavior. |
+| Choosing storage, Pagination: offset vs cursor, and Optimistic locking with `@Version` are classified into more domains than their authored hierarchy paths reveal. Choosing storage is the clearest mismatch because its only path places a broadly titled reference beneath one exercise. | Authored-placement decision | The accepted interaction model intentionally keeps domain classification in browse results rather than Topic headers. The human owner chose to preserve the accurate URL-shortener child placement and narrow the standalone title to **Choosing storage for a URL shortener** in follow-up [#73](https://github.com/gmatossian/engineering-reference/issues/73). Reopening the header decision would require stronger evidence than this sample provides. |
+| Equality and hash codes and Optimistic locking with `@Version` have plausible nearby references that are not curated Related Topics; Pagination has no lateral link. | Optional authored-content follow-up | Do not expand relationships automatically. Revisit only with a small, intentional candidate set and the authoring contract's retrieval-value test. |
+| The HTTP and Databases curated-path descriptions are as narrow as their currently sparse subtrees, so the entries read more like their only detailed references than mature domain summaries. | Optional catalog-growth follow-up | Accept for the current sparse catalog; reassess when either subtree grows. |
+
+No sampled journey established a production UI defect. The unresolved items are
+content placement and curation choices, not evidence for another broad
+navigation redesign. The material placement finding has an accepted bounded
+follow-up; the other observations require no immediate change.
