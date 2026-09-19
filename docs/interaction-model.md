@@ -496,10 +496,10 @@ remain in their separately labelled lateral-navigation region.
 
 ### Find a known Topic
 
-Submitting `Choosing storage` from the persistent header search opens the all-Topics view
-with that query represented in the URL. The exact title match appears before
-any broader substring matches. Selecting it opens the canonical Topic URL and
-moves focus to the Topic heading.
+Submitting `Choosing storage for a URL shortener` from the persistent header search
+opens the all-Topics view with that query represented in the URL. The exact title
+match appears before any broader substring matches. Selecting it opens the canonical
+Topic URL and moves focus to the Topic heading.
 
 ### Browse a domain by kind
 

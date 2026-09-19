@@ -1,6 +1,6 @@
 ---
 id: 'bec92ddc-6f0c-48a5-a576-1e49a92d5c3a'
-title: 'Choosing storage'
+title: 'Choosing storage for a URL shortener'
 summary: 'Match URL mappings, redirect lookups, and analytics events to suitable storage workloads.'
 iconKey: 'database'
 domains:

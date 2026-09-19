@@ -413,7 +413,7 @@ Operations
   Scale and estimation                       Operations · System Design
 
 Decision aids
-  Choosing storage                           Decision aid · System Design
+  Choosing storage for a URL shortener       Decision aid · System Design
   Pagination: offset vs cursor               Decision aid · System Design
   Short URL identifiers                      Decision aid · System Design
   Trade-off triggers                         Decision aid · System Design
@@ -440,7 +440,7 @@ Operations
   Operations · System Design     ]
 
 Decision aids
-[ Choosing storage
+[ Choosing storage for a URL shortener
   Decision aid · System Design   ]
 [ Pagination: offset vs cursor
   Decision aid · System Design   ]
