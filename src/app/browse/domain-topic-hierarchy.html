@@ -1,0 +1,69 @@
+<nav class="domain-hierarchy" [attr.aria-label]="'Browse ' + domainLabel() + ' topics'">
+  <ng-container
+    *ngTemplateOutlet="branches; context: { $implicit: roots(), parentPath: '', depth: 0 }"
+  />
+</nav>
+
+<ng-template #branches let-nodes let-parentPath="parentPath" let-depth="depth">
+  <ul [class.domain-hierarchy__roots]="depth === 0">
+    @for (node of nodes; track node.id) {
+      @let nodePath = occurrencePath(parentPath, node.id);
+      @let hasChildren = node.children.length > 0;
+      @let expanded = isExpanded(nodePath);
+
+      <li [class.domain-hierarchy__root]="depth === 0">
+        <div
+          class="domain-hierarchy__item"
+          [class.domain-hierarchy__item--root]="depth === 0"
+          [class.domain-hierarchy__item--context]="!node.matchesDomain"
+        >
+          @if (hasChildren) {
+            <button
+              class="domain-hierarchy__disclosure"
+              type="button"
+              [attr.aria-controls]="childListId(nodePath)"
+              [attr.aria-expanded]="expanded"
+              [attr.aria-label]="(expanded ? 'Collapse ' : 'Expand ') + node.title"
+              (click)="toggle(nodePath)"
+            >
+              <span aria-hidden="true"></span>
+            </button>
+          } @else {
+            <span class="domain-hierarchy__spacer" aria-hidden="true"></span>
+          }
+
+          <a class="domain-hierarchy__link" [routerLink]="['/topics', node.id]">
+            <app-topic-icon [iconKey]="node.iconKey" />
+            <span class="domain-hierarchy__copy">
+              <span class="domain-hierarchy__title">{{ node.title }}</span>
+              <span class="domain-hierarchy__context">
+                @if (hasChildren) {
+                  {{ node.matchingTopicCount }}
+                  {{ node.matchingTopicCount === 1 ? 'topic' : 'topics' }}
+                } @else {
+                  {{ node.kind.label }}
+                }
+              </span>
+            </span>
+          </a>
+        </div>
+
+        @if (hasChildren) {
+          <div
+            class="domain-hierarchy__children"
+            [class.domain-hierarchy__children--root]="depth === 0"
+            [id]="childListId(nodePath)"
+            [hidden]="!expanded"
+          >
+            <ng-container
+              *ngTemplateOutlet="
+                branches;
+                context: { $implicit: node.children, parentPath: nodePath, depth: depth + 1 }
+              "
+            />
+          </div>
+        }
+      </li>
+    }
+  </ul>
+</ng-template>

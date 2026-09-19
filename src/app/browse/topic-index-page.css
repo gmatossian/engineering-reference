@@ -14,6 +14,7 @@
 h1,
 .topic-index__header p:last-child,
 .topic-index__count,
+.topic-index__results > h2,
 .topic-index__empty h3,
 .topic-index__empty p {
   margin: 0;
@@ -165,6 +166,11 @@ button:hover {
 .topic-index__count {
   color: var(--color-secondary);
   font-weight: 650;
+}
+
+.topic-index__results > h2 {
+  font-size: 1.35rem;
+  letter-spacing: -0.025em;
 }
 
 .topic-index__empty {

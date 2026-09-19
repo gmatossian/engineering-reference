@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import type { RuntimeCatalog, RuntimeTopic } from '../../../contracts/runtime-catalog';
 import generatedCatalog from '../../../.generated/catalog.json';
+import type { TopicBrowseHierarchyNode } from './catalog.service';
 import { CatalogService } from './catalog.service';
 
 const JAVA_TOPIC_ID = 'd3ef7c8b-ee6b-48f5-9039-2aa94d03c19c';
@@ -14,7 +15,13 @@ const PERSIST_MERGE_AND_SAVE_TOPIC_ID = 'd1a3f0d1-92a1-4c65-87a0-ee7d8d10131e';
 const ENTITY_MANAGER_LIFECYCLE_TOPIC_ID = '072fc2b2-2755-45ec-aabe-d8a4740fa4e9';
 const DIRTY_CHECKING_TOPIC_ID = '62196430-caa5-48c7-bb68-c064209d6291';
 const ARRAYS_AND_LISTS_TOPIC_ID = 'a2fc39d5-9564-4260-b247-f38d53bedecc';
+const STREAMS_TOPIC_ID = '2d23f8e8-66db-4d0a-b5bc-bfc0536d5ab8';
 const catalog = generatedCatalog as RuntimeCatalog;
+
+const flattenHierarchy = (
+  nodes: readonly TopicBrowseHierarchyNode[],
+): readonly TopicBrowseHierarchyNode[] =>
+  nodes.flatMap((node) => [node, ...flattenHierarchy(node.children)]);
 
 const createRootTopic = (title: string): RuntimeTopic => ({
   title,
@@ -116,6 +123,29 @@ describe('CatalogService', () => {
     ]);
   });
 
+  it('projects the unconstrained catalog as the complete root forest', () => {
+    const view = service.getTopicBrowseView({ query: '', domain: null, kind: null });
+
+    expect(view.mode).toBe('hierarchy');
+    expect(view.resultCount).toBe(67);
+    expect(view.sections).toEqual([]);
+    expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
+      'Java',
+      'System Design',
+      'HTTP',
+      'Databases',
+    ]);
+  });
+
+  it('preserves every occurrence of a multi-parent Topic with one canonical id', () => {
+    const roots = service.getBrowseHierarchy(null);
+    const occurrences = flattenHierarchy(roots).filter(({ id }) => id === STREAMS_TOPIC_ID);
+
+    expect(occurrences).toHaveLength(2);
+    expect(occurrences.every(({ id }) => id === STREAMS_TOPIC_ID)).toBe(true);
+    expect(roots[0].matchingTopicCount).toBe(56);
+  });
+
   it('intersects domain and kind filters', () => {
     const view = service.getTopicBrowseView({
       query: '',
@@ -124,10 +154,12 @@ describe('CatalogService', () => {
     });
 
     expect(view.resultCount).toBe(1);
+    expect(view.mode).toBe('results');
+    expect(view.resultHeading).toBe('Exercises in System Design');
     expect(view.sections[0].topics.map(({ title }) => title)).toEqual(['URL shortener']);
   });
 
-  it('separates Area overviews and groups the default System Design view by kind', () => {
+  it('projects an unconstrained root domain as a hierarchy', () => {
     const view = service.getTopicBrowseView({
       query: '',
       domain: 'system-design',
@@ -135,29 +167,57 @@ describe('CatalogService', () => {
     });
 
     expect(view.resultCount).toBe(7);
-    expect(view.sections.map(({ label }) => label)).toEqual([
-      'Overviews',
-      'Operations',
-      'Decision aids',
-      'Exercises',
-    ]);
-    expect(view.sections[0].topics.map(({ title }) => title)).toEqual(['System Design']);
-    expect(view.sections[2].topics.map(({ title }) => title)).toEqual([
-      'Choosing storage for a URL shortener',
-      'Pagination: offset vs cursor',
-      'Short URL identifiers',
+    expect(view.mode).toBe('hierarchy');
+    expect(view.sections).toEqual([]);
+    expect(view.hierarchyRoots.map(({ title }) => title)).toEqual(['System Design']);
+    expect(view.hierarchyRoots[0].matchingTopicCount).toBe(7);
+    expect(view.hierarchyRoots[0].children.map(({ title }) => title)).toEqual([
+      'Scale and estimation',
+      'URL shortener',
       'Trade-off triggers',
+      'Pagination: offset vs cursor',
     ]);
   });
 
-  it('keeps non-grouped domain results flat after optional overviews', () => {
+  it('keeps a small root domain in the same hierarchy presentation', () => {
     const view = service.getTopicBrowseView({ query: '', domain: 'http', kind: null });
 
-    expect(view.sections.map(({ label }) => label)).toEqual(['Overviews', null]);
-    expect(view.sections.flatMap(({ topics }) => topics.map(({ title }) => title))).toEqual([
-      'HTTP',
+    expect(view.mode).toBe('hierarchy');
+    expect(view.hierarchyRoots.map(({ title }) => title)).toEqual(['HTTP']);
+    expect(view.hierarchyRoots[0].children.map(({ title }) => title)).toEqual([
       'HTTP status codes',
     ]);
+  });
+
+  it('retains non-matching ancestors as context for a non-root domain', () => {
+    const view = service.getTopicBrowseView({ query: '', domain: 'collections', kind: null });
+    const java = view.hierarchyRoots[0];
+
+    expect(view.resultCount).toBe(28);
+    expect(java.title).toBe('Java');
+    expect(java.matchesDomain).toBe(false);
+    expect(java.matchingTopicCount).toBe(28);
+    expect(java.children.map(({ title }) => title)).toEqual([
+      'Arrays',
+      'Collections framework',
+      'Java language evolution',
+    ]);
+    expect(java.children[0].matchesDomain).toBe(false);
+    expect(java.children[1].matchesDomain).toBe(true);
+    expect(java.children[2].matchesDomain).toBe(false);
+    expect(java.children[2].children.map(({ title }) => title)).toEqual(['Sequenced collections']);
+  });
+
+  it('describes filtered and searched result context explicitly', () => {
+    expect(
+      service.getTopicBrowseView({ query: '', domain: 'java', kind: 'concept' }).resultHeading,
+    ).toBe('Concepts in Java');
+    expect(
+      service.getTopicBrowseView({ query: 'queue', domain: 'java', kind: 'concept' }).resultHeading,
+    ).toBe('Concepts matching “queue” in Java');
+    expect(
+      service.getTopicBrowseView({ query: 'queue', domain: null, kind: null }).resultHeading,
+    ).toBe('Results for “queue”');
   });
 
   it('resolves child Topics in their declared order', () => {

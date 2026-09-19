@@ -11,17 +11,61 @@ describe('TopicIndexPage', () => {
     });
   });
 
-  it('renders Area overviews and grouped System Design results', async () => {
+  it('renders the unconstrained catalog as four expanded root trees', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/topics', TopicIndexPage);
+    await harness.fixture.whenStable();
+    const host = harness.routeNativeElement as HTMLElement;
+
+    expect(
+      Array.from(host.querySelectorAll('.domain-hierarchy__root > .domain-hierarchy__item')).map(
+        (item) => item.querySelector('.domain-hierarchy__title')?.textContent?.trim(),
+      ),
+    ).toEqual(['Java', 'System Design', 'HTTP', 'Databases']);
+    expect(
+      Array.from(
+        host.querySelectorAll<HTMLButtonElement>(
+          '.domain-hierarchy__root > .domain-hierarchy__item > button',
+        ),
+      ).map((button) => button.getAttribute('aria-expanded')),
+    ).toEqual(['true', 'true', 'true', 'true']);
+    for (const disclosure of host.querySelectorAll<HTMLButtonElement>(
+      '.domain-hierarchy__disclosure',
+    )) {
+      expect(host.querySelector(`#${disclosure.getAttribute('aria-controls')}`)).not.toBeNull();
+    }
+    expect(
+      Array.from(
+        host.querySelectorAll('.domain-hierarchy__root > .domain-hierarchy__item app-topic-icon'),
+      ).map((icon) => icon.getAttribute('data-icon-key')),
+    ).toEqual(['java', 'architecture', 'architecture', 'database']);
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('67 topics');
+  });
+
+  it('renders the default System Design view as an expandable hierarchy', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/topics?domain=system-design', TopicIndexPage);
     await harness.fixture.whenStable();
 
     const host = harness.routeNativeElement as HTMLElement;
-    const headings = Array.from(host.querySelectorAll('app-topic-result-list h2')).map((heading) =>
-      heading.textContent?.trim(),
-    );
+    const hierarchy = host.querySelector('app-domain-topic-hierarchy');
 
-    expect(headings).toEqual(['Overviews', 'Operations', 'Decision aids', 'Exercises']);
+    expect(hierarchy).not.toBeNull();
+    expect(hierarchy?.querySelector('.domain-hierarchy__title')?.textContent?.trim()).toBe(
+      'System Design',
+    );
+    expect(
+      Array.from(hierarchy?.querySelectorAll('.domain-hierarchy__children--root a') ?? []).map(
+        (link) => link.querySelector('.domain-hierarchy__title')?.textContent?.trim(),
+      ),
+    ).toEqual([
+      'Scale and estimation',
+      'URL shortener',
+      'Short URL identifiers',
+      'Choosing storage for a URL shortener',
+      'Trade-off triggers',
+      'Pagination: offset vs cursor',
+    ]);
     expect((host.querySelector('#topic-domain') as HTMLSelectElement).value).toBe('system-design');
     expect(host.querySelector('[role="status"]')?.textContent).toContain('7 topics');
   });
@@ -73,7 +117,21 @@ describe('TopicIndexPage', () => {
       'Patterns',
     ]);
     expect(selectedKind?.value).toBe('area');
+    expect(host.querySelector('#topic-results-heading')?.textContent?.trim()).toBe('Overviews');
     expect(TestBed.inject(Router).url).toBe('/topics?kind=area');
+  });
+
+  it('labels a domain-and-kind result list explicitly', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/topics?domain=java&kind=concept', TopicIndexPage);
+    await harness.fixture.whenStable();
+    const host = harness.routeNativeElement as HTMLElement;
+
+    expect(host.querySelector('app-domain-topic-hierarchy')).toBeNull();
+    expect(host.querySelector('#topic-results-heading')?.textContent?.trim()).toBe(
+      'Concepts in Java',
+    );
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('15 topics');
   });
 
   it('keeps active filters visible in the no-results state', async () => {

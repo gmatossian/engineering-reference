@@ -368,7 +368,7 @@ test('finds a Topic from the landing page without knowing its parent', async ({ 
   await expect(page.locator('.result__title')).toHaveText(['Choosing storage for a URL shortener']);
 });
 
-test('presents Area overviews and grouped System Design results', async ({ page }) => {
+test('presents and expands the System Design hierarchy', async ({ page }) => {
   await page.goto('/');
   await page
     .getByRole('navigation', { name: 'Domains' })
@@ -378,20 +378,31 @@ test('presents Area overviews and grouped System Design results', async ({ page 
   await expect(page).toHaveURL('/topics?domain=system-design');
   await expect(page.getByRole('heading', { level: 1, name: 'All topics' })).toBeFocused();
   await expect(page.getByRole('status')).toContainText('7 topics');
-  await expect(page.locator('app-topic-result-list h2')).toHaveText([
-    'Overviews',
-    'Operations',
-    'Decision aids',
-    'Exercises',
+  const hierarchy = page.getByRole('navigation', { name: 'Browse System Design topics' });
+  await expect(
+    hierarchy.locator(
+      '.domain-hierarchy__children--root > ul > li > .domain-hierarchy__item .domain-hierarchy__title',
+    ),
+  ).toHaveText([
+    'Scale and estimation',
+    'URL shortener',
+    'Trade-off triggers',
+    'Pagination: offset vs cursor',
   ]);
-  await expect(page.locator('.result__title')).toHaveText([
+
+  await hierarchy.getByRole('button', { name: 'Expand URL shortener' }).click();
+  await expect(hierarchy.getByRole('link', { name: /^Short URL identifiers/ })).toBeVisible();
+  await expect(
+    hierarchy.getByRole('link', { name: /^Choosing storage for a URL shortener/ }),
+  ).toBeVisible();
+  await expect(hierarchy.locator('.domain-hierarchy__title')).toHaveText([
     'System Design',
     'Scale and estimation',
-    'Choosing storage for a URL shortener',
-    'Pagination: offset vs cursor',
-    'Short URL identifiers',
-    'Trade-off triggers',
     'URL shortener',
+    'Short URL identifiers',
+    'Choosing storage for a URL shortener',
+    'Trade-off triggers',
+    'Pagination: offset vs cursor',
   ]);
 });
 

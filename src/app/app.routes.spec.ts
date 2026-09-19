@@ -49,7 +49,11 @@ describe('application routes', () => {
     const routeElement = harness.routeNativeElement;
 
     expect(routeElement?.querySelector('h1')?.textContent).toBe('All topics');
-    expect(routeElement?.querySelectorAll('app-topic-result-list a')).toHaveLength(67);
+    expect(
+      routeElement?.querySelectorAll(
+        '.domain-hierarchy__root > .domain-hierarchy__item > .domain-hierarchy__link',
+      ),
+    ).toHaveLength(4);
     expect(TestBed.inject(Router).url).toBe('/topics');
     expect(TestBed.inject(Title).getTitle()).toBe('All topics | Engineering Reference');
   });

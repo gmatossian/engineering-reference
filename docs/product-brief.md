@@ -109,20 +109,23 @@ The accepted presentation is **browse-first hybrid**:
 
 - complete domain entry is the primary landing path;
 - compact persistent title search remains available from every view;
-- the alphabetical/filterable index is always directly available;
-- ordered-child hierarchy remains secondary for global discovery and becomes
-  an expandable local context forest on Topic views; and
+- the all-Topics surface presents the child graph as an expandable forest when
+  browsing without a title query or kind filter, while explicit search and
+  kind-filter states remain flat, scannable result lists;
+- ordered-child hierarchy becomes local context on Topic views as well as the
+  default structure for complete and domain-filtered catalog browsing; and
 - contextual paths and Related Topics provide distinct onward navigation after
   selection, while classification remains available through domain browsing and
   the all-Topics index.
 
-A hierarchy-first presentation was rejected because adding search beside the
-existing cards would leave parent guessing and mixed container lists visually
-dominant. An index/facets-only presentation was rejected because it would
-discard useful curated progression and make every exploratory journey begin in
-the complete catalog. Pure search-first, pure flat-catalog, and graph/network
-navigation are also rejected as primary experiences: each serves fewer of the
-accepted retrieval jobs or introduces unnecessary complexity. They can be
+A hierarchy-only presentation was rejected because it would make every
+retrieval job depend on knowing or exploring parentage. An index/facets-only
+presentation was rejected because it would discard useful curated progression
+and make every exploratory journey begin in an undifferentiated catalog. Pure
+search-first, pure flat-catalog, and graph/network visualization are also
+rejected as primary experiences. The accepted hybrid instead uses the hierarchy
+where structural browsing is useful, and flat results where an explicit title
+query or kind filter already expresses the user's intent. These choices can be
 reconsidered only with evidence that the browse-first hybrid fails a concrete
 job.
 
@@ -182,8 +185,8 @@ The accepted incremental expansion adds:
 - landing-page entry points for the complete supported domain vocabulary;
 - an addressable all-Topics browse and search surface;
 - a deliberately small domain and content-kind classification;
-- domain browsing grouped by kind where that improves recognition, beginning
-  with System Design;
+- complete and domain-filtered catalog forests projected from authored child
+  relationships, with flat results for explicit title and kind constraints;
 - path-independent classification through domain browsing and the all-Topics
   index;
 - contextual ancestor paths and a graph-projected hierarchy forest on every

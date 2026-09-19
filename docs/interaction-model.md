@@ -224,24 +224,32 @@ contains:
 - one labelled title-search input in the persistent application header;
 - labelled domain and content-kind filters;
 - a visible way to clear the query and filters; and
-- Topic result links that show title, kind, and domain context.
+- Topic links whose supporting context reflects the active browse or result
+  state.
 
-The default unconstrained state lists every Topic in case-insensitive title
-order, with the UUID as a deterministic tie-breaker for duplicate titles.
+With no title query or kind filter, the surface projects the authored child DAG
+as a forest rather than flattening Topics into one equally weighted list. The
+unconstrained view contains every real root tree. Every root starts expanded so
+its immediate structure is visible; deeper branches start collapsed and use
+independent disclosure controls. There is no synthetic catalog root.
 
-An initial domain view with no query or kind filter separates matching
-`area` Topics into a labelled **Overviews** region before the remaining
-results. Each overview remains a canonical Topic result whose visible Area
-kind and domain context distinguish it from the domain view itself. A domain
-with no matching Area Topic omits the region.
+A domain view with no query or kind filter prunes that same forest to Topics
+matching the selected domain and the real ancestor branches needed to reach
+them. An ancestor outside the selected domain remains visible as structural
+context but is not counted as a match. A multi-parent Topic may therefore
+appear in more than one valid branch; each occurrence links to the same
+canonical Topic route.
 
-After Overviews, the initial System Design domain view groups the remaining
-Topics by the accepted non-Area kind order, preserving alphabetical order
-inside each group. Other initial domain views keep their remaining results in
-one flat alphabetical list. A kind filter, a query, or both always produce one
-flat result list, including any matching Area Topic, so the user is not
-required to inspect empty or fragmented groups. Expanding non-Area grouping to
-another domain requires evidence that it improves recognition there.
+Branch counts report the number of unique matching Topics in that subtree.
+Because one Topic may occur under multiple parents, sibling and root counts are
+not necessarily additive. A leaf shows its friendly content-kind label instead
+of a descendant count.
+
+A kind filter, a title query, or both switch the results region to one flat
+result list, including any matching Area Topic. The visible results heading
+states the active intent, for example **Concepts in Java** or **Results for
+“queue”**. Flat results retain deterministic relevance and alphabetical
+ordering as defined below; the forest does not change those matching rules.
 
 ### Matching and ordering
 

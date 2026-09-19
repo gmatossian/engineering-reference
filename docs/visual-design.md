@@ -383,77 +383,66 @@ Their boundaries, focus indicators, and selected values remain clear without
 depending on color. At narrow widths they stack to the available measure; they
 do not move into a modal, drawer, or horizontally scrolling toolbar.
 
-The default index is an alphabetical vertical list. A domain view with no query
-or kind filter first separates matching Area Topics into a labelled
-**Overviews** region. Those rows retain the canonical title and visibly
-identify their Area kind, so a result such as the System Design Topic is
-recognizable as an optional overview rather than a second domain gateway.
+Without a title query or kind filter, the index uses an expandable forest rather
+than an alphabetical card list. Each real root occupies a calm bounded surface
+and starts expanded; immediate children reveal the catalog's main structure,
+while deeper branches remain available through separate disclosure controls.
+Nested indentation and disclosure are the primary hierarchy cues. Existing
+Topic iconography and its established color treatments improve recognition;
+root icons may be slightly more prominent than descendant icons without
+turning branches into competing cards.
 
-The System Design domain then uses kind section headings for its remaining
-results in accepted vocabulary order. Other domain views keep their remaining
-results flat unless later evidence supports further grouping. Each Topic result
-is a native link whose primary line is the title and whose supporting text
-names its kind and domains so duplicate or ambiguous titles remain
-understandable. The UI does not display UUIDs, storage directories, relevance
-scores, internal taxonomy keys, or result numbers.
+A domain-only view prunes the forest while retaining the real ancestors needed
+to explain where matching Topics are found. Branch rows show unique matching
+Topic counts; leaves show their friendly content kind. Counts are supporting
+information rather than badges or rankings.
+
+A title query, kind filter, or both produce a flat result list with an explicit
+heading that names the active result set. Each result is a native link whose
+primary line is the title and whose supporting text names its kind and domains
+so duplicate or ambiguous titles remain understandable. The UI does not
+display UUIDs, storage directories, relevance scores, internal taxonomy keys,
+or result numbers.
 
 Search relevance changes ordering but not card size, color, or prominence.
 The no-results state is calm and explicit, remains within the results region,
 and keeps the search and filter controls available.
 
-The accepted wide System Design view uses the real current classification:
+The accepted unconstrained browse view begins with the real graph roots:
 
 ```text
 All topics
-[ Domain: System Design ]  [ Kind: All ]  [ Clear all ]
-7 topics
+[ Domain: All domains ]  [ Topic type: All types ]
+67 topics
 
-Overviews
-  System Design                              Area · System Design
-
-Operations
-  Scale and estimation                       Operations · System Design
-
-Decision aids
-  Choosing storage for a URL shortener       Decision aid · System Design
-  Pagination: offset vs cursor               Decision aid · System Design
-  Short URL identifiers                      Decision aid · System Design
-  Trade-off triggers                         Decision aid · System Design
-
-Exercises
-  URL shortener                              Exercise · System Design
+⌄ Java                                             56 topics
+    › Arrays                                        3 topics
+    › Collections framework                        27 topics
+    › Streams                                       5 topics
+    …
+⌄ System Design                                     7 topics
+    Scale and estimation                           Operations
+    › URL shortener                                 3 topics
+    Trade-off triggers                             Decision aid
+    Pagination: offset vs cursor                   Decision aid
+⌄ HTTP                                              2 topics
+    HTTP status codes                              Operations
+⌄ Databases                                         2 topics
+    SQL window functions                           Operations
 ```
 
-At narrow widths the same controls and sections stack without hiding context:
+An explicit filter state instead uses a labelled flat result list:
 
 ```text
 All topics
-[ Domain: System Design          ]
-[ Kind: All                      ]
-[ Clear all                      ]
-7 topics
+[ Domain: Java ]  [ Topic type: Concepts ]  [ Clear all ]
+15 topics
 
-Overviews
-[ System Design
-  Area · System Design           ]
-
-Operations
-[ Scale and estimation
-  Operations · System Design     ]
-
-Decision aids
-[ Choosing storage for a URL shortener
-  Decision aid · System Design   ]
-[ Pagination: offset vs cursor
-  Decision aid · System Design   ]
-[ Short URL identifiers
-  Decision aid · System Design   ]
-[ Trade-off triggers
-  Decision aid · System Design   ]
-
-Exercises
-[ URL shortener
-  Exercise · System Design       ]
+Concepts in Java
+[ ArrayList versus LinkedList
+  Concept · Java · Collections   ]
+[ Choosing a Set implementation
+  Concept · Java · Collections   ]
 ```
 
 ## Interaction states

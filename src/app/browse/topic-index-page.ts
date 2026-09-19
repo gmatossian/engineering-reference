@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import type { TopicKindKey } from '../../../contracts/runtime-catalog';
 import { CatalogService } from '../catalog/catalog.service';
 import type { TopicBrowseCriteria } from '../catalog/catalog.service';
+import { DomainTopicHierarchy } from './domain-topic-hierarchy';
 import { TopicResultList } from './topic-result-list';
 
 const TOPIC_KIND_FILTER_LABELS: Readonly<Record<TopicKindKey, string>> = {
@@ -16,7 +17,7 @@ const TOPIC_KIND_FILTER_LABELS: Readonly<Record<TopicKindKey, string>> = {
 };
 
 @Component({
-  imports: [TopicResultList],
+  imports: [DomainTopicHierarchy, TopicResultList],
   selector: 'app-topic-index-page',
   styleUrl: './topic-index-page.css',
   templateUrl: './topic-index-page.html',
@@ -44,6 +45,10 @@ export class TopicIndexPage {
   protected readonly browseView = computed(() =>
     this.catalogService.getTopicBrowseView(this.criteria()),
   );
+  protected readonly selectedDomainLabel = computed(() => {
+    const domain = this.criteria().domain;
+    return this.domainOptions.find(({ key }) => key === domain)?.label ?? 'all';
+  });
   protected readonly hasConstraints = computed(() => {
     const criteria = this.criteria();
     return criteria.query !== '' || criteria.domain !== null || criteria.kind !== null;

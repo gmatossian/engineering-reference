@@ -54,14 +54,28 @@
   </div>
 
   <section class="topic-index__results" aria-labelledby="topic-results-heading">
-    <h2 id="topic-results-heading" class="visually-hidden">Topic results</h2>
+    <h2
+      id="topic-results-heading"
+      [class.visually-hidden]="
+        browseView().mode === 'hierarchy' || browseView().resultHeading === null
+      "
+    >
+      {{ browseView().resultHeading ?? 'Topic results' }}
+    </h2>
     <p class="topic-index__count" role="status" aria-live="polite" aria-atomic="true">
       {{ browseView().resultCount }}
       {{ browseView().resultCount === 1 ? 'topic' : 'topics' }}
     </p>
 
     @if (browseView().resultCount > 0) {
-      <app-topic-result-list [sections]="browseView().sections" />
+      @if (browseView().mode === 'hierarchy') {
+        <app-domain-topic-hierarchy
+          [domainLabel]="selectedDomainLabel()"
+          [roots]="browseView().hierarchyRoots"
+        />
+      } @else {
+        <app-topic-result-list [sections]="browseView().sections" />
+      }
     } @else {
       <div class="topic-index__empty">
         <h3>No matching topics</h3>
