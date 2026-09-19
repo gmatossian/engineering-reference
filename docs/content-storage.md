@@ -260,9 +260,12 @@ format retains a bounded semantic contract. The generated HTML is sanitized as
 a defense-in-depth measure before it reaches the application.
 
 During generation, fenced code blocks and tables are placed inside predictable
-`topic-content-overflow` presentation wrappers. Each wrapper is a labelled,
-keyboard-focusable region that owns horizontal scrolling; the semantic `pre`,
-`code`, and `table` elements remain intact inside it.
+`topic-content-overflow` presentation wrappers. Each wrapper is a
+keyboard-focusable region whose accessible name combines the nearest preceding
+authored heading (or the Topic title when no heading precedes it) with the
+content type. Repeated regions beneath the same context receive an index. The
+wrapper owns horizontal scrolling; the semantic `pre`, `code`, and `table`
+elements remain intact inside it.
 
 An authored external link must begin with the canonical lowercase `https://`
 scheme. Other spellings and protocols are rejected so that the validated HTML

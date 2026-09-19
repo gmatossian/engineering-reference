@@ -141,7 +141,7 @@ describe('transformContent', () => {
       {
         id: topicId,
         mainContentHtml: [
-          '<div aria-label="Scrollable table" class="topic-content-overflow" role="region" tabindex="0"><table>',
+          '<div aria-label="Queue table" class="topic-content-overflow" role="region" tabindex="0"><table>',
           '<thead>',
           '<tr>',
           '<th>Operation</th>',
@@ -192,8 +192,53 @@ describe('transformContent', () => {
 
     const result = await transformContent(contentSource, generatedRoot);
 
-    expect(result[0]?.mainContentHtml).toContain('aria-label="Scrollable table 1"');
-    expect(result[0]?.mainContentHtml).toContain('aria-label="Scrollable table 2"');
+    expect(result[0]?.mainContentHtml).toContain('aria-label="Queue table 1"');
+    expect(result[0]?.mainContentHtml).toContain('aria-label="Queue table 2"');
+  });
+
+  it('derives overflow region names from the nearest authored heading and their content type', async () => {
+    const topicId = '11111111-1111-4111-8111-111111111111';
+
+    generatedRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-generated-'));
+
+    const contentSource: LoadedContentSource = {
+      catalog: {
+        sourcePath: 'content/catalog.yaml',
+        landingTopicIds: [topicId],
+      },
+      topics: [
+        {
+          sourcePath: 'content/topics/queue/topic.md',
+          ...defaultTopicClassification,
+          id: topicId,
+          title: 'Queue',
+          childTopicIds: [],
+          markdownBody: [
+            '## Operations',
+            '',
+            '| Method |',
+            '| --- |',
+            '| `offer` |',
+            '',
+            '```java',
+            'queue.offer(item);',
+            '```',
+            '',
+            '## Failure modes',
+            '',
+            '| Signal |',
+            '| --- |',
+            '| `false` |',
+          ].join('\n'),
+        },
+      ],
+    };
+
+    const result = await transformContent(contentSource, generatedRoot);
+
+    expect(result[0]?.mainContentHtml).toContain('aria-label="Operations table"');
+    expect(result[0]?.mainContentHtml).toContain('aria-label="Operations code block"');
+    expect(result[0]?.mainContentHtml).toContain('aria-label="Failure modes table"');
   });
 
   it('rejects raw HTML', async () => {
@@ -621,7 +666,7 @@ describe('transformContent', () => {
         mainContentHtml: [
           '<h2>Queue operations</h2>',
           '<p>Use <code>offer</code>.</p>',
-          '<div aria-label="Scrollable code block" class="topic-content-overflow" role="region" tabindex="0"><pre><code class="language-java">queue.offer(item);',
+          '<div aria-label="Queue operations code block" class="topic-content-overflow" role="region" tabindex="0"><pre><code class="language-java">queue.offer(item);',
           '</code></pre></div>',
           '<ol>',
           '<li>Check capacity</li>',

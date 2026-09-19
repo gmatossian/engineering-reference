@@ -423,9 +423,11 @@ across viewports. The landing page presents the complete domain-entry grid
 before quieter curated paths, while persistent search remains in the shell.
 The generator places
 Topic-content tables and code blocks inside
-labelled, keyboard-focusable presentation wrappers. These wrappers own bounded
-horizontal overflow without changing the native semantics of the enclosed
-`table`, `pre`, or `code` elements or making the full page scroll horizontally.
+content-labelled, keyboard-focusable presentation wrappers. Their accessible
+names come from nearby authored headings, with the Topic title as a fallback.
+These wrappers own bounded horizontal overflow without changing the native
+semantics of the enclosed `table`, `pre`, or `code` elements or making the full
+page scroll horizontally.
 
 Search and index controls use native form elements. Query and filter changes
 retain focus and publish only the result count through a polite status region.
