@@ -50,6 +50,12 @@ export interface TopicBrowseView {
   readonly sections: readonly TopicResultSection[];
 }
 
+export interface TopicHierarchyNode extends TopicSummary {
+  readonly children: readonly TopicHierarchyNode[];
+}
+
+export type TopicPath = readonly TopicSummary[];
+
 const TOPIC_KIND_GROUP_LABELS: Readonly<Record<Exclude<TopicKindKey, 'area'>, string>> = {
   concept: 'Concepts',
   operations: 'Operations',
@@ -154,6 +160,32 @@ export class CatalogService {
     return topic.childTopicIds.map((id) => this.getRequiredSummary(id));
   }
 
+  getTopicDomains(topic: RuntimeTopic): readonly CatalogOption<TopicDomainKey>[] {
+    return topic.domains.map((key) => ({ key, label: TOPIC_DOMAIN_LABELS[key] }));
+  }
+
+  getTopicKind(topic: RuntimeTopic): CatalogOption<TopicKindKey> {
+    return { key: topic.kind, label: TOPIC_KIND_LABELS[topic.kind] };
+  }
+
+  getHierarchyRoots(): readonly TopicHierarchyNode[] {
+    return this.getRootTopicIds().map((id) => this.buildHierarchyNode(id));
+  }
+
+  getTopicPaths(topicId: string): readonly TopicPath[] {
+    if (this.getTopic(topicId) === undefined) {
+      return [];
+    }
+
+    const paths: TopicPath[] = [];
+
+    for (const rootId of this.getRootTopicIds()) {
+      this.collectTopicPaths(rootId, topicId, [], paths);
+    }
+
+    return paths;
+  }
+
   private getMatchingTopics(criteria: TopicBrowseCriteria): readonly TopicBrowseResult[] {
     const foldedQuery = criteria.query.toLocaleLowerCase();
 
@@ -195,14 +227,69 @@ export class CatalogService {
       throw new Error(`Generated catalog references unknown Topic ${id}`);
     }
 
-    const domains = topic.domains.map((key) => ({ key, label: TOPIC_DOMAIN_LABELS[key] }));
+    const domains = this.getTopicDomains(topic);
 
     return {
       ...this.getRequiredSummary(id),
       domains,
       domainLabel: domains.map(({ label }) => label).join(', '),
-      kind: { key: topic.kind, label: TOPIC_KIND_LABELS[topic.kind] },
+      kind: this.getTopicKind(topic),
     };
+  }
+
+  private getRootTopicIds(): readonly string[] {
+    const rootIds = this.catalog.allTopicIds.filter(
+      (id) => this.catalog.parentTopicIdsById[id]?.length === 0,
+    );
+    const rootIdSet = new Set(rootIds);
+    const orderedLandingRoots = this.catalog.landingTopicIds.filter((id) => rootIdSet.has(id));
+    const landingRootSet = new Set(orderedLandingRoots);
+    const remainingRoots = rootIds
+      .filter((id) => !landingRootSet.has(id))
+      .sort((leftId, rightId) => {
+        const left = this.getRequiredSummary(leftId);
+        const right = this.getRequiredSummary(rightId);
+        return compareText(left.title, right.title) || left.id.localeCompare(right.id);
+      });
+
+    return [...orderedLandingRoots, ...remainingRoots];
+  }
+
+  private buildHierarchyNode(id: string): TopicHierarchyNode {
+    const topic = this.getTopic(id);
+
+    if (topic === undefined) {
+      throw new Error(`Generated catalog references unknown Topic ${id}`);
+    }
+
+    return {
+      ...this.getRequiredSummary(id),
+      children: topic.childTopicIds.map((childId) => this.buildHierarchyNode(childId)),
+    };
+  }
+
+  private collectTopicPaths(
+    currentId: string,
+    targetId: string,
+    ancestors: readonly TopicSummary[],
+    paths: TopicPath[],
+  ): void {
+    const current = this.getRequiredSummary(currentId);
+    const path = [...ancestors, current];
+
+    if (currentId === targetId) {
+      paths.push(path);
+      return;
+    }
+
+    const topic = this.getTopic(currentId);
+    if (topic === undefined) {
+      return;
+    }
+
+    for (const childId of topic.childTopicIds) {
+      this.collectTopicPaths(childId, targetId, path, paths);
+    }
   }
 
   private getRequiredSummary(id: string): TopicSummary {

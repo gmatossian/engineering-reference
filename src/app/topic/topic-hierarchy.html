@@ -1,0 +1,90 @@
+<aside class="topic-hierarchy-wide">
+  <h2>Browse surrounding topics</h2>
+  <ng-container *ngTemplateOutlet="forest; context: { instanceId: 'wide' }" />
+</aside>
+
+<details #narrowExplorer class="topic-hierarchy-narrow">
+  <summary>
+    <span>Browse surrounding topics</span>
+    @if (paths().length > 1) {
+      <span class="topic-hierarchy__path-count">{{ paths().length }} paths</span>
+    }
+  </summary>
+  <ng-container *ngTemplateOutlet="forest; context: { instanceId: 'narrow' }" />
+</details>
+
+<ng-template #forest let-instanceId="instanceId">
+  <nav class="topic-hierarchy" aria-label="Browse surrounding topics">
+    <ng-container
+      *ngTemplateOutlet="
+        branches;
+        context: {
+          $implicit: roots(),
+          parentPath: '',
+          listId: null,
+          instanceId: instanceId,
+        }
+      "
+    />
+  </nav>
+</ng-template>
+
+<ng-template
+  #branches
+  let-nodes
+  let-parentPath="parentPath"
+  let-listId="listId"
+  let-instanceId="instanceId"
+>
+  <ul [attr.id]="listId">
+    @for (node of nodes; track node.id) {
+      @let nodePath = occurrencePath(parentPath, node.id);
+      @let hasChildren = node.children.length > 0;
+      @let expanded = isExpanded(nodePath);
+
+      <li>
+        <div class="topic-hierarchy__item">
+          @if (hasChildren) {
+            <button
+              class="topic-hierarchy__disclosure"
+              type="button"
+              [attr.aria-controls]="childListId(instanceId, nodePath)"
+              [attr.aria-expanded]="expanded"
+              [attr.aria-label]="(expanded ? 'Collapse ' : 'Expand ') + node.title"
+              (click)="toggle(nodePath)"
+            >
+              <span aria-hidden="true"></span>
+            </button>
+          } @else {
+            <span class="topic-hierarchy__spacer" aria-hidden="true"></span>
+          }
+
+          <a
+            class="topic-hierarchy__link"
+            [class.topic-hierarchy__link--current]="node.id === currentTopicId()"
+            [attr.aria-current]="node.id === currentTopicId() ? 'page' : null"
+            [routerLink]="['/topics', node.id]"
+          >
+            {{ node.title }}
+          </a>
+        </div>
+
+        @if (hasChildren) {
+          <div class="topic-hierarchy__children" [hidden]="!expanded">
+            <ng-container
+              *ngTemplateOutlet="
+                branches;
+                context: {
+                  $implicit: node.children,
+                  parentPath: nodePath,
+                  listId: childListId(instanceId, nodePath),
+                  instanceId: instanceId,
+                }
+              "
+            />
+          </div>
+        }
+      </li>
+    }
+  </ul>
+</ng-template>

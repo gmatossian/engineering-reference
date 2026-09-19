@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import type { RuntimeCatalog } from '../../../contracts/runtime-catalog';
+import type { RuntimeCatalog, RuntimeTopic } from '../../../contracts/runtime-catalog';
 import generatedCatalog from '../../../.generated/catalog.json';
 import { CatalogService } from './catalog.service';
 
@@ -8,7 +8,19 @@ const ARRAYS_TOPIC_ID = '2fe75411-92f0-4e6f-bfd0-1756dc08ebe2';
 const COLLECTIONS_TOPIC_ID = 'c29c5725-0b1f-480d-88f4-5c9d3b7f0dc5';
 const SYSTEM_DESIGN_TOPIC_ID = '43a1a5e8-f5b7-46b7-bbd6-0fb212d7212b';
 const URL_SHORTENER_TOPIC_ID = 'b19de3ee-dc7d-4d9d-9b82-06d997a825e1';
+const ARRAYS_AND_LISTS_TOPIC_ID = 'a2fc39d5-9564-4260-b247-f38d53bedecc';
 const catalog = generatedCatalog as RuntimeCatalog;
+
+const createRootTopic = (title: string): RuntimeTopic => ({
+  title,
+  summary: null,
+  iconKey: null,
+  domains: ['java'],
+  kind: 'area',
+  mainContentHtml: null,
+  childTopicIds: [],
+  relatedTopicIds: [],
+});
 
 describe('CatalogService', () => {
   let service: CatalogService;
@@ -155,6 +167,79 @@ describe('CatalogService', () => {
       '57b0dc57-7a64-4c09-9140-2a470748da38',
       '78b29290-d46f-45b2-aaba-c31597ceb6d4',
     ]);
+  });
+
+  it('derives graph roots with landing roots first and no synthetic root', () => {
+    expect(service.getHierarchyRoots().map(({ title }) => title)).toEqual([
+      'Java',
+      'System Design',
+      'HTTP',
+      'Databases',
+    ]);
+  });
+
+  it('orders non-landing roots by case-insensitive title and then UUID', () => {
+    const alphaLowId = '00000000-0000-4000-8000-000000000001';
+    const alphaHighId = '00000000-0000-4000-8000-000000000002';
+    const zuluId = '00000000-0000-4000-8000-000000000003';
+    const fallbackService = new CatalogService();
+    const fallbackCatalog: RuntimeCatalog = {
+      ...catalog,
+      landingTopicIds: [JAVA_TOPIC_ID],
+      allTopicIds: [zuluId, alphaHighId, JAVA_TOPIC_ID, alphaLowId],
+      parentTopicIdsById: {
+        ...catalog.parentTopicIdsById,
+        [alphaLowId]: [],
+        [alphaHighId]: [],
+        [zuluId]: [],
+      },
+      topicsById: {
+        ...catalog.topicsById,
+        [alphaLowId]: createRootTopic('alpha'),
+        [alphaHighId]: createRootTopic('Alpha'),
+        [zuluId]: createRootTopic('Zulu'),
+      },
+    };
+
+    Object.defineProperty(fallbackService, 'catalog', { value: fallbackCatalog });
+
+    expect(fallbackService.getHierarchyRoots().map(({ id }) => id)).toEqual([
+      JAVA_TOPIC_ID,
+      alphaLowId,
+      alphaHighId,
+      zuluId,
+    ]);
+  });
+
+  it('derives every deterministic path to a multi-parent Topic', () => {
+    expect(
+      service
+        .getTopicPaths(ARRAYS_AND_LISTS_TOPIC_ID)
+        .map((path) => path.map(({ title }) => title)),
+    ).toEqual([
+      ['Java', 'Arrays', 'Arrays and lists'],
+      ['Java', 'Collections framework', 'List', 'Arrays and lists'],
+    ]);
+  });
+
+  it('projects repeated Topic occurrences to the same canonical identity', () => {
+    const occurrenceIds: string[] = [];
+    const visit = (nodes: ReturnType<CatalogService['getHierarchyRoots']>): void => {
+      for (const node of nodes) {
+        if (node.id === ARRAYS_AND_LISTS_TOPIC_ID) {
+          occurrenceIds.push(node.id);
+        }
+        visit(node.children);
+      }
+    };
+
+    visit(service.getHierarchyRoots());
+
+    expect(occurrenceIds).toEqual([ARRAYS_AND_LISTS_TOPIC_ID, ARRAYS_AND_LISTS_TOPIC_ID]);
+  });
+
+  it('returns no paths for an unknown Topic', () => {
+    expect(service.getTopicPaths('unknown-topic')).toEqual([]);
   });
 
   it.each(['constructor', 'toString', '__proto__'])(
