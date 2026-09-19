@@ -215,10 +215,10 @@ Related relationships follow these rules:
 The initial relationship is deliberately untyped. Typed edges or automatic
 recommendations require a demonstrated presentation or authoring need and a
 separate contract change. Authors should not repeat links already exposed as
-immediate children or Browse contexts unless the distinct retrieval value is
-deliberate and reviewable.
+immediate children or contextual hierarchy paths unless the distinct retrieval
+value is deliberate and reviewable.
 
-## Browse Collections and Contexts
+## Browse Collections and Topic Context
 
 The initial browse collections are derived views rather than authored content
 entities. The all-Topics surface can select a domain and optionally a kind;
@@ -232,18 +232,48 @@ the initial contract. An explicitly ordered curated collection can be added
 later only when a real retrieval need cannot be represented by domain, kind,
 hierarchy, or Related Topics.
 
-Browse contexts are generated from canonical data and are the same regardless
-of the route used to reach a Topic. They include:
+Topic context is generated from canonical data and is the same regardless of
+the route used to reach a Topic. It includes:
 
 - the Topic's domain memberships;
 - its content kind; and
-- reverse parent links derived from `childTopicIds`.
+- every hierarchy path derived from `childTopicIds` and reverse parents.
 
-Browse contexts are not a breadcrumb and do not select one canonical path.
-They may show several valid contexts for a Topic with several parents or
-domains. Domain and kind context can link to those individual browse filters;
-their intersection remains available by applying both filters on the
-all-Topics surface.
+Topic context does not select one canonical path. Classification may show
+several valid domains, while the hierarchy projection below may show several
+real ancestor paths. Domain and kind context can link to those individual
+browse filters; their intersection remains available by applying both filters
+on the all-Topics surface.
+
+## Hierarchy Context Projection
+
+Topic pages project the authored child graph as a forest rather than forcing it
+into one strict tree. A graph root is a Topic with no derived parent. The forest
+contains every graph root as a peer; it does not invent an Engineering
+Reference root or treat one Topic as the catalog's canonical root.
+
+Forest order is derived without new authoring metadata. Roots that also appear
+in `landingTopicIds` follow that authored order. Any remaining roots follow
+case-insensitive title order and then UUID. At the time of writing, the catalog
+therefore has four root trees: Java, System Design, HTTP, and Databases.
+
+Every root-to-Topic ancestor path is derived from `childTopicIds` and the
+generated reverse-parent index. When a Topic has several parents, it appears
+under each real parent and may therefore occur more than once in the projected
+forest. Every occurrence resolves to the same canonical Topic identity and URL.
+No occurrence owns or copies the Topic's content.
+
+Sibling context is path-specific: the siblings shown beneath one parent are
+that parent's other ordered children. A multi-parent Topic can consequently
+have several sibling groups. Immediate children retain the current Topic's
+authored order. Contextual breadcrumbs can render every derived ancestor path,
+but no path is labelled or stored as canonical.
+
+Expansion state, the currently revealed branch, and responsive presentation
+are interaction state rather than Topic data. They do not change identity,
+classification, child relationships, or Related Topics. Related Topics remain
+curated lateral links and never become hierarchy edges merely because they are
+shown near the forest.
 
 ## Landing Domains and Curated Topics
 
@@ -288,8 +318,8 @@ A Topic may contain:
 - children only.
 
 A Topic with neither main content nor children is invalid because navigating
-to it would produce an empty page. Domain membership, kind, Browse contexts,
-and Related Topics do not make an otherwise empty Topic valid.
+to it would produce an empty page. Domain membership, kind, derived hierarchy
+context, and Related Topics do not make an otherwise empty Topic valid.
 
 ## Illustrative Catalog
 

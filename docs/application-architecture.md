@@ -4,8 +4,8 @@
 
 This document defines the accepted application architecture and build pipeline.
 It preserves the implemented MVP boundary and specifies the incremental
-classification, index, search, context, and relationship responsibilities
-required by the browse-first refinement of Direction C. It implements the
+classification, index, search, graph-projected context, and relationship
+responsibilities required by the browse-first refinement of Direction C. It implements the
 decisions in the [product brief](product-brief.md),
 [content model](content-model.md),
 [content storage representation](content-storage.md), and
@@ -15,10 +15,11 @@ Detailed presentation rules are defined separately in the
 [Visual Design](visual-design.md). This document does not select a
 deployment provider or implement the application and content generator.
 
-The Direction C data foundation below is implemented: the framework-neutral
-contract, generator, derived indexes, and complete published corpus migrated
-atomically. The application continues to present the implemented MVP behavior
-until the dependency-ordered UI slices at the end of this document land.
+The Direction C data foundation and browse-first discovery UI are implemented:
+the framework-neutral contract, generator, derived indexes, complete published
+corpus, landing, persistent search, and all-Topics index have landed. The
+graph-projected Topic context slice defined below remains an accepted target
+until its bounded implementation and verification land.
 
 ## Decision Summary
 
@@ -39,10 +40,13 @@ generated catalog is imported into the application bundle.
 - The browser trusts the internally generated catalog and does not duplicate
   its build-time schema validation.
 - A read-only catalog service performs deterministic client-side title search,
-  classification filtering, and context lookup over the bundled artifact; no
-  backend or additional runtime request is introduced.
+  classification filtering, all-path hierarchy projection, and relationship
+  lookup over the bundled artifact; no backend or additional runtime request is
+  introduced.
 - The landing view derives primary domain entries from the closed runtime
   vocabulary and uses `landingTopicIds` only for secondary curated Topic paths.
+- Topic views project the validated child DAG as an ordered forest, show every
+  real root-to-Topic path, and never store a preferred parent or synthetic root.
 - Angular's sanitizer remains active when generated HTML is rendered.
 - Plain CSS, automated tests, accessibility checks, and one reproducible CI
   command support the initial implementation.
@@ -79,7 +83,10 @@ provider and its rewrite configuration are separate deployment decisions.
 
 ## Repository Layout
 
-The repository contains one Angular application at its root:
+The repository contains one Angular application at its root. The tree below is
+the accepted target shape for the remaining Topic-context slices; entries named
+in the architecture may not exist until their bounded implementation issue
+lands:
 
 ```text
 .
@@ -107,7 +114,9 @@ The repository contains one Angular application at its root:
 │       └── topic/
 │           ├── topic-page.*
 │           ├── topic-content.*
-│           ├── topic-context.*
+│           ├── topic-breadcrumbs.*
+│           ├── topic-classification.*
+│           ├── topic-hierarchy.*
 │           ├── topic-link-list.*
 │           ├── related-topic-list.*
 │           └── topic-not-found.*
@@ -286,7 +295,11 @@ for:
 - looking up a Topic by UUID; and
 - resolving a Topic's ordered child and Related Topic UUIDs;
 - resolving domains, kinds, and their intersections through generated indexes;
-- resolving reverse parent IDs for Browse contexts; and
+- resolving deterministic graph roots;
+- resolving every root-to-Topic path from the generated reverse-parent and
+  ordered-child indexes;
+- resolving the path-specific siblings for each Topic occurrence in the
+  projected hierarchy; and
 - deterministic title search and filtering.
 
 Title search trims and case-folds the query, performs substring matching over
@@ -294,6 +307,15 @@ canonical titles, and orders exact, prefix, and remaining substring matches in
 that sequence. Each tier uses case-insensitive title order and UUID. It does
 not parse generated HTML, maintain a separate keyword registry, or use fuzzy,
 semantic, remote, or behavior-informed ranking.
+
+Hierarchy projection uses existing generated data rather than adding authored
+path records or another runtime artifact. Roots are Topics with no reverse
+parents. Roots present in `landingTopicIds` follow that authored order; any
+remaining roots follow case-insensitive title order and UUID. A depth-first
+walk follows each parent's authored `childTopicIds` order and records every
+simple root-to-Topic path. The validated child graph is acyclic, so this walk
+terminates without choosing a preferred parent. A multi-parent Topic may occur
+in several branches, but every occurrence resolves to the same UUID route.
 
 The service does not fetch, retry, mutate, or persist catalog data. Search and
 filtering operate over the immutable bundled artifact. Generation and
@@ -307,9 +329,15 @@ JavaScript object properties.
 
 The Angular Router owns the current addressable Topic selection and browser
 history plus the all-Topics query and filter state. Signals and computed values
-hold only local or derived presentation state. The application introduces
-neither an external state library nor a separate navigation history derived
-from the Topic graph.
+hold only local or derived presentation state. Hierarchy disclosure state is
+transient: navigation derives a fresh expansion set containing every branch to
+and through the selected Topic, including the selected occurrence when it has
+children. Manual expansion state is keyed by complete occurrence path rather
+than Topic UUID, so repeated occurrences remain independently controllable and
+own unique disclosure-target IDs. Expansion and collapse do not change the
+URL, push browser history, or persist to local storage. The application
+introduces neither an external state library nor a separate navigation history
+derived from the Topic graph.
 
 ### Component responsibilities
 
@@ -332,22 +360,46 @@ from the Topic graph.
 - `TopicResultListComponent` renders overview, grouped, or flat Topic results
   as native links with kind and domain context.
 - `TopicPageComponent` resolves the route input, sets view metadata, and
-  composes the selected Topic presentation.
+  composes the selected Topic header, contextual paths, hierarchy, content,
+  and immediate children. Its header spans the wide layout so title and path
+  context precede both the hierarchy navigation and main content in document
+  order. Related Topics remain a separate future composition responsibility.
 - `TopicContentComponent` renders a Topic's generated main-content HTML.
-- `TopicContextComponent` renders kind, domain links, and reverse-parent links
-  from derived catalog data; it does not reconstruct browser history.
+- `TopicBreadcrumbsComponent` renders one **Topic paths** navigation landmark
+  containing every derived root-to-Topic path as a separately labelled ordered
+  list. The current Topic ends each path as non-linked text with
+  `aria-current="page"`; the component does not select or store a canonical
+  path.
+- `TopicClassificationComponent` renders compact kind and domain filter links;
+  it does not represent ancestry.
+- `TopicHierarchyComponent` renders the complete graph-projected forest as
+  nested lists with native Topic links and separate disclosure controls. It
+  expands every path to the selected Topic, marks each current occurrence,
+  allows transient manual disclosure, and renders the narrow in-page
+  disclosure without changing routing or catalog state.
 - `TopicLinkListComponent` renders ordered curated landing or child Topics as
   native links using an explicit presentation mode. Curated-path rows include
   summaries; child rows omit descriptions. The component does not infer its
   mode from Topic identity or placement metadata.
-- `RelatedTopicListComponent` renders the authored related UUID order as a
-  separately labelled native-link region.
+- The future `RelatedTopicListComponent` renders the authored related UUID
+  order as a separately labelled native-link region. It is not part of the
+  graph-context implementation slice.
 - `TopicNotFoundComponent` provides the explicit unknown-route or unknown-Topic
   view.
 
 This is a starting boundary rather than a mandate to retain one file per small
 piece forever. Implementation may combine trivial code when that improves
 clarity without mixing responsibilities.
+
+The Topic header is first in DOM order. The hierarchy navigation follows it,
+then the Topic's main content and onward-link regions. CSS places the hierarchy
+beside the main content at wide widths; at narrow widths the same component is
+an initially collapsed in-page disclosure before the content. The wide
+hierarchy begins with a visible-on-focus **Skip to topic content** link targeting
+the first following content or immediate-child region; the narrow disclosure
+does not add that bypass. Links use `aria-current="page"` for every current
+occurrence, disclosures retain native button semantics, and the component
+deliberately does not implement ARIA tree or custom arrow-key behavior.
 
 ### Generated HTML trust boundary
 
@@ -380,9 +432,13 @@ horizontal overflow without changing the native semantics of the enclosed
 
 Search and index controls use native form elements. Query and filter changes
 retain focus and publish only the result count through a polite status region.
-Responsive CSS may move the Browse contexts region beside Topic content at wide
-sizes, but DOM and keyboard order remain title, context, content, children, and
-Related Topics.
+Responsive CSS places the graph-projected hierarchy in a restrained left column
+at wide sizes and presents it as an initially collapsed in-page disclosure at
+narrow sizes. DOM and keyboard order remain Topic header and contextual paths,
+hierarchy navigation, content, children, and Related Topics. The hierarchy uses
+indentation and subtle guide rules rather than nested cards or a graph canvas;
+Related Topics remain visually and semantically separate when that future
+capability is implemented.
 
 ## Local Development and Builds
 
@@ -441,9 +497,18 @@ relationship validation, derived index determinism, reverse-parent context,
 duplicate-title ordering, exact/prefix/substring title ranking, query-parameter
 normalization, complete landing-domain links, Area-overview separation, grouped
 System Design browsing, no-results behavior, result-count announcements,
-secondary curated-path navigation, direct Topic context, and Related Topics.
-Browser tests exercise these journeys at representative wide and narrow
-viewports, including keyboard focus and automated accessibility checks.
+secondary curated-path navigation, graph-root ordering, all root-to-Topic path
+derivation, path-specific siblings, duplicate occurrences for multi-parent
+Topics, linked Topic classification, and direct Topic context. Related Topics
+UI coverage belongs to its separate future implementation slice. Browser tests
+exercise a single-path Topic and a multi-parent Topic through direct load,
+in-app navigation, Back, and refresh at representative wide and narrow viewports.
+They also verify automatic current-branch expansion, transient disclosure
+state per occurrence, child-bearing current-node expansion, canonical UUID
+destinations, the narrow in-page disclosure and its path-count and reset
+behavior, wide skip-link behavior, ordinary keyboard operation,
+`aria-current`, labelled breadcrumb and hierarchy navigation regions, and
+automated accessibility checks.
 
 Automated tooling supplements rather than replaces manual keyboard and
 assistive-technology review. The completed MVP verification included a manual
@@ -551,13 +616,18 @@ Direction C is delivered through bounded, dependency-ordered slices:
 2. add the browse-first persistent header search, complete landing domain entries, secondary
    curated paths, `/topics` route, title search, filters, Area-overview
    treatment, and grouped System Design browsing;
-3. add Browse contexts and Related Topics to the Topic view; and
-4. complete focused responsive, cross-browser, keyboard, screen-reader, and
+3. add all-path contextual breadcrumbs, linked classification, and the
+   graph-projected hierarchy forest to the Topic view;
+4. add the separately accepted Related Topics region through its own future
+   implementation slice; and
+5. complete focused responsive, cross-browser, keyboard, screen-reader, and
    accessibility verification for the new journeys.
 
-The first slice is implemented. The remaining slices may depend on its bundled
-runtime data without reopening the authored contract or deriving duplicate
-indexes in application code.
+The first two slices are implemented. The third is specified here and handed
+off through a bounded implementation issue; it may depend on the existing
+bundled runtime data without reopening the authored contract or deriving
+duplicate indexes in application code. The fourth remains unscheduled and is
+not part of the graph-context implementation issue.
 
 Later slices may begin only when their required runtime data exists. Each slice
 must preserve useful hierarchical paths as secondary navigation without making

@@ -11,13 +11,15 @@ The accepted MVP references remain authoritative for the existing shell, child
 navigation, Topic content, palette, typography, and surface language. Their
 hierarchy-prominent landing composition is superseded by the browse-first
 Direction C landing below. Direction C extends the system with persistent search,
-primary domain entry, classified all-Topics browsing, Browse contexts, and
-Related Topics. Those new surfaces follow the constraints below; they do not
-make synthetic prototype details authoritative.
+primary domain entry, classified all-Topics browsing, graph-projected Topic
+context, and Related Topics. Those new surfaces follow the constraints below;
+they do not make synthetic prototype details authoritative.
 
-The Direction C sections define accepted target presentation. They are not a
-claim that the current application or reference screenshots already include
-those surfaces; bounded implementation and verification follow separately.
+The Direction C browse-first landing, search, and index presentation is
+implemented. The graph-projected Topic context sections define accepted target
+presentation; they are not a claim that the current application or reference
+screenshots already include that Topic-view surface. Bounded implementation and
+verification follow separately.
 
 The selected concepts were produced with Google Stitch and accepted during
 [issue #33](https://github.com/gmatossian/engineering-reference/issues/33). The
@@ -133,13 +135,15 @@ The header is compact and persistent across views:
 - The landing reference omits Back, but implementation must preserve the
   visible unavailable state required by the interaction model.
 
-Do not add per-domain global shortcuts, a canonical breadcrumb, profile
-controls, or an application navigation drawer. The accepted All topics link is
-plain product navigation rather than the synthetic `INDEX` label shown in some
-prototypes. The terminal-like mark in some desktop concepts is illustrative;
-the open-book mark in the mobile concepts better expresses a reference product.
-Final vector execution belongs to implementation and must not introduce an
-external UI framework implicitly.
+Do not add per-domain global shortcuts, a single falsely canonical breadcrumb,
+profile controls, or an application navigation drawer. A Topic may have more
+than one real ancestor path, so its contextual breadcrumbs present every path
+rather than selecting one. The accepted All topics link is plain product
+navigation rather than the synthetic `INDEX` label shown in some prototypes.
+The terminal-like mark in some desktop concepts is illustrative; the open-book
+mark in the mobile concepts better expresses a reference product. Final vector
+execution belongs to implementation and must not introduce an external UI
+framework implicitly.
 
 ## Landing presentation
 
@@ -232,26 +236,97 @@ distinction between domain browsing and curated Topic paths do not.
 
 ## Topic presentation
 
-A Topic view preserves the order required by the interaction model:
+A Topic view gives the selected Topic enough context to answer where it is,
+what sits beside it, and where else it is found. It presents:
 
-1. Topic title;
-2. compact Browse contexts;
-3. complete main content, when present;
-4. ordered immediate-child navigation, when present; and
-5. curated Related Topics, when present.
+1. the Topic title;
+2. every root-to-Topic breadcrumb trail;
+3. compact linked kind and domain classification;
+4. a graph-projected hierarchy explorer;
+5. complete main content, when present;
+6. ordered immediate-child navigation, when present; and
+7. curated Related Topics, when present.
 
-Browse contexts are a quiet orientation region, not a dashboard of badges. The
-Topic's kind and domains are native links to their corresponding browse
-filters, and derived parents are Topic links under a clear label such as `Found
-in`. Wide layouts may place the region in a restrained side column; narrow
-layouts keep it in document flow directly after the title. Visual placement
-must preserve semantic and keyboard order.
+The hierarchy explorer renders the child graph as a forest without inventing a
+synthetic common root. Its root trees follow the deterministic order defined by
+the content model. At wide widths the complete forest occupies a restrained
+left column beside the Topic content. Every branch containing the current
+Topic is expanded automatically, unrelated roots begin collapsed, and the
+current Topic is visibly marked wherever it occurs. A current Topic with
+children starts expanded. A Topic with more than one parent therefore appears
+in more than one real branch; each occurrence is the same canonical Topic link,
+not a copy or alias, and each occurrence's disclosure operates independently.
+
+The forest is a navigation landmark labelled **Browse surrounding topics** and
+should read as nested navigation rather than a diagram. Use indentation, subtle
+guide rules, disclosure controls, and native linked titles. Do not use a graph
+visualization, node-and-edge canvas, or a series of nested cards. A parent Topic
+that is both navigable and expandable exposes a separate link and disclosure
+control so their actions are unambiguous. Expanded state is quiet and does not
+rely on accent color alone.
+
+Breadcrumb trails sit near the title in one **Topic paths** navigation landmark
+and show the full path instead of a truncated parent label. When several paths
+lead to the Topic, show the trails together as ordered lists labelled **Path 1
+of 2**, **Path 2 of 2**, and so on, rather than selecting one as canonical. The
+current Topic ends each trail as non-linked text with `aria-current="page"`.
+The Topic's kind and domains remain compact native links to their corresponding
+browse filters; they are classification, not ancestry.
 
 Related Topics use a labelled region distinct from immediate children. They
 may use the same compact link-row family, but the heading and supporting kind
 or domain text must communicate that the links are lateral rather than
-narrower. Empty context subgroups and an empty Related Topics region are not
-rendered.
+narrower. Related Topics never appear inside the hierarchy explorer merely
+because they are related. Empty classification groups and an empty Related
+Topics region are not rendered.
+
+This document preserves the accepted future Related Topics presentation, but
+the graph-context implementation slice neither introduces nor revises that UI.
+
+### Accepted Topic context compositions
+
+The wide composition keeps title context above the two-column body so the
+selected Topic remains primary:
+
+```text
+ArrayList versus LinkedList
+Found in
+Java / Collections framework / List / ArrayList versus LinkedList
+Decision aid · Java · Collections · Algorithms and data structures
+
+[ Browse surrounding topics ]  [ Topic content                         ]
+[ ▾ Java                    ]  [ ...                                   ]
+[   ▾ Collections framework ]  [ Narrower topics                       ]
+[     ▾ List                 ]  [ ...                                   ]
+[       Creating lists       ]
+[       ArrayList versus ... ]  current
+[       List operations ...  ]
+[       Arrays and lists     ]
+[       Sorting lists        ]
+[       Concurrent lists     ]
+[ ▸ System Design           ]
+[ ▸ HTTP                    ]
+[ ▸ Databases               ]
+```
+
+A multi-parent Topic shows each real path and marks every occurrence in the
+forest:
+
+```text
+Equality and hash codes
+Found in
+Java / Collections framework / Map / Equality and hash codes
+Java / Collections framework / Set / Equality and hash codes
+
+[ ▾ Java                         ]
+[   ▾ Collections framework      ]
+[     ▾ Set                       ]
+[       Equality and hash codes  ]  current
+[     ▾ Map                       ]
+[       Equality and hash codes  ]  current
+```
+
+These are relationship and priority specifications, not pixel-perfect layouts.
 
 ### Navigation-only Topics
 
@@ -406,16 +481,22 @@ Responsive layouts preserve content, order, semantics, and navigation:
   logical document order;
 - grouped index sections and result metadata remain visible rather than
   collapsing into icon-only or chip-only controls;
-- Browse contexts move into the main flow directly after the Topic title;
-- Related Topics remain a distinct vertical link region;
+- the hierarchy explorer becomes a collapsed in-page disclosure labelled
+  **Browse surrounding topics** after the Topic title, breadcrumb trails, and
+  classification; it does not become a drawer or modal;
+- the collapsed hierarchy disclosure reports the number of available paths
+  when the current Topic has more than one;
+- Related Topics remain a distinct vertical link region when that separate
+  future capability is implemented;
 - typography and spacing reduce proportionally without becoming cramped;
 - Topic main content follows normal vertical document flow;
 - wide code and tables scroll inside their own bounded regions; and
 - neither bottom navigation nor custom swipe navigation is introduced.
 
 Tablet layouts interpolate between the accepted desktop and mobile references.
-They do not introduce a third interaction model, a sidebar, or an off-canvas
-navigation drawer.
+They may use the wide left-column hierarchy or the narrow in-page disclosure
+according to content fit. They do not introduce a third interaction model or
+an off-canvas navigation drawer.
 
 ## Accessibility requirements
 
@@ -423,6 +504,18 @@ navigation drawer.
 - Search and filter controls retain visible labels and native form semantics.
 - Kind and domain context remains available as text; icon and accent treatment
   never substitute for it.
+- One breadcrumb-navigation landmark labelled **Topic paths** contains every
+  contextual path, and each ordered path list has an accessible label that
+  distinguishes it from the others.
+- The hierarchy explorer is a labelled navigation landmark built from ordinary
+  nested lists, native links, and disclosure controls. It does not claim ARIA
+  `tree` semantics or add custom arrow-key behavior.
+- A Topic that can be both opened and expanded uses separate, clearly named
+  controls. `Enter` follows its link; `Enter` or `Space` toggles its disclosure.
+- Ordinary `Tab` and `Shift+Tab` order follows the rendered controls. The wide
+  hierarchy supplies a visible-on-focus **Skip to topic content** link so a
+  keyboard user is not forced through the forest.
+- The current Topic uses `aria-current="page"` on every rendered occurrence.
 - Group headings and result counts remain programmatically exposed.
 - Topic icons are supplementary to visible titles and therefore hidden from
   assistive technology.
@@ -466,9 +559,9 @@ the supported presentation vocabulary without Topic-specific Angular code.
 
 Domain and kind labels are likewise generated from the closed shared
 vocabularies. Authors select semantic keys rather than colors, icons, badges,
-or layout variants. Related Topics and Browse contexts resolve the referenced
-Topic's canonical title and presentation metadata rather than duplicating
-display text on relationships.
+or layout variants. Related Topics, contextual paths, and hierarchy explorer
+entries resolve the referenced Topic's canonical title and presentation
+metadata rather than duplicating display text on relationships.
 
 ## Reference screens
 
@@ -477,12 +570,12 @@ Stitch concepts. They contain synthetic content and some explicitly excluded
 prototype details described above.
 
 They predate Direction C and therefore do not specify the browse-first landing
-composition, persistent search, all-Topics page, Browse contexts, or Related Topics. The
-landing screenshots remain references for palette, typography, surface, and
-interaction language rather than landing information hierarchy. A focused
-later Stitch exercise may refine the accepted wide and narrow compositions
-using real catalog data, but cannot reopen their discovery priority or
-navigation semantics without another accepted product decision.
+composition, persistent search, all-Topics page, graph-projected Topic context,
+or Related Topics. The landing screenshots remain references for palette,
+typography, surface, and interaction language rather than landing information
+hierarchy. A focused later Stitch exercise may refine the accepted wide and
+narrow compositions using real catalog data, but cannot reopen their discovery
+priority or navigation semantics without another accepted product decision.
 
 ### Landing
 

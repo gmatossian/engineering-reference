@@ -62,7 +62,7 @@ Topic's title, content, or ordered children.
   to be formatted.
 - Keep `relatedTopicIds` small and intentional. Add a link only when that nearby
   reference is a useful next retrieval path that is not already adequately exposed
-  as an immediate child or Browse context.
+  as an immediate child or contextual hierarchy path.
 - Preserve Related Topic order deliberately. Relationships are directed and need
   not be reciprocal; an explicit empty list is valid and preferable to filler.
 

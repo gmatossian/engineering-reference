@@ -19,9 +19,10 @@ refinement of Direction C from the
 [Topic findability audit](topic-findability-audit.md): make title retrieval and
 classification-aware domain browsing the primary discovery paths while
 retaining useful broad-to-specific navigation as a secondary curated path.
-The complete all-Topics surface, path-independent Browse contexts, and curated
-Related Topics complement those entry points. These capabilities are delivered
-incrementally and do not invalidate the completed MVP baseline.
+The complete all-Topics surface, path-independent classification,
+graph-projected Topic context, and curated Related Topics complement those
+entry points. These capabilities are delivered incrementally and do not
+invalidate the completed MVP baseline.
 
 ## Product Purpose
 
@@ -84,17 +85,19 @@ relationship logic in application code.
 
 The same canonical Topic can be found by title, browsed through one or more
 technical domains, distinguished by its primary content kind, reached through
-a derived Browse context, selected through a useful ordered-child path, or
-selected from a small curated Related Topics list. Domain entry and the
-complete catalog are primary; persistent title search complements them, while
-hierarchy is deliberately secondary.
+a derived contextual hierarchy path, selected through a useful ordered-child
+path, or selected from a small curated Related Topics list. Domain entry and the
+complete catalog are primary for global discovery; persistent title search
+complements them. Hierarchy remains optional for finding a Topic, then becomes
+primary local context after selection so its real parents, sibling groups,
+children, and ancestor paths are visible without parent guessing.
 
 These paths answer different questions:
 
 - **ordered children** answer “what is narrower here?”;
 - **domains** answer “where could I reasonably browse for this?”;
 - **content kind** answers “what sort of reference is this?”;
-- **Browse contexts** answer “where is this Topic found?”; and
+- **contextual hierarchy paths** answer “where is this Topic found?”; and
 - **Related Topics** answer “what nearby reference is useful next?”.
 
 Classification and relationships improve retrieval without changing Topic
@@ -107,8 +110,10 @@ The accepted presentation is **browse-first hybrid**:
 - complete domain entry is the primary landing path;
 - compact persistent title search remains available from every view;
 - the alphabetical/filterable index is always directly available;
-- ordered-child hierarchy remains as secondary curated progression; and
-- Topic context and Related Topics provide onward navigation after selection.
+- ordered-child hierarchy remains secondary for global discovery and becomes
+  an expandable local context forest on Topic views; and
+- contextual paths, classification, and Related Topics provide distinct onward
+  navigation after selection.
 
 A hierarchy-first presentation was rejected because adding search beside the
 existing cards would leave parent guessing and mixed container lists visually
@@ -178,7 +183,8 @@ The accepted incremental expansion adds:
 - a deliberately small domain and content-kind classification;
 - domain browsing grouped by kind where that improves recognition, beginning
   with System Design;
-- path-independent Browse contexts on every Topic; and
+- path-independent classification, contextual ancestor paths, and a
+  graph-projected hierarchy forest on every Topic; and
 - a small, explicitly curated Related Topics region.
 
 The initial header search performs deterministic client-side title matching over the
@@ -214,7 +220,7 @@ The same core browsing and reference experience must work on desktop, tablet,
 and mobile layouts.
 
 Accessibility is a product requirement, not a final polishing step. Content,
-search and filter controls, domain browsing, and secondary hierarchical
+search and filter controls, domain browsing, and graph-projected hierarchical
 navigation must remain understandable and operable for keyboard and
 assistive-technology users. The interaction model establishes WCAG 2.2 Level
 AA as the target, and the application architecture defines the automated
@@ -309,8 +315,8 @@ They must not be inferred from exploratory implementation.
 The product succeeds when a user can retrieve a known Topic by title without
 knowing its parent, enter a complete technical domain directly, distinguish
 different kinds of references within that domain, follow a useful curated path
-such as Java to Collections framework to Queue, understand the context of a
-directly opened Topic, and move to narrower or related material. Those
-journeys must remain accessible and coherent on desktop, tablet, and mobile,
-and new content must continue to use the generic model without Topic-specific
-application behavior.
+such as Java to Collections framework to Queue, understand every real
+hierarchy path and sibling group around a directly opened Topic, and move to
+narrower or related material. Those journeys must remain accessible and
+coherent on desktop, tablet, and mobile, and new content must continue to use
+the generic model without Topic-specific application behavior.
