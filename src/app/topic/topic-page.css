@@ -2,7 +2,7 @@
   display: grid;
   gap: clamp(1.75rem, 4vw, 3rem);
   margin-inline: auto;
-  max-width: var(--layout-wide);
+  max-width: var(--layout-topic-wide);
 }
 
 .topic-page__header {
@@ -61,7 +61,12 @@ h1 {
 }
 
 .topic-page__children {
+  max-width: var(--layout-prose);
   min-width: 0;
+}
+
+app-related-topic-list {
+  max-width: var(--layout-prose);
 }
 
 @media (width <= 48rem) {

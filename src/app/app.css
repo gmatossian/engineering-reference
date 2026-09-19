@@ -121,6 +121,10 @@
   padding: clamp(2.5rem, 6vw, 5rem) var(--page-gutter) 6rem;
 }
 
+.application-main:has(app-topic-page) {
+  max-width: var(--layout-topic-wide);
+}
+
 .visually-hidden {
   border: 0;
   clip: rect(0 0 0 0);

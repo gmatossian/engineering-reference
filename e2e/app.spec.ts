@@ -12,6 +12,7 @@ const STREAMS_TOPIC_ID = '2d23f8e8-66db-4d0a-b5bc-bfc0536d5ab8';
 const OPERATIONS_AND_COLLECTORS_TOPIC_ID = '45d1ae48-9ecf-4186-8df2-2e199ebcb4b4';
 const URL_SHORTENER_TOPIC_ID = 'b19de3ee-dc7d-4d9d-9b82-06d997a825e1';
 const SCALE_AND_ESTIMATION_TOPIC_ID = '17e411bb-2c99-49e8-93ec-18b767e4a890';
+const RELATIONSHIP_LOADING_TOPIC_ID = '1dbd7b94-8a7b-41d0-8b1f-46d2e5b21720';
 
 test.describe('cross-browser smoke', { tag: '@smoke' }, () => {
   test('renders the landing page and its bundled Topics', async ({ page }) => {
@@ -485,7 +486,7 @@ test('bounds generated Topic content at a narrow viewport', async ({ page }) => 
     name: 'Elements entering at the tail and leaving from the head of a queue',
   });
   const codeOverflowRegion = page.getByRole('region', {
-    name: 'Scrollable code block',
+    name: 'Queue interface operations code block',
     exact: true,
   });
 
@@ -561,7 +562,7 @@ test('bounds generated Topic content at a narrow viewport', async ({ page }) => 
   await page.goto(`/topics/${COMPLEXITY_TOPIC_ID}`);
 
   const tableOverflowRegion = page.getByRole('region', {
-    name: 'Scrollable table',
+    name: 'Complexity table',
     exact: true,
   });
   const table = tableOverflowRegion.locator('table');
@@ -592,6 +593,71 @@ test('bounds generated Topic content at a narrow viewport', async ({ page }) => 
   await expect
     .poll(() => tableOverflowRegion.evaluate((element) => element.scrollLeft))
     .toBeGreaterThan(0);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+    ),
+  ).toBe(true);
+});
+
+test('uses additional desktop width for dense generated content without widening prose', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(`/topics/${HTTP_STATUS_CODES_TOPIC_ID}`);
+
+  const prose = page.locator('.topic-content > p').first();
+  const tableRegion = page.getByRole('region', {
+    name: 'Status families table',
+    exact: true,
+  });
+  const hierarchy = page.locator('.topic-hierarchy-wide');
+  const [proseBounds, tableBounds, hierarchyBounds] = await Promise.all([
+    prose.boundingBox(),
+    tableRegion.boundingBox(),
+    hierarchy.boundingBox(),
+  ]);
+
+  expect(proseBounds).not.toBeNull();
+  expect(tableBounds).not.toBeNull();
+  expect(hierarchyBounds).not.toBeNull();
+  expect(tableBounds!.width - proseBounds!.width).toBeGreaterThan(150);
+  expect(proseBounds!.width).toBeLessThanOrEqual(740);
+  expect(hierarchyBounds!.x + hierarchyBounds!.width).toBeLessThan(tableBounds!.x);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+    ),
+  ).toBe(true);
+
+  await page.setViewportSize({ width: 1200, height: 800 });
+  expect((await prose.boundingBox())!.width).toBeLessThanOrEqual(740);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+    ),
+  ).toBe(true);
+
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(`/topics/${RELATIONSHIP_LOADING_TOPIC_ID}`);
+
+  const diagram = page.getByRole('img', {
+    name: 'Three common relationship-loading failure shapes',
+  });
+  const diagramProse = page.locator('.topic-content > p:not(:has(> img:only-child))').first();
+  await expect
+    .poll(() =>
+      diagram.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth > 0),
+    )
+    .toBe(true);
+  const [diagramBounds, diagramProseBounds] = await Promise.all([
+    diagram.boundingBox(),
+    diagramProse.boundingBox(),
+  ]);
+
+  expect(diagramBounds).not.toBeNull();
+  expect(diagramProseBounds).not.toBeNull();
+  expect(diagramBounds!.width - diagramProseBounds!.width).toBeGreaterThan(150);
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,

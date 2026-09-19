@@ -41,35 +41,74 @@ const SUPPORTED_IMAGE_EXTENSIONS = new Set(['.png', '.svg', '.webp']);
 const SUPPORTED_IMAGE_NAME_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
 
 const OVERFLOW_REGION_CLASS = 'topic-content-overflow';
+const OVERFLOW_CONTEXT_MAX_LENGTH = 160;
+const OVERFLOW_REGION_LABEL_PATTERN = /^(?=.{1,200}$)[^\r\n]+ (?:code block|table)(?: \d+)?$/u;
 
-function wrapOverflowContent() {
+function elementText(node: Element): string {
+  return node.children
+    .map((child) => {
+      if (child.type === 'text') {
+        return child.value;
+      }
+
+      return child.type === 'element' ? elementText(child) : '';
+    })
+    .join('');
+}
+
+function overflowContext(value: string, fallback: string): string {
+  const normalized = value.replace(/\s+/gu, ' ').trim() || fallback;
+
+  if (normalized.length <= OVERFLOW_CONTEXT_MAX_LENGTH) {
+    return normalized;
+  }
+
+  return `${normalized.slice(0, OVERFLOW_CONTEXT_MAX_LENGTH - 1).trimEnd()}…`;
+}
+
+function wrapOverflowContent(topicTitle: string) {
   return (tree: Root) => {
-    const targets: { index: number; node: Element; parent: Root | Element }[] = [];
+    const targets: {
+      baseLabel: string;
+      index: number;
+      node: Element;
+      parent: Root | Element;
+    }[] = [];
+    let currentContext = overflowContext(topicTitle, 'Topic');
 
     visit(tree, 'element', (node, index, parent) => {
+      if (/^h[1-6]$/u.test(node.tagName)) {
+        currentContext = overflowContext(elementText(node), topicTitle);
+      }
+
       if (
         (node.tagName === 'pre' || node.tagName === 'table') &&
         index !== undefined &&
         parent !== undefined
       ) {
-        targets.push({ index, node, parent });
+        const typeLabel = node.tagName === 'pre' ? 'code block' : 'table';
+        targets.push({
+          baseLabel: `${currentContext} ${typeLabel}`,
+          index,
+          node,
+          parent,
+        });
       }
     });
 
     const targetCounts = new Map<string, number>();
     const targetIndexes = new Map<string, number>();
 
-    for (const { node } of targets) {
-      targetCounts.set(node.tagName, (targetCounts.get(node.tagName) ?? 0) + 1);
+    for (const { baseLabel } of targets) {
+      targetCounts.set(baseLabel, (targetCounts.get(baseLabel) ?? 0) + 1);
     }
 
-    for (const { index, node, parent } of targets) {
-      const baseLabel = node.tagName === 'pre' ? 'Scrollable code block' : 'Scrollable table';
-      const targetIndex = (targetIndexes.get(node.tagName) ?? 0) + 1;
+    for (const { baseLabel, index, node, parent } of targets) {
+      const targetIndex = (targetIndexes.get(baseLabel) ?? 0) + 1;
       const accessibleLabel =
-        targetCounts.get(node.tagName) === 1 ? baseLabel : `${baseLabel} ${targetIndex}`;
+        targetCounts.get(baseLabel) === 1 ? baseLabel : `${baseLabel} ${targetIndex}`;
 
-      targetIndexes.set(node.tagName, targetIndex);
+      targetIndexes.set(baseLabel, targetIndex);
 
       parent.children[index] = {
         type: 'element',
@@ -102,7 +141,7 @@ export const HTML_SANITIZATION_SCHEMA: SanitizationSchema = {
     div: [
       ['className', OVERFLOW_REGION_CLASS],
       ['role', 'region'],
-      ['ariaLabel', /^Scrollable (?:code block|table)(?: \d+)?$/],
+      ['ariaLabel', OVERFLOW_REGION_LABEL_PATTERN],
       ['tabIndex', 0],
     ],
     img: ['alt', 'src'],
@@ -190,6 +229,7 @@ function isSameDirectoryRelativePath(value: string): boolean {
 async function renderMarkdown(
   sourcePath: string,
   topicId: string,
+  topicTitle: string,
   markdownBody: string,
   generatedRoot: string,
 ): Promise<string> {
@@ -197,7 +237,7 @@ async function renderMarkdown(
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkRehype)
-    .use(wrapOverflowContent)
+    .use(wrapOverflowContent, topicTitle)
     .use(rehypeSanitize, HTML_SANITIZATION_SCHEMA)
     .use(rehypeStringify);
 
@@ -390,6 +430,7 @@ export async function transformContent(
         mainContentHtml: await renderMarkdown(
           topic.sourcePath,
           topic.id,
+          topic.title,
           topic.markdownBody,
           generatedRoot,
         ),

@@ -360,8 +360,10 @@ are synthetic design material rather than canonical content or required UI.
 Code blocks and tables use their generated, labelled
 `topic-content-overflow` regions. Those regions own horizontal scrolling and
 remain keyboard focusable; the page itself must not gain horizontal overflow.
-Images scale within the content area without losing their alternative text or
-semantic placement.
+At wide viewports, those regions and standalone diagrams may use a wider
+content measure than ordinary prose while remaining beside the hierarchy
+navigation. Images scale within the content area without losing their
+alternative text or semantic placement.
 
 ## All-Topics Presentation
 

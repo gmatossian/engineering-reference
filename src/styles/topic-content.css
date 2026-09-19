@@ -1,9 +1,20 @@
 .topic-content {
   color: var(--color-secondary);
+  display: grid;
   font-size: 1rem;
+  grid-template-columns: minmax(0, min(100%, var(--layout-prose))) minmax(0, 1fr);
   line-height: 1.625;
   min-width: 0;
   overflow-wrap: anywhere;
+}
+
+.topic-content > * {
+  grid-column: 1;
+}
+
+.topic-content > .topic-content-overflow,
+.topic-content > p:has(> img:only-child) {
+  grid-column: 1 / -1;
 }
 
 .topic-content strong {

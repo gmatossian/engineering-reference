@@ -13,8 +13,8 @@ describe('TopicContent', () => {
       [
         '<p>Queue operations</p>',
         '<h2>Complexity</h2>',
-        '<div class="topic-content-overflow" role="region" aria-label="Scrollable code block" tabindex="0"><pre><code class="language-java">queue.offer(value);</code></pre></div>',
-        '<div class="topic-content-overflow" role="region" aria-label="Scrollable table" tabindex="0"><table><thead><tr><th>Operation</th></tr></thead><tbody><tr><td>offer</td></tr></tbody></table></div>',
+        '<div class="topic-content-overflow" role="region" aria-label="Complexity code block" tabindex="0"><pre><code class="language-java">queue.offer(value);</code></pre></div>',
+        '<div class="topic-content-overflow" role="region" aria-label="Complexity table" tabindex="0"><table><thead><tr><th>Operation</th></tr></thead><tbody><tr><td>offer</td></tr></tbody></table></div>',
         '<p><img src="/assets/topics/queue.svg" alt="Queue operations"></p>',
         '<p><a href="https://example.com/reference">External reference</a></p>',
       ].join(''),
@@ -40,8 +40,8 @@ describe('TopicContent', () => {
       'region',
     ]);
     expect(overflowRegions.map((region) => region.getAttribute('aria-label'))).toEqual([
-      'Scrollable code block',
-      'Scrollable table',
+      'Complexity code block',
+      'Complexity table',
     ]);
     expect(overflowRegions.map((region) => region.tabIndex)).toEqual([0, 0]);
   });
