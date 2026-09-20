@@ -17,27 +17,31 @@ relatedTopicIds: []
 Choose the interface by the **behavior the program requires**; choose a concrete
 implementation separately.
 
+## Choose from the required behavior
+
+In **Declare → construct**, the interface comes first and the typical implementation
+comes second. Choose a different implementation when another constraint requires it.
+
+- **Indexed sequence; duplicates allowed:** `List<E>` → `new ArrayList<>()`
+- **Unique membership:** `Set<E>` → `new HashSet<>()`
+- **First-in, first-out processing:** `Queue<E>` → `new ArrayDeque<>()`
+- **Both ends or a LIFO stack:** `Deque<E>` → `new ArrayDeque<>()`
+- **Next value by priority:** `Queue<E>` → `new PriorityQueue<>()`
+- **Value lookup by a unique key:** `Map<K, V>` → `new HashMap<>()`
+- **Unique values in insertion order:** `Set<E>` → `new LinkedHashSet<>()`
+- **Keyed values in insertion order:** `Map<K, V>` → `new LinkedHashMap<>()`
+- **Sorted values, nearest matches, or ranges:** `NavigableSet<E>` → `new TreeSet<>()`
+- **Sorted keys, nearest matches, or ranges:** `NavigableMap<K, V>` → `new TreeMap<>()`
+
+> Need to process **one item at a time in order**? Use `PriorityQueue` when only
+> `peek()` and `poll()` by priority matter. Use a `NavigableMap` backed by `TreeMap`
+> when each value has a unique ordered key and you also need key lookup, endpoints,
+> nearest-key navigation, or ranges.
+
 ![Java Collections Framework hierarchy showing Collection extending Iterable; List, Set, and Queue extending Collection; Deque extending Queue; and Map in a separate hierarchy](./collections-hierarchy.svg)
 
-## Recognize implementation families
-
-Implementation names often indicate the behavior or storage strategy that distinguishes
-them. These are useful clues rather than universal naming rules.
-
-| Name pattern   | Usually signals                                  | Examples                                     |
-| -------------- | ------------------------------------------------ | -------------------------------------------- |
-| `Array*`       | Resizable array-backed storage                   | `ArrayList`, `ArrayDeque`                    |
-| `LinkedList`   | Node-based list that also implements `Deque`     | `LinkedList`                                 |
-| `Hash*`        | Hash-based lookup without sorted iteration       | `HashSet`, `HashMap`                         |
-| `LinkedHash*`  | Hash lookup with predictable encounter order     | `LinkedHashSet`, `LinkedHashMap`             |
-| `Tree*`        | Sorted storage with navigation and range methods | `TreeSet`, `TreeMap`                         |
-| `Enum*`        | Compact storage specialized for one enum type    | `EnumSet`, `EnumMap`                         |
-| `Priority*`    | Heap-backed removal according to priority        | `PriorityQueue`                              |
-| `Concurrent*`  | A concurrency-specific implementation            | `ConcurrentHashMap`, `ConcurrentLinkedQueue` |
-| `CopyOnWrite*` | Writes copy the underlying storage               | `CopyOnWriteArrayList`                       |
-
-The individual List, Set, Queue, and Map Topics contain the actual selection
-guidance and trade-offs.
+The List, Set, Queue, and Map Topics contain family-specific selection guidance,
+operations, and trade-offs.
 
 ## Similar names, different roles
 
