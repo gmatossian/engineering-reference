@@ -36,7 +36,7 @@ These decisions originated during the review of issue
 | RD-004 | Accepted change | Replacing Angular's default favicon with the Engineering Reference mark was explicitly requested. | Revisit only as part of an accepted branding change. |
 | RD-005 | Rejected as a general rule | Do not apply wholesale deduplication. Judge duplication by retrieval value; only exact repetition without a distinct purpose should be removed. The exact Map and comparator repetitions found in issue #39 were trimmed. | Revisit individual cases with concrete evidence of needless repetition or inconsistency. |
 | RD-006 | Deferred | Wider table and image layouts, stronger SVG font fallback behavior, and heading-derived overflow labels are follow-up work. | [Issue #42](https://github.com/gmatossian/engineering-reference/issues/42) |
-| RD-007 | Deferred | Broader decoupling between browser tests and authored catalog content is follow-up work. | [Issue #43](https://github.com/gmatossian/engineering-reference/issues/43) |
+| RD-007 | Resolved | Browser behavior tests use a deterministic authored fixture through the production generator and runtime contract; a focused smoke retains real-catalog integration coverage. | [PR #82](https://github.com/gmatossian/engineering-reference/pull/82) |
 | RD-008 | Deferred | Splitting the large HTTP status-code Topic into focused Topics is follow-up work. | [Issue #44](https://github.com/gmatossian/engineering-reference/issues/44) |
 
 ## Maintenance
