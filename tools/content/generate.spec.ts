@@ -206,6 +206,7 @@ describe('createRuntimeCatalog', () => {
       topics,
     };
     const transformedTopics = topics.map((topic) => ({
+      contentOutline: [],
       id: topic.id,
       mainContentHtml: `<p>${topic.title}</p>`,
     }));
@@ -285,6 +286,7 @@ describe('generateContent', () => {
       domains: ['java'],
       kind: 'area',
       mainContentHtml: null,
+      contentOutline: [],
       childTopicIds: [collectionsTopicId],
       relatedTopicIds: [],
     });

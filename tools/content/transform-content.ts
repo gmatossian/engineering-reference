@@ -10,9 +10,11 @@ import remarkRehype from 'remark-rehype';
 import type { Element, Root } from 'hast';
 import { unified } from 'unified';
 import { visit } from 'unist-util-visit';
+import type { TopicContentOutlineItem } from '../../contracts/runtime-catalog.ts';
 import type { LoadedContentSource } from './load-content-source.ts';
 
 export interface TransformedTopicContent {
+  contentOutline: readonly TopicContentOutlineItem[];
   id: string;
   mainContentHtml: string | null;
 }
@@ -43,8 +45,13 @@ const SUPPORTED_IMAGE_NAME_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
 const OVERFLOW_REGION_CLASS = 'topic-content-overflow';
 const OVERFLOW_CONTEXT_MAX_LENGTH = 160;
 const OVERFLOW_REGION_LABEL_PATTERN = /^(?=.{1,200}$)[^\r\n]+ (?:code block|table)(?: \d+)?$/u;
+const HEADING_FRAGMENT_PREFIX = 'section-';
 
 function elementText(node: Element): string {
+  if (node.tagName === 'img' && typeof node.properties.alt === 'string') {
+    return node.properties.alt;
+  }
+
   return node.children
     .map((child) => {
       if (child.type === 'text') {
@@ -64,6 +71,69 @@ function overflowContext(value: string, fallback: string): string {
   }
 
   return `${normalized.slice(0, OVERFLOW_CONTEXT_MAX_LENGTH - 1).trimEnd()}…`;
+}
+
+function headingFragmentBase(label: string): string {
+  const readableFragment = label
+    .normalize('NFKD')
+    .toLowerCase()
+    .replace(/\p{Mark}+/gu, '')
+    .replace(/[^\p{Letter}\p{Number}]+/gu, '-')
+    .replace(/^-+|-+$/gu, '');
+
+  return `${HEADING_FRAGMENT_PREFIX}${readableFragment || 'section'}`;
+}
+
+function deriveContentOutline(tree: Root): readonly TopicContentOutlineItem[] {
+  const outline: {
+    children: TopicContentOutlineItem[];
+    fragment: string;
+    label: string;
+  }[] = [];
+  const usedFragments = new Set<string>();
+  let currentSection: (typeof outline)[number] | undefined;
+
+  visit(tree, 'element', (node) => {
+    if (node.tagName !== 'h2' && node.tagName !== 'h3') {
+      return;
+    }
+
+    if (node.tagName === 'h3' && currentSection === undefined) {
+      return;
+    }
+
+    const label = elementText(node).replace(/\s+/gu, ' ').trim();
+
+    if (label.length === 0) {
+      if (node.tagName === 'h2') {
+        currentSection = undefined;
+      }
+
+      return;
+    }
+
+    const baseFragment = headingFragmentBase(label);
+    let fragment = baseFragment;
+    let duplicateIndex = 2;
+
+    while (usedFragments.has(fragment)) {
+      fragment = `${baseFragment}-${duplicateIndex}`;
+      duplicateIndex += 1;
+    }
+
+    usedFragments.add(fragment);
+    const item: TopicContentOutlineItem = { children: [], fragment, label };
+
+    if (node.tagName === 'h2') {
+      const section = { ...item, children: [] };
+      outline.push(section);
+      currentSection = section;
+    } else if (currentSection !== undefined) {
+      currentSection.children.push(item);
+    }
+  });
+
+  return outline;
 }
 
 function wrapOverflowContent(topicTitle: string) {
@@ -232,7 +302,7 @@ async function renderMarkdown(
   topicTitle: string,
   markdownBody: string,
   generatedRoot: string,
-): Promise<string> {
+): Promise<Pick<TransformedTopicContent, 'contentOutline' | 'mainContentHtml'>> {
   const processor = unified()
     .use(remarkParse)
     .use(remarkGfm)
@@ -403,8 +473,12 @@ async function renderMarkdown(
   }
 
   const htmlTree = processor.runSync(markdownTree);
+  const contentOutline = deriveContentOutline(htmlTree);
 
-  return String(processor.stringify(htmlTree));
+  return {
+    contentOutline,
+    mainContentHtml: String(processor.stringify(htmlTree)),
+  };
 }
 
 export async function transformContent(
@@ -417,6 +491,7 @@ export async function transformContent(
   for (const topic of contentSource.topics) {
     if (topic.markdownBody.trim().length === 0) {
       transformedTopics.push({
+        contentOutline: [],
         id: topic.id,
         mainContentHtml: null,
       });
@@ -425,15 +500,17 @@ export async function transformContent(
     }
 
     try {
+      const transformedContent = await renderMarkdown(
+        topic.sourcePath,
+        topic.id,
+        topic.title,
+        topic.markdownBody,
+        generatedRoot,
+      );
+
       transformedTopics.push({
+        ...transformedContent,
         id: topic.id,
-        mainContentHtml: await renderMarkdown(
-          topic.sourcePath,
-          topic.id,
-          topic.title,
-          topic.markdownBody,
-          generatedRoot,
-        ),
       });
     } catch (error: unknown) {
       errors.push(toError(error));

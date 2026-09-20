@@ -267,6 +267,12 @@ content type. Repeated regions beneath the same context receive an index. The
 wrapper owns horizontal scrolling; the semantic `pre`, `code`, and `table`
 elements remain intact inside it.
 
+Second- and third-level authored headings also produce deterministic outline
+metadata for in-page navigation. Each entry contains the heading label and a
+fragment beginning with `section-`; duplicate labels receive a stable numeric
+suffix. Third-level headings are nested beneath their preceding second-level
+heading. This metadata is derived output rather than authored front matter.
+
 An authored external link must begin with the canonical lowercase `https://`
 scheme. Other spellings and protocols are rejected so that the validated HTML
 can pass through the sanitizer without its meaning changing.
@@ -365,6 +371,7 @@ Its conceptual shape is:
       "domains": ["java"],
       "kind": "area",
       "mainContentHtml": null,
+      "contentOutline": [],
       "childTopicIds": [
         "22222222-2222-4222-8222-222222222222"
       ],
@@ -377,6 +384,7 @@ Its conceptual shape is:
       "domains": ["java", "collections"],
       "kind": "concept",
       "mainContentHtml": "<p>Collections group and organize objects.</p>",
+      "contentOutline": [],
       "childTopicIds": [],
       "relatedTopicIds": []
     }
@@ -398,10 +406,13 @@ The application can intersect these indexes to produce domain-and-kind browse
 collections without an authored collection registry.
 
 Every generated Topic contains `title`, `summary`, `iconKey`,
-`domains`, `kind`, `mainContentHtml`, `childTopicIds`, and `relatedTopicIds`.
+`domains`, `kind`, `mainContentHtml`, `contentOutline`, `childTopicIds`, and
+`relatedTopicIds`.
 Optional source presentation metadata is emitted as explicit `null`, giving
 every generated Topic a predictable shape. `mainContentHtml` is likewise
 explicitly `null` for a navigation-only Topic; an empty string is invalid.
+`contentOutline` is always an array and is empty when the Topic has no eligible
+heading structure.
 
 The single-file runtime representation is emitted as
 `.generated/catalog.json` and imported into the Angular bundle. It therefore
@@ -421,10 +432,11 @@ built:
 5. Validate links and local image references.
 6. Convert supported Markdown to semantic HTML.
 7. Sanitize the generated HTML.
-8. Copy referenced images with content-hashed names and rewrite their output
+8. Derive deterministic second- and third-level heading outline metadata.
+9. Copy referenced images with content-hashed names and rewrite their output
    paths.
-9. Derive the alphabetical, classification, and reverse-parent indexes.
-10. Emit the deterministic runtime JSON catalog.
+10. Derive the alphabetical, classification, and reverse-parent indexes.
+11. Emit the deterministic runtime JSON catalog.
 
 The same generator and validation path runs locally, in CI, and as a required
 dependency of the application build. Content changes therefore require a commit

@@ -66,9 +66,7 @@ export function createRuntimeCatalog(
   contentSource: LoadedContentSource,
   transformedTopics: readonly TransformedTopicContent[],
 ): RuntimeCatalog {
-  const mainContentHtmlByTopicId = new Map(
-    transformedTopics.map((topic) => [topic.id, topic.mainContentHtml]),
-  );
+  const transformedTopicById = new Map(transformedTopics.map((topic) => [topic.id, topic]));
 
   const topicsById: Record<string, RuntimeTopic> = {};
   const topicsInCanonicalOrder = [...contentSource.topics].sort((left, right) =>
@@ -80,7 +78,9 @@ export function createRuntimeCatalog(
   );
 
   for (const topic of topicsInCanonicalOrder) {
-    if (!mainContentHtmlByTopicId.has(topic.id)) {
+    const transformedTopic = transformedTopicById.get(topic.id);
+
+    if (transformedTopic === undefined) {
       throw new Error(`Missing transformed content for Topic ${topic.id}`);
     }
 
@@ -92,7 +92,8 @@ export function createRuntimeCatalog(
         (left, right) => (domainOrder.get(left) ?? -1) - (domainOrder.get(right) ?? -1),
       ),
       kind: topic.kind,
-      mainContentHtml: mainContentHtmlByTopicId.get(topic.id) ?? null,
+      mainContentHtml: transformedTopic.mainContentHtml,
+      contentOutline: transformedTopic.contentOutline,
       childTopicIds: [...topic.childTopicIds],
       relatedTopicIds: [...topic.relatedTopicIds],
     };

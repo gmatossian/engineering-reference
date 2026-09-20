@@ -14,10 +14,12 @@ const assetFilename = 'queue-operations.7b3bba3ed45b.svg';
 
 const expectedTransformedTopics = [
   {
+    contentOutline: [],
     id: javaTopicId,
     mainContentHtml: null,
   },
   {
+    contentOutline: [],
     id: queueTopicId,
     mainContentHtml: [
       '<p>A queue processes elements in a defined order.</p>',

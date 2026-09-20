@@ -365,6 +365,15 @@ content measure than ordinary prose while remaining beside the hierarchy
 navigation. Images scale within the content area without losing their
 alternative text or semantic placement.
 
+Content with at least two second-level sections may add a restrained sticky
+**On this page** rail at sufficiently wide viewports. Its top-level entries use
+the same readable navigation scale as the hierarchy explorer, with small muted
+bullets and enough vertical separation to remain visibly discrete links.
+Third-level entries are smaller, quieter, and indented beneath their section.
+The rail is navigation rather than a progress sequence, so it does not number
+entries or present them as pills or cards. Short Topics and layouts without room
+for hierarchy, content, and outline omit it.
+
 ## All-Topics Presentation
 
 The all-Topics page is a reference index, not a faceted analytics dashboard.

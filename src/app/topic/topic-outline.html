@@ -1,0 +1,26 @@
+<nav class="topic-outline" aria-labelledby="topic-outline-heading">
+  <h2 id="topic-outline-heading">On this page</h2>
+
+  <ng-container *ngTemplateOutlet="outlineItems; context: { $implicit: items(), nested: false }" />
+</nav>
+
+<ng-template #outlineItems let-outline let-nested="nested">
+  <ul [class.topic-outline__nested]="nested">
+    @for (item of outline; track item.fragment) {
+      <li>
+        <a
+          [attr.href]="fragmentHref(item.fragment)"
+          (click)="focusDestination($event, item.fragment)"
+        >
+          {{ item.label }}
+        </a>
+
+        @if (item.children.length > 0) {
+          <ng-container
+            *ngTemplateOutlet="outlineItems; context: { $implicit: item.children, nested: true }"
+          />
+        }
+      </li>
+    }
+  </ul>
+</ng-template>

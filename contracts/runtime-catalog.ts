@@ -69,6 +69,12 @@ export const TOPIC_KIND_LABELS: Readonly<Record<TopicKindKey, string>> = {
   pattern: 'Pattern or technique',
 };
 
+export interface TopicContentOutlineItem {
+  readonly fragment: string;
+  readonly label: string;
+  readonly children: readonly TopicContentOutlineItem[];
+}
+
 export interface RuntimeTopic {
   readonly title: string;
   readonly summary: string | null;
@@ -76,6 +82,7 @@ export interface RuntimeTopic {
   readonly domains: readonly TopicDomainKey[];
   readonly kind: TopicKindKey;
   readonly mainContentHtml: string | null;
+  readonly contentOutline: readonly TopicContentOutlineItem[];
   readonly childTopicIds: readonly string[];
   readonly relatedTopicIds: readonly string[];
 }
