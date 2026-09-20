@@ -7,13 +7,15 @@ import { generateContent } from '../content/generate.ts';
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const generatedRoot = join(projectRoot, '.generated');
 const productionContentRoot = join(projectRoot, 'content');
+const fixtureContentRoot = join(projectRoot, 'e2e', 'fixtures', 'content');
 const productionBuildRoot = join(projectRoot, 'dist', 'engineering-reference');
 const realCatalogBuildRoot = join(projectRoot, 'dist', 'engineering-reference-real');
+const fixtureBuildRoot = join(projectRoot, 'dist', 'engineering-reference-fixture');
 const handledSignals = ['SIGINT', 'SIGTERM'] as const;
 
 type HandledSignal = (typeof handledSignals)[number];
 
-let activePlaywright: ChildProcess | undefined;
+let activeChild: ChildProcess | undefined;
 let receivedSignal: HandledSignal | undefined;
 const signalHandlers = new Map<HandledSignal, () => void>();
 
@@ -27,7 +29,7 @@ function handleSignal(signal: HandledSignal): void {
   }
 
   receivedSignal = signal;
-  activePlaywright?.kill(signal);
+  activeChild?.kill(signal);
 }
 
 for (const signal of handledSignals) {
@@ -36,26 +38,22 @@ for (const signal of handledSignals) {
   process.on(signal, handler);
 }
 
-function runPlaywright(arguments_: readonly string[]): Promise<number> {
+function runChild(command: string, arguments_: readonly string[]): Promise<number> {
   return new Promise((resolveRun, rejectRun) => {
-    const playwright = spawn(
-      join(projectRoot, 'node_modules', '.bin', 'playwright'),
-      ['test', ...arguments_],
-      {
-        cwd: projectRoot,
-        stdio: 'inherit',
-      },
-    );
-    activePlaywright = playwright;
+    const child = spawn(command, arguments_, {
+      cwd: projectRoot,
+      stdio: 'inherit',
+    });
+    activeChild = child;
 
     if (receivedSignal !== undefined) {
-      playwright.kill(receivedSignal);
+      child.kill(receivedSignal);
     }
 
-    playwright.once('error', rejectRun);
-    playwright.once('exit', (code, signal) => {
-      if (activePlaywright === playwright) {
-        activePlaywright = undefined;
+    child.once('error', rejectRun);
+    child.once('exit', (code, signal) => {
+      if (activeChild === child) {
+        activeChild = undefined;
       }
 
       if (signal !== null) {
@@ -64,7 +62,7 @@ function runPlaywright(arguments_: readonly string[]): Promise<number> {
           return;
         }
 
-        rejectRun(new Error(`Playwright exited after signal ${signal}`));
+        rejectRun(new Error(`${command} exited after signal ${signal}`));
         return;
       }
 
@@ -73,12 +71,33 @@ function runPlaywright(arguments_: readonly string[]): Promise<number> {
   });
 }
 
+function buildFixtureApplication(): Promise<number> {
+  return runChild(join(projectRoot, 'node_modules', '.bin', 'ng'), [
+    'build',
+    '--configuration',
+    'production',
+    '--output-path',
+    fixtureBuildRoot,
+  ]);
+}
+
+function runPlaywright(arguments_: readonly string[]): Promise<number> {
+  return runChild(join(projectRoot, 'node_modules', '.bin', 'playwright'), ['test', ...arguments_]);
+}
+
 let exitCode: number;
 
 try {
   await rm(realCatalogBuildRoot, { recursive: true, force: true });
+  await rm(fixtureBuildRoot, { recursive: true, force: true });
   await cp(productionBuildRoot, realCatalogBuildRoot, { recursive: true });
-  exitCode = await runPlaywright(process.argv.slice(2));
+  await generateContent(fixtureContentRoot, generatedRoot);
+  exitCode = await buildFixtureApplication();
+
+  if (exitCode === 0) {
+    await generateContent(productionContentRoot, generatedRoot);
+    exitCode = await runPlaywright(process.argv.slice(2));
+  }
 } finally {
   try {
     await generateContent(productionContentRoot, generatedRoot);

@@ -509,16 +509,17 @@ navigation, narrow hierarchy behavior, and the not-found view.
 
 Application-behavior browser tests use a small deterministic authored catalog
 under `e2e/fixtures/content`. The normal generator processes that source into
-the normal `.generated/catalog.json` boundary before an Angular development
-server starts, so the fixture does not introduce an alternate application
-loader or bypass validation, transformation, asset processing, or the runtime
-catalog contract. The Playwright runner restores the production generated
-catalog when the suite finishes. One separately tagged Chromium smoke test runs
-against the static production build and verifies that the real generated
-catalog loads and supports canonical Topic navigation. Tests that intentionally
-exercise content transformation remain in the Node tool suite; ordinary
-reference prose, titles, UUIDs, and hierarchy changes therefore do not alter
-unrelated browser-behavior expectations.
+the normal `.generated/catalog.json` boundary before the runner creates a
+separate production fixture build, so the fixture does not introduce an
+alternate application loader or bypass validation, transformation, asset
+processing, optimization, or the runtime catalog contract. The runner restores
+the production generated catalog before Playwright serves the immutable real
+and fixture builds, and restores it again after failures or interruptions. One
+separately tagged Chromium smoke test verifies that the real generated catalog
+loads through the static production server and supports canonical Topic
+navigation. Tests that intentionally exercise content transformation remain in
+the Node tool suite; ordinary reference prose, titles, UUIDs, and hierarchy
+changes therefore do not alter unrelated browser-behavior expectations.
 
 Coverage is reported without an initial numeric threshold. Tests explicitly
 cover every catalog validation rule, Markdown safety constraints,

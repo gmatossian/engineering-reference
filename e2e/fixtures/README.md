@@ -8,10 +8,11 @@ tests to the evolving reference catalog.
 
 The fixture deliberately uses the production source format and generator. During
 `npm run test:e2e`, the normal content pipeline generates the normal runtime catalog
-from `e2e/fixtures/content`, and Angular serves the unchanged application. The test
-runner restores the production generated catalog after Playwright exits. A separate
-`@real-catalog` test runs against the production build and is the only browser test
-intended to depend on the real generated catalog.
+from `e2e/fixtures/content`, and the runner creates a production-optimized fixture
+build. It restores the production generated catalog before serving the immutable
+fixture and real-catalog builds, and again after failures or interruptions. A
+separate `@real-catalog` test runs against the real production build and is the only
+browser test intended to depend on the real generated catalog.
 
 Keep this fixture small and behavior-oriented. Add or change an entry only when a
 browser journey requires a stable graph or rendered-content shape; content-contract

@@ -245,10 +245,5 @@ function isDirectExecution(): boolean {
 
 if (isDirectExecution()) {
   const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
-  const sourceRoot = process.env['ENGINEERING_REFERENCE_CONTENT_ROOT'];
-
-  await generateContent(
-    sourceRoot === undefined ? join(projectRoot, 'content') : resolve(projectRoot, sourceRoot),
-    join(projectRoot, '.generated'),
-  );
+  await generateContent(join(projectRoot, 'content'), join(projectRoot, '.generated'));
 }
