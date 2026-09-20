@@ -93,7 +93,7 @@ describe('CatalogService', () => {
       'algorithms-data-structures',
     ]);
     expect(service.getDomainTopicCount('system-design')).toBe(7);
-    expect(service.getDomainTopicCount('http')).toBe(2);
+    expect(service.getDomainTopicCount('http')).toBe(5);
     expect(service.getKindOptions().map(({ key }) => key)).toEqual([
       'area',
       'concept',
@@ -128,7 +128,7 @@ describe('CatalogService', () => {
     const view = service.getTopicBrowseView({ query: '', domain: null, kind: null });
 
     expect(view.mode).toBe('hierarchy');
-    expect(view.resultCount).toBe(67);
+    expect(view.resultCount).toBe(70);
     expect(view.sections).toEqual([]);
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
       'Java',
