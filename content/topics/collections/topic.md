@@ -30,13 +30,16 @@ comes second. Choose a different implementation when another constraint requires
 - **Value lookup by a unique key:** `Map<K, V>` → `new HashMap<>()`
 - **Unique values in insertion order:** `Set<E>` → `new LinkedHashSet<>()`
 - **Keyed values in insertion order:** `Map<K, V>` → `new LinkedHashMap<>()`
-- **Sorted values, nearest matches, or ranges:** `NavigableSet<E>` → `new TreeSet<>()`
-- **Sorted keys, nearest matches, or ranges:** `NavigableMap<K, V>` → `new TreeMap<>()`
+- **Sorted values, endpoints, or range views:** `SortedSet<E>` → `new TreeSet<>()`
+- **Nearest-value or descending navigation as well:** `NavigableSet<E>` → `new TreeSet<>()`
+- **Sorted keys, endpoints, or range views:** `SortedMap<K, V>` → `new TreeMap<>()`
+- **Nearest-key or descending navigation as well:** `NavigableMap<K, V>` → `new TreeMap<>()`
 
 > Need to process **one item at a time in order**? Use `PriorityQueue` when only
-> `peek()` and `poll()` by priority matter. Use a `NavigableMap` backed by `TreeMap`
-> when each value has a unique ordered key and you also need key lookup, endpoints,
-> nearest-key navigation, or ranges.
+> `peek()` and `poll()` by priority matter. Use a `SortedMap` backed by `TreeMap`
+> when each value has a unique ordered key and you need key lookup, endpoints, or
+> range views. Declare it as `NavigableMap` instead when you also need
+> `lower`/`floor`/`ceiling`/`higher` or descending navigation.
 
 ![Java Collections Framework hierarchy showing Collection extending Iterable; List, Set, and Queue extending Collection; Deque extending Queue; and Map in a separate hierarchy](./collections-hierarchy.svg)
 
