@@ -109,8 +109,10 @@ A selected Topic view presents:
    Topic has an ancestor;
 3. an expandable hierarchy explorer containing the complete root forest;
 4. its complete main content, when present;
-5. its ordered immediate children, when present; and
-6. its ordered Related Topics, when the list is non-empty.
+5. supplementary in-page heading navigation at sufficiently wide viewports,
+   when the main content contains at least two second-level sections;
+6. its ordered immediate children, when present; and
+7. its ordered Related Topics, when the list is non-empty.
 
 The Topic header containing title and contextual paths comes first in DOM order.
 The hierarchy navigation follows it, then the Topic content and onward-link
@@ -153,6 +155,13 @@ shared domains, kinds, or browsing behavior.
 
 Related Topics rendering remains independent from the graph-projected hierarchy
 and must not be inferred from the hierarchy explorer.
+
+The supplementary heading navigation is labelled **On this page** and links to
+the Topic's authored second-level headings. Third-level headings are nested
+beneath their preceding second-level heading. It uses native fragment links so
+the destination can be copied, opened in another tab, refreshed, and reached by
+keyboard. Activating a link scrolls to and focuses its heading. The outline is
+omitted for short Topics rather than displaying one isolated destination.
 
 ## Topic Navigation
 
@@ -328,6 +337,8 @@ matching distinguishes `/topics` from the UUID route. This scheme supports:
 
 Selecting a Topic performs normal history-producing navigation. Refreshing a
 Topic URL does not require knowledge of the route previously used to reach it.
+An in-page heading destination appends its deterministic fragment to the same
+canonical Topic URL.
 
 The browser document title reflects the displayed view:
 
@@ -372,7 +383,9 @@ collapsed initially, reports the number of applicable current paths when that
 number exceeds one, and exposes the same roots, occurrences, links, and
 disclosure behavior when opened. It is not moved into a modal, off-canvas
 drawer, or mobile-only navigation model. Related Topics and immediate children
-remain distinct labelled regions at every width.
+remain distinct labelled regions at every width. The supplementary **On this
+page** outline is a spacious-layout aid and may be omitted at medium and narrow
+widths; the authored headings remain present in normal document flow.
 
 Following a Topic link from the narrow explorer performs normal Topic
 navigation, moves focus to the new Topic heading, and resets the enclosing
@@ -441,6 +454,8 @@ At minimum, the interaction must provide:
   buttons, and `aria-current="page"` on every current occurrence;
 - an explicit bypass or equivalent verified focus strategy when expanded
   hierarchy precedes Topic content in keyboard order;
+- a labelled in-page heading-navigation landmark with native fragment links
+  when the supplementary wide outline is present;
 - status announcements for result-count changes without announcing the full
   result list;
 - visible focus indicators;

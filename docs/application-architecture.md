@@ -115,6 +115,7 @@ lands:
 │       └── topic/
 │           ├── topic-page.*
 │           ├── topic-content.*
+│           ├── topic-outline.*
 │           ├── topic-breadcrumbs.*
 │           ├── topic-hierarchy.*
 │           ├── topic-link-list.*
@@ -174,8 +175,10 @@ The authored format is deliberately bounded to the semantic constructs listed
 in the content storage decision. Understanding additional syntax does not make
 it supported: task lists, footnotes, strikethrough, raw HTML, and other
 unaccepted constructs fail generation with a clear error. The pipeline does
-not generate heading IDs. New constructs require an explicit content-contract
-change plus styling, sanitization, and test coverage.
+derive deterministic fragments and a nested outline from supported second- and
+third-level headings after allowlist sanitization. New authored constructs
+still require an explicit content-contract change plus styling, sanitization,
+and test coverage.
 
 Custom catalog validation enforces UUID identity, required classification,
 supported vocabulary keys, child and related references, authored ordering,
@@ -201,10 +204,11 @@ Generation recreates this ignored directory deterministically:
 The generated JSON has the shape defined in the content storage decision and
 is type-checked against `RuntimeCatalog`. Optional `summary` and `iconKey`
 source fields become explicit nullable runtime properties; required `domains`,
-`kind`, `childTopicIds`, and `relatedTopicIds` retain predictable shapes. The
-generator also emits alphabetical Topic IDs, IDs by domain and kind, and
-reverse parent IDs derived from `childTopicIds`. The Angular UI owns the generic
-icon fallback when `iconKey` is `null`. TypeScript widens string literals
+`kind`, `contentOutline`, `childTopicIds`, and `relatedTopicIds` retain
+predictable shapes. Each outline entry carries a deterministic fragment, label,
+and nested children. The generator also emits alphabetical Topic IDs, IDs by
+domain and kind, and reverse parent IDs derived from `childTopicIds`. The
+Angular UI owns the generic icon fallback when `iconKey` is `null`. TypeScript widens string literals
 imported from JSON, so the catalog service restores the trusted `RuntimeCatalog`
 type at that generated boundary rather than duplicating runtime validation in
 Angular. Angular imports `.generated/catalog.json` at build time, so the
@@ -363,10 +367,16 @@ derived from the Topic graph.
   native links with kind and domain context.
 - `TopicPageComponent` resolves the route input, sets view metadata, and
   composes the selected Topic header, contextual paths, hierarchy, content,
-  immediate children, and Related Topics. Its header spans the wide layout so
-  title and path context precede both the hierarchy navigation and main content
-  in document order.
-- `TopicContentComponent` renders a Topic's generated main-content HTML.
+  immediate children, Related Topics, and eligible wide-layout heading outline.
+  Its header spans the wide layout so title and path context precede both the
+  hierarchy navigation and main content in document order.
+- `TopicContentComponent` renders a Topic's generated main-content HTML and
+  applies the generated outline fragments as programmatic heading focus targets
+  after Angular sanitization.
+- `TopicOutlineComponent` renders an eligible Topic's derived second- and
+  third-level heading outline as native fragment links in a supplementary
+  wide-layout navigation landmark. It owns neither authored content nor active
+  scroll tracking.
 - `TopicBreadcrumbsComponent` renders one **Topic paths** navigation landmark
   containing every derived root-to-Topic path as a separately labelled ordered
   list. The current Topic ends each path as non-linked text with
@@ -392,14 +402,15 @@ piece forever. Implementation may combine trivial code when that improves
 clarity without mixing responsibilities.
 
 The Topic header is first in DOM order. The hierarchy navigation follows it,
-then the Topic's main content and onward-link regions. CSS places the hierarchy
-beside the main content at wide widths; at narrow widths the same component is
-an initially collapsed in-page disclosure before the content. The wide
-hierarchy begins with a visible-on-focus **Skip to topic content** link targeting
-the first following content or immediate-child region; the narrow disclosure
-does not add that bypass. Links use `aria-current="page"` for every current
-occurrence, disclosures retain native button semantics, and the component
-deliberately does not implement ARIA tree or custom arrow-key behavior.
+then the Topic's main content, onward-link regions, and supplementary heading
+outline. CSS places the hierarchy beside the main content at wide widths; at
+narrow widths the same component is an initially collapsed in-page disclosure
+before the content. The wide hierarchy begins with a visible-on-focus **Skip to
+topic content** link targeting the first following content or immediate-child
+region; the narrow disclosure does not add that bypass. Links use
+`aria-current="page"` for every current occurrence, disclosures retain native
+button semantics, and the component deliberately does not implement ARIA tree
+or custom arrow-key behavior.
 
 ### Generated HTML trust boundary
 
@@ -408,6 +419,14 @@ Topic HTML. Angular treats the catalog as an internal build artifact, but
 `TopicContentComponent` still renders it through ordinary `[innerHTML]`
 binding. It never calls `bypassSecurityTrustHtml`, so Angular's sanitizer
 remains a second line of defense.
+
+Angular's sanitizer does not preserve generated heading `id` and negative
+`tabindex` attributes through `[innerHTML]`. The generated HTML therefore does
+not depend on those attributes. After Angular sanitizes and renders the content,
+`TopicContentComponent` applies the trusted generated outline fragments and a
+programmatic focus target to the corresponding second- and third-level heading
+elements. This preserves the sanitizer boundary while giving in-page links
+stable, copyable destinations.
 
 Styles for generated semantic elements live in the global stylesheet under a
 `.topic-content` namespace. This deliberately handles elements inserted by
@@ -437,9 +456,12 @@ retain focus and publish only the result count through a polite status region.
 Responsive CSS places the graph-projected hierarchy in a restrained left column
 at wide sizes and presents it as an initially collapsed in-page disclosure at
 narrow sizes. DOM and keyboard order remain Topic header and contextual paths,
-hierarchy navigation, content, children, and Related Topics. The hierarchy uses
-indentation and subtle guide rules rather than nested cards or a graph canvas;
-Related Topics remain visually and semantically separate.
+hierarchy navigation, content, children, Related Topics, and any supplementary
+heading outline. An eligible content-bearing Topic adds a restrained sticky
+right-column heading outline only when the viewport can accommodate all three
+columns. The hierarchy uses indentation and subtle guide rules rather than
+nested cards or a graph canvas; Related Topics remain visually and semantically
+separate.
 
 ## Local Development and Builds
 
@@ -511,6 +533,11 @@ destinations, the narrow in-page disclosure and its path-count and reset
 behavior, wide skip-link behavior, ordinary keyboard operation,
 `aria-current`, labelled breadcrumb and hierarchy navigation regions, and
 automated accessibility checks.
+
+Heading-outline coverage verifies deterministic duplicate fragments, second-
+and third-level nesting, runtime heading targets after Angular sanitization,
+native fragment navigation and focus, omission for short Topics, and responsive
+wide-only presentation.
 
 Automated tooling supplements rather than replaces manual keyboard and
 assistive-technology review. The completed MVP verification included a manual

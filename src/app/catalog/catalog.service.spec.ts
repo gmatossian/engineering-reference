@@ -30,6 +30,7 @@ const createRootTopic = (title: string): RuntimeTopic => ({
   domains: ['java'],
   kind: 'area',
   mainContentHtml: null,
+  contentOutline: [],
   childTopicIds: [],
   relatedTopicIds: [],
 });

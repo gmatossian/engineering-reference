@@ -10,7 +10,7 @@
       }
     </header>
 
-    <div class="topic-page__layout">
+    <div class="topic-page__layout" [class.topic-page__layout--with-outline]="hasContentOutline()">
       @if (hasPrimaryRegion()) {
         <a
           class="topic-page__skip"
@@ -33,6 +33,7 @@
             id="topic-primary-content"
             tabindex="-1"
             [html]="resolvedTopic.mainContentHtml"
+            [outline]="contentOutline()"
           />
         }
 
@@ -55,6 +56,10 @@
           }
         }
       </div>
+
+      @if (hasContentOutline()) {
+        <app-topic-outline [items]="contentOutline()" [topicPath]="'/topics/' + id()" />
+      }
     </div>
   </article>
 } @else {

@@ -13,18 +13,38 @@ describe('TopicContent', () => {
       [
         '<p>Queue operations</p>',
         '<h2>Complexity</h2>',
+        '<h3>Amortized cost</h3>',
         '<div class="topic-content-overflow" role="region" aria-label="Complexity code block" tabindex="0"><pre><code class="language-java">queue.offer(value);</code></pre></div>',
         '<div class="topic-content-overflow" role="region" aria-label="Complexity table" tabindex="0"><table><thead><tr><th>Operation</th></tr></thead><tbody><tr><td>offer</td></tr></tbody></table></div>',
         '<p><img src="/assets/topics/queue.svg" alt="Queue operations"></p>',
         '<p><a href="https://example.com/reference">External reference</a></p>',
       ].join(''),
     );
+    fixture.componentRef.setInput('outline', [
+      {
+        children: [
+          {
+            children: [],
+            fragment: 'section-amortized-cost',
+            label: 'Amortized cost',
+          },
+        ],
+        fragment: 'section-complexity',
+        label: 'Complexity',
+      },
+    ]);
     fixture.detectChanges();
 
     const content = fixture.nativeElement.querySelector('.topic-content') as HTMLElement;
 
     expect(content.querySelector('p')?.textContent).toContain('Queue operations');
-    expect(content.querySelector('h2')?.textContent).toBe('Complexity');
+    const heading = content.querySelector('h2');
+
+    expect(heading?.textContent).toBe('Complexity');
+    expect(heading?.id).toBe('section-complexity');
+    expect(heading?.getAttribute('tabindex')).toBe('-1');
+    expect(content.querySelector('h3')?.id).toBe('section-amortized-cost');
+    expect(content.querySelector('h3')?.getAttribute('tabindex')).toBe('-1');
     expect(content.querySelector('code.language-java')?.textContent).toBe('queue.offer(value);');
     expect(content.querySelector('th')?.textContent).toBe('Operation');
     expect(content.querySelector('td')?.textContent).toBe('offer');

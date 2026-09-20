@@ -47,6 +47,11 @@
   font-size: 1.15rem;
 }
 
+.topic-content h2[tabindex='-1'],
+.topic-content h3[tabindex='-1'] {
+  scroll-margin-top: 6rem;
+}
+
 .topic-content p,
 .topic-content ul,
 .topic-content ol {

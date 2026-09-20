@@ -9,6 +9,7 @@ import { TopicContent } from './topic-content';
 import { TopicHierarchy } from './topic-hierarchy';
 import { TopicLinkList } from './topic-link-list';
 import { RelatedTopicList } from './related-topic-list';
+import { TopicOutline } from './topic-outline';
 
 @Component({
   imports: [
@@ -17,6 +18,7 @@ import { RelatedTopicList } from './related-topic-list';
     TopicHierarchy,
     TopicLinkList,
     TopicNotFound,
+    TopicOutline,
     RelatedTopicList,
   ],
   selector: 'app-topic-page',
@@ -39,6 +41,8 @@ export class TopicPage {
     const topic = this.topic();
     return topic === undefined ? [] : this.catalogService.getRelatedTopics(topic);
   });
+  protected readonly contentOutline = computed(() => this.topic()?.contentOutline ?? []);
+  protected readonly hasContentOutline = computed(() => this.contentOutline().length >= 2);
   protected readonly hierarchyRoots = this.catalogService.getHierarchyRoots();
   protected readonly topicPaths = computed(() => this.catalogService.getTopicPaths(this.id()));
   protected readonly hasPrimaryRegion = computed(() => {

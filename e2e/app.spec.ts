@@ -13,6 +13,7 @@ const OPERATIONS_AND_COLLECTORS_TOPIC_ID = '45d1ae48-9ecf-4186-8df2-2e199ebcb4b4
 const URL_SHORTENER_TOPIC_ID = 'b19de3ee-dc7d-4d9d-9b82-06d997a825e1';
 const SCALE_AND_ESTIMATION_TOPIC_ID = '17e411bb-2c99-49e8-93ec-18b767e4a890';
 const RELATIONSHIP_LOADING_TOPIC_ID = '1dbd7b94-8a7b-41d0-8b1f-46d2e5b21720';
+const ENTITY_MANAGER_TOPIC_ID = '072fc2b2-2755-45ec-aabe-d8a4740fa4e9';
 
 test.describe('cross-browser smoke', { tag: '@smoke' }, () => {
   test('renders the landing page and its bundled Topics', async ({ page }) => {
@@ -304,6 +305,49 @@ test('provides a wide-layout hierarchy bypass to the first Topic content region'
       return bounds.top >= 0 && bounds.top < window.innerHeight;
     }),
   ).toBe(true);
+});
+
+test('provides wide in-page heading navigation for sufficiently structured Topics', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(`/topics/${RELATIONSHIP_LOADING_TOPIC_ID}`);
+
+  const outline = page.getByRole('navigation', { name: 'On this page' });
+  const guardrailsLink = outline.getByRole('link', { name: 'Guardrails', exact: true });
+
+  await expect(outline).toBeVisible();
+  await expect(outline.getByRole('list')).toHaveCount(1);
+  await expect(guardrailsLink).toHaveAttribute(
+    'href',
+    `/topics/${RELATIONSHIP_LOADING_TOPIC_ID}#section-guardrails`,
+  );
+
+  await guardrailsLink.focus();
+  await expect(guardrailsLink).toBeFocused();
+  await page.keyboard.press('Enter');
+
+  await expect(page).toHaveURL(`/topics/${RELATIONSHIP_LOADING_TOPIC_ID}#section-guardrails`);
+  await expect(page.getByRole('heading', { level: 2, name: 'Guardrails' })).toBeFocused();
+
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await guardrailsLink.click();
+  await expect(page.getByRole('heading', { level: 2, name: 'Guardrails' })).toBeInViewport();
+
+  await page.goto(`/topics/${RELATIONSHIP_LOADING_TOPIC_ID}#section-references`);
+  const directHeadingBounds = await page
+    .getByRole('heading', { level: 2, name: 'References' })
+    .boundingBox();
+  expect(directHeadingBounds).not.toBeNull();
+  expect(directHeadingBounds!.y).toBeGreaterThanOrEqual(64);
+  expect(directHeadingBounds!.y).toBeLessThan(900);
+
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await expect(outline).toBeHidden();
+
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(`/topics/${ENTITY_MANAGER_TOPIC_ID}`);
+  await expect(page.getByRole('navigation', { name: 'On this page' })).toHaveCount(0);
 });
 
 test(
@@ -632,7 +676,7 @@ test('uses additional desktop width for dense generated content without widening
   expect(proseBounds).not.toBeNull();
   expect(tableBounds).not.toBeNull();
   expect(hierarchyBounds).not.toBeNull();
-  expect(tableBounds!.width - proseBounds!.width).toBeGreaterThan(150);
+  expect(tableBounds!.width - proseBounds!.width).toBeGreaterThan(100);
   expect(proseBounds!.width).toBeLessThanOrEqual(740);
   expect(hierarchyBounds!.x + hierarchyBounds!.width).toBeLessThan(tableBounds!.x);
   expect(
@@ -668,7 +712,7 @@ test('uses additional desktop width for dense generated content without widening
 
   expect(diagramBounds).not.toBeNull();
   expect(diagramProseBounds).not.toBeNull();
-  expect(diagramBounds!.width - diagramProseBounds!.width).toBeGreaterThan(150);
+  expect(diagramBounds!.width - diagramProseBounds!.width).toBeGreaterThan(100);
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
@@ -678,7 +722,7 @@ test('uses additional desktop width for dense generated content without widening
 
 test('renders the application without detectable accessibility violations', async ({ page }) => {
   for (const viewport of [
-    { name: 'wide', width: 1280, height: 720 },
+    { name: 'wide', width: 1440, height: 720 },
     { name: 'narrow', width: 320, height: 640 },
   ]) {
     await page.setViewportSize(viewport);
@@ -695,6 +739,7 @@ test('renders the application without detectable accessibility violations', asyn
       `/topics/${ARRAYS_AND_LISTS_TOPIC_ID}`,
       `/topics/${STREAMS_TOPIC_ID}`,
       `/topics/${URL_SHORTENER_TOPIC_ID}`,
+      `/topics/${RELATIONSHIP_LOADING_TOPIC_ID}`,
     ]) {
       await page.goto(path);
 

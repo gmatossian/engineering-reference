@@ -64,6 +64,7 @@ describe('transformContent', () => {
 
     await expect(transformContent(contentSource, generatedRoot)).resolves.toEqual([
       {
+        contentOutline: [],
         id: topicId,
         mainContentHtml: '<p>Use <strong>offer</strong> when failure is expected.</p>',
       },
@@ -103,10 +104,12 @@ describe('transformContent', () => {
 
     await expect(transformContent(contentSource, generatedRoot)).resolves.toEqual([
       {
+        contentOutline: [],
         id: parentTopicId,
         mainContentHtml: null,
       },
       {
+        contentOutline: [],
         id: childTopicId,
         mainContentHtml: '<p>Collections content.</p>',
       },
@@ -139,6 +142,7 @@ describe('transformContent', () => {
 
     await expect(transformContent(contentSource, generatedRoot)).resolves.toEqual([
       {
+        contentOutline: [],
         id: topicId,
         mainContentHtml: [
           '<div aria-label="Queue table" class="topic-content-overflow" role="region" tabindex="0"><table>',
@@ -239,6 +243,114 @@ describe('transformContent', () => {
     expect(result[0]?.mainContentHtml).toContain('aria-label="Operations table"');
     expect(result[0]?.mainContentHtml).toContain('aria-label="Operations code block"');
     expect(result[0]?.mainContentHtml).toContain('aria-label="Failure modes table"');
+  });
+
+  it('derives a nested outline and stable unique fragments from h2 and h3 headings', async () => {
+    const topicId = '11111111-1111-4111-8111-111111111111';
+
+    generatedRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-generated-'));
+
+    const contentSource: LoadedContentSource = {
+      catalog: {
+        sourcePath: 'content/catalog.yaml',
+        landingTopicIds: [topicId],
+      },
+      topics: [
+        {
+          sourcePath: 'content/topics/queue/topic.md',
+          ...defaultTopicClassification,
+          id: topicId,
+          title: 'Queue',
+          childTopicIds: [],
+          markdownBody: [
+            '### Orphan details',
+            '',
+            '##',
+            '',
+            '### Not attached to an unnamed section',
+            '',
+            '## Choose `Queue<E>`',
+            '',
+            '### Bounded & blocking',
+            '',
+            '## Choose `Queue<E>`',
+            '',
+            '## Choose Queue E 2',
+          ].join('\n'),
+        },
+      ],
+    };
+
+    const [result] = await transformContent(contentSource, generatedRoot);
+
+    expect(result.contentOutline).toEqual([
+      {
+        children: [
+          {
+            children: [],
+            fragment: 'section-bounded-blocking',
+            label: 'Bounded & blocking',
+          },
+        ],
+        fragment: 'section-choose-queue-e',
+        label: 'Choose Queue<E>',
+      },
+      {
+        children: [],
+        fragment: 'section-choose-queue-e-2',
+        label: 'Choose Queue<E>',
+      },
+      {
+        children: [],
+        fragment: 'section-choose-queue-e-2-2',
+        label: 'Choose Queue E 2',
+      },
+    ]);
+    expect(result.mainContentHtml).toContain('<h2>Choose <code>Queue&#x3C;E></code></h2>');
+    expect(result.mainContentHtml).toContain('<h3>Bounded &#x26; blocking</h3>');
+  });
+
+  it('uses image alternative text for an image-only outline heading', async () => {
+    const topicId = '11111111-1111-4111-8111-111111111111';
+
+    generatedRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-generated-'));
+
+    const topicDirectory = join(generatedRoot, 'content', 'topics', 'queue');
+    const sourcePath = join(topicDirectory, 'topic.md');
+    const outputRoot = join(generatedRoot, '.generated');
+
+    await mkdir(topicDirectory, { recursive: true });
+    await writeFile(
+      join(topicDirectory, 'queue-operations.svg'),
+      '<svg xmlns="http://www.w3.org/2000/svg"></svg>\n',
+    );
+
+    const contentSource: LoadedContentSource = {
+      catalog: {
+        sourcePath: join(generatedRoot, 'content', 'catalog.yaml'),
+        landingTopicIds: [topicId],
+      },
+      topics: [
+        {
+          sourcePath,
+          ...defaultTopicClassification,
+          id: topicId,
+          title: 'Queue',
+          childTopicIds: [],
+          markdownBody: '## ![Queue operations](./queue-operations.svg)',
+        },
+      ],
+    };
+
+    const [result] = await transformContent(contentSource, outputRoot);
+
+    expect(result.contentOutline).toEqual([
+      {
+        children: [],
+        fragment: 'section-queue-operations',
+        label: 'Queue operations',
+      },
+    ]);
   });
 
   it('rejects raw HTML', async () => {
@@ -462,6 +574,7 @@ describe('transformContent', () => {
 
     await expect(transformContent(contentSource, generatedRoot)).resolves.toEqual([
       {
+        contentOutline: [],
         id: topicId,
         mainContentHtml: '<p><a href="https://example.com/queue">Queue reference</a></p>',
       },
@@ -500,6 +613,7 @@ describe('transformContent', () => {
 
     await expect(transformContent(contentSource, outputRoot)).resolves.toEqual([
       {
+        contentOutline: [],
         id: topicId,
         mainContentHtml: `<p><img src="/assets/topics/${topicId}/${expectedFilename}" alt="Elements entering and leaving a queue"></p>`,
       },
@@ -662,6 +776,13 @@ describe('transformContent', () => {
 
     await expect(transformContent(contentSource, generatedRoot)).resolves.toEqual([
       {
+        contentOutline: [
+          {
+            children: [],
+            fragment: 'section-queue-operations',
+            label: 'Queue operations',
+          },
+        ],
         id: topicId,
         mainContentHtml: [
           '<h2>Queue operations</h2>',
@@ -918,6 +1039,7 @@ describe('transformContent', () => {
 
       await expect(transformContent(contentSource, outputRoot)).resolves.toEqual([
         {
+          contentOutline: [],
           id: topicId,
           mainContentHtml: `<p><img src="/assets/topics/${topicId}/${outputFilename}" alt="Queue operations"></p>`,
         },
@@ -1088,6 +1210,7 @@ describe('transformContent', () => {
 
     await expect(transformContent(contentSource, outputRoot)).resolves.toEqual([
       {
+        contentOutline: [],
         id: topicId,
         mainContentHtml: `<p><img src="/assets/topics/${topicId}/${outputFilename}" alt="Queue operations"></p>`,
       },
