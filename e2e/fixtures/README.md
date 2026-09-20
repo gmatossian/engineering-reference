@@ -14,6 +14,9 @@ fixture and real-catalog builds, and again after failures or interruptions. A
 separate `@real-catalog` test runs against the real production build and is the only
 browser test intended to depend on the real generated catalog.
 
+Launch Playwright through `npm run test:e2e`; direct Playwright commands bypass the
+runner that prepares both builds and supplies the real-catalog verification context.
+
 Keep this fixture small and behavior-oriented. Add or change an entry only when a
 browser journey requires a stable graph or rendered-content shape; content-contract
 correctness belongs in `tools/content/*.spec.ts`.

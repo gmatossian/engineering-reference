@@ -245,5 +245,6 @@ function isDirectExecution(): boolean {
 
 if (isDirectExecution()) {
   const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
+
   await generateContent(join(projectRoot, 'content'), join(projectRoot, '.generated'));
 }

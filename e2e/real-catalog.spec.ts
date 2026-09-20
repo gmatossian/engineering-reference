@@ -5,7 +5,10 @@ test(
   { tag: '@real-catalog' },
   async ({ page }) => {
     const expectedTopicCountText = process.env['ENGINEERING_REFERENCE_REAL_TOPIC_COUNT'];
-    expect(expectedTopicCountText).toMatch(/^[1-9]\d*$/u);
+    expect(
+      expectedTopicCountText,
+      'Run Playwright through `npm run test:e2e` so the real-catalog verification context is available.',
+    ).toMatch(/^[1-9]\d*$/u);
     const expectedTopicCount = Number(expectedTopicCountText);
 
     await page.goto('/');
@@ -21,13 +24,9 @@ test(
     expect(destination).toMatch(/^\/topics\/[0-9a-f-]+$/u);
 
     await page.goto('/topics');
-    await expect(
-      page
-        .getByText(`${expectedTopicCount} ${expectedTopicCount === 1 ? 'topic' : 'topics'}`, {
-          exact: true,
-        })
-        .first(),
-    ).toBeVisible();
+    await expect(page.getByRole('status')).toHaveText(
+      `${expectedTopicCount} ${expectedTopicCount === 1 ? 'topic' : 'topics'}`,
+    );
 
     await page.goto(destination!);
 
