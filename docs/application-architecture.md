@@ -504,8 +504,21 @@ environment and prevents silent test-discovery gaps.
 Chromium runs the full end-to-end suite at representative wide and narrow
 viewports, including focus and automated accessibility checks. Firefox and
 WebKit run a smaller smoke suite covering the landing view, all-Topics search
-and filtering, a direct Topic URL with its context, child navigation, and the
-not-found view.
+and filtering, a direct Topic URL with its context, child and related
+navigation, narrow hierarchy behavior, and the not-found view.
+
+Application-behavior browser tests use a small deterministic authored catalog
+under `e2e/fixtures/content`. The normal generator processes that source into
+the normal `.generated/catalog.json` boundary before an Angular development
+server starts, so the fixture does not introduce an alternate application
+loader or bypass validation, transformation, asset processing, or the runtime
+catalog contract. The Playwright runner restores the production generated
+catalog when the suite finishes. One separately tagged Chromium smoke test runs
+against the static production build and verifies that the real generated
+catalog loads and supports canonical Topic navigation. Tests that intentionally
+exercise content transformation remain in the Node tool suite; ordinary
+reference prose, titles, UUIDs, and hierarchy changes therefore do not alter
+unrelated browser-behavior expectations.
 
 Coverage is reported without an initial numeric threshold. Tests explicitly
 cover every catalog validation rule, Markdown safety constraints,

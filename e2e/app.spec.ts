@@ -1,19 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
-
-const JAVA_TOPIC_ID = 'd3ef7c8b-ee6b-48f5-9039-2aa94d03c19c';
-const COLLECTIONS_TOPIC_ID = 'c29c5725-0b1f-480d-88f4-5c9d3b7f0dc5';
-const QUEUE_TOPIC_ID = '8cbea92a-606e-4ed3-839c-c7fff67f0909';
-const COMPLEXITY_TOPIC_ID = 'bf417331-9329-42b4-9517-351ef6af3b85';
-const HTTP_STATUS_CODES_TOPIC_ID = 'b97384d3-f986-4850-a6b0-a1c3b893ee86';
-const TRADEOFF_TRIGGERS_TOPIC_ID = '9009159b-54aa-4724-94a2-5189a1e21437';
-const ARRAYS_AND_LISTS_TOPIC_ID = 'a2fc39d5-9564-4260-b247-f38d53bedecc';
-const STREAMS_TOPIC_ID = '2d23f8e8-66db-4d0a-b5bc-bfc0536d5ab8';
-const OPERATIONS_AND_COLLECTORS_TOPIC_ID = '45d1ae48-9ecf-4186-8df2-2e199ebcb4b4';
-const URL_SHORTENER_TOPIC_ID = 'b19de3ee-dc7d-4d9d-9b82-06d997a825e1';
-const SCALE_AND_ESTIMATION_TOPIC_ID = '17e411bb-2c99-49e8-93ec-18b767e4a890';
-const RELATIONSHIP_LOADING_TOPIC_ID = '1dbd7b94-8a7b-41d0-8b1f-46d2e5b21720';
-const ENTITY_MANAGER_TOPIC_ID = '072fc2b2-2755-45ec-aabe-d8a4740fa4e9';
+import { FIXTURE_TOPIC_IDS, fixtureTopicPath } from './fixture';
 
 test.describe('cross-browser smoke', { tag: '@smoke' }, () => {
   test('renders the landing page and its bundled Topics', async ({ page }) => {
@@ -34,56 +21,56 @@ test.describe('cross-browser smoke', { tag: '@smoke' }, () => {
     );
     await expect(
       page.getByRole('navigation', { name: 'Domains' }).getByRole('link', {
-        name: /^Java/,
+        name: /^Java/u,
       }),
     ).toHaveAttribute('href', '/topics?domain=java');
     await expect(
-      page.getByRole('navigation', { name: 'Curated paths' }).getByRole('link', { name: /^Java/ }),
-    ).toHaveAttribute('href', `/topics/${JAVA_TOPIC_ID}`);
+      page
+        .getByRole('navigation', { name: 'Curated paths' })
+        .getByRole('link', { name: /^Atlas/u }),
+    ).toHaveAttribute('href', fixtureTopicPath(FIXTURE_TOPIC_IDS.atlas));
   });
 
   test('searches and filters the complete Topic index', async ({ page }) => {
     await page.goto('/topics');
 
     await expect(page.getByRole('heading', { level: 1, name: 'All topics' })).toBeVisible();
-    await expect(page.getByRole('status')).toContainText('67 topics');
+    await expect(page.getByRole('status')).toContainText('20 topics');
 
     const search = page.getByRole('searchbox', { name: 'Search topics' });
-    await search.fill('Queue');
+    await search.fill('Beacon');
     await search.press('Enter');
-    await expect(page).toHaveURL('/topics?q=Queue');
+    await expect(page).toHaveURL('/topics?q=Beacon');
     await expect(page.getByRole('status')).toContainText('3 topics');
     await expect(page.locator('.result__title')).toHaveText([
-      'Queue',
-      'Concurrent queues',
-      'PriorityQueue',
+      'Beacon',
+      'Beacon operations',
+      'Async beacon patterns',
     ]);
 
     await page.getByLabel('Domain').selectOption('java');
     await page.getByRole('radio', { name: 'Concepts' }).check();
-    await expect(page).toHaveURL('/topics?q=Queue&domain=java&kind=concept');
+    await expect(page).toHaveURL('/topics?q=Beacon&domain=java&kind=concept');
     await expect(page.getByRole('status')).toContainText('2 topics');
   });
 
   test('loads a direct Topic URL and follows child navigation', async ({ page }) => {
-    await page.goto(`/topics/${JAVA_TOPIC_ID}`);
+    await page.goto(fixtureTopicPath(FIXTURE_TOPIC_IDS.atlas));
 
-    await expect(page).toHaveURL(`/topics/${JAVA_TOPIC_ID}`);
-    await expect(page.getByRole('heading', { level: 1, name: 'Java' })).toBeVisible();
-    await expect(page).toHaveTitle('Java | Engineering Reference');
+    await expect(page).toHaveURL(fixtureTopicPath(FIXTURE_TOPIC_IDS.atlas));
+    await expect(page.getByRole('heading', { level: 1, name: 'Atlas' })).toBeVisible();
+    await expect(page).toHaveTitle('Atlas | Engineering Reference');
     await expect(page.locator('.topic-content')).toHaveCount(0);
 
     await page
       .getByRole('navigation', { name: 'Explore this topic' })
-      .getByRole('link', { name: 'Collections framework', exact: true })
+      .getByRole('link', { name: 'Branch Alpha', exact: true })
       .click();
 
-    await expect(page).toHaveURL(`/topics/${COLLECTIONS_TOPIC_ID}`);
-    await expect(
-      page.getByRole('heading', { level: 1, name: 'Collections framework' }),
-    ).toBeFocused();
+    await expect(page).toHaveURL(fixtureTopicPath(FIXTURE_TOPIC_IDS.branchAlpha));
+    await expect(page.getByRole('heading', { level: 1, name: 'Branch Alpha' })).toBeFocused();
     await expect(page.locator('.topic-content')).toContainText(
-      'Choose the interface by the behavior the program requires',
+      'Fixture guidance keeps browser behavior stable',
     );
   });
 
@@ -97,58 +84,57 @@ test.describe('cross-browser smoke', { tag: '@smoke' }, () => {
 });
 
 test('navigates through bundled Topic detail with native history', async ({ page }) => {
-  await page.goto(`/topics/${COLLECTIONS_TOPIC_ID}`);
+  await page.goto(fixtureTopicPath(FIXTURE_TOPIC_IDS.branchAlpha));
 
-  await expect(
-    page.getByRole('heading', { level: 1, name: 'Collections framework' }),
-  ).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Branch Alpha' })).toBeVisible();
   await expect(page.locator('.topic-content')).toContainText(
-    'Choose the interface by the behavior the program requires',
+    'Fixture guidance keeps browser behavior stable',
   );
 
   await page
     .getByRole('navigation', { name: 'Explore this topic' })
-    .getByRole('link', { name: 'Queue', exact: true })
+    .getByRole('link', { name: 'Shared path', exact: true })
     .click();
 
-  await expect(page).toHaveURL(`/topics/${QUEUE_TOPIC_ID}`);
-  await expect(page.getByRole('heading', { level: 1, name: 'Queue' })).toBeFocused();
+  await expect(page).toHaveURL(fixtureTopicPath(FIXTURE_TOPIC_IDS.sharedPath));
+  await expect(page.getByRole('heading', { level: 1, name: 'Shared path' })).toBeFocused();
   await expect(
     page
       .locator('.topic-hierarchy-wide')
       .getByRole('navigation', { name: 'Browse surrounding topics' })
-      .getByRole('link', { name: 'Queue', exact: true }),
+      .getByRole('link', { name: 'Shared path', exact: true })
+      .first(),
   ).toHaveAttribute('aria-current', 'page');
   await expect(
     page.getByRole('img', {
-      name: 'Elements entering at the tail and leaving from the head of a queue',
+      name: 'Nodes entering and leaving a stable fixture flow',
     }),
-  ).toHaveAttribute('alt', 'Elements entering at the tail and leaving from the head of a queue');
+  ).toHaveAttribute('alt', 'Nodes entering and leaving a stable fixture flow');
 
   await expect(page.locator('.topic-content')).toContainText(
-    'A queue holds elements before processing',
+    'A shared path appears beneath both fixture branches',
   );
-  const complexityLink = page
+  const detailLink = page
     .getByRole('navigation', { name: 'Explore this topic' })
-    .getByRole('link', { name: 'Complexity', exact: true });
-  await expect(complexityLink).toHaveAttribute('href', `/topics/${COMPLEXITY_TOPIC_ID}`);
+    .getByRole('link', { name: 'Detail table', exact: true });
+  await expect(detailLink).toHaveAttribute('href', fixtureTopicPath(FIXTURE_TOPIC_IDS.detailTable));
 
-  await complexityLink.click();
+  await detailLink.click();
 
-  await expect(page).toHaveURL(`/topics/${COMPLEXITY_TOPIC_ID}`);
-  await expect(page.getByRole('heading', { level: 1, name: 'Complexity' })).toBeFocused();
+  await expect(page).toHaveURL(fixtureTopicPath(FIXTURE_TOPIC_IDS.detailTable));
+  await expect(page.getByRole('heading', { level: 1, name: 'Detail table' })).toBeFocused();
   await expect(page.locator('.topic-content table')).toBeVisible();
   await expect(page.getByRole('navigation', { name: 'Explore this topic' })).toHaveCount(0);
 
   await page.getByRole('button', { name: 'Back', exact: true }).click();
 
-  await expect(page).toHaveURL(`/topics/${QUEUE_TOPIC_ID}`);
-  await expect(page.getByRole('heading', { level: 1, name: 'Queue' })).toBeFocused();
+  await expect(page).toHaveURL(fixtureTopicPath(FIXTURE_TOPIC_IDS.sharedPath));
+  await expect(page.getByRole('heading', { level: 1, name: 'Shared path' })).toBeFocused();
 
   await page.goForward();
 
-  await expect(page).toHaveURL(`/topics/${COMPLEXITY_TOPIC_ID}`);
-  await expect(page.getByRole('heading', { level: 1, name: 'Complexity' })).toBeFocused();
+  await expect(page).toHaveURL(fixtureTopicPath(FIXTURE_TOPIC_IDS.detailTable));
+  await expect(page.getByRole('heading', { level: 1, name: 'Detail table' })).toBeFocused();
 
   await page.getByRole('link', { name: 'Engineering Reference', exact: true }).click();
 
@@ -162,15 +148,15 @@ test('navigates through bundled Topic detail with native history', async ({ page
 test('projects every real path and repeated occurrence for a multi-parent Topic', async ({
   page,
 }) => {
-  await page.goto(`/topics/${ARRAYS_AND_LISTS_TOPIC_ID}`);
+  await page.goto(fixtureTopicPath(FIXTURE_TOPIC_IDS.sharedPath));
 
   const paths = page.getByRole('navigation', { name: 'Topic paths' });
   await expect(paths.getByRole('list')).toHaveCount(2);
   await expect(paths.getByRole('list', { name: 'Path 1 of 2' })).toContainText(
-    /Java\s*Arrays\s*Arrays and lists/,
+    /Atlas\s*Branch Alpha\s*Shared path/u,
   );
   await expect(paths.getByRole('list', { name: 'Path 2 of 2' })).toContainText(
-    /Java\s*Collections framework\s*List\s*Arrays and lists/,
+    /Atlas\s*Branch Beta\s*Shared path/u,
   );
 
   const foundIn = paths.getByText('Found in', { exact: true });
@@ -190,11 +176,11 @@ test('projects every real path and repeated occurrence for a multi-parent Topic'
   const hierarchy = page
     .locator('.topic-hierarchy-wide')
     .getByRole('navigation', { name: 'Browse surrounding topics' });
-  const currentOccurrences = hierarchy.getByRole('link', { name: 'Arrays and lists' });
+  const currentOccurrences = hierarchy.getByRole('link', { name: 'Shared path' });
   await expect(currentOccurrences).toHaveCount(2);
   await expect(currentOccurrences.nth(0)).toHaveAttribute(
     'href',
-    `/topics/${ARRAYS_AND_LISTS_TOPIC_ID}`,
+    fixtureTopicPath(FIXTURE_TOPIC_IDS.sharedPath),
   );
   await expect(currentOccurrences.nth(1)).toHaveAttribute('aria-current', 'page');
   const disclosureListIds = await page
@@ -228,26 +214,26 @@ test('projects every real path and repeated occurrence for a multi-parent Topic'
 });
 
 test('keeps disclosure state independent for repeated hierarchy occurrences', async ({ page }) => {
-  await page.goto(`/topics/${STREAMS_TOPIC_ID}`);
+  await page.goto(fixtureTopicPath(FIXTURE_TOPIC_IDS.sharedPath));
 
   const hierarchy = page
     .locator('.topic-hierarchy-wide')
     .getByRole('navigation', { name: 'Browse surrounding topics' });
-  await expect(hierarchy.getByRole('button', { name: 'Collapse Streams' })).toHaveCount(2);
+  await expect(hierarchy.getByRole('button', { name: 'Collapse Shared path' })).toHaveCount(2);
   const historyLength = await page.evaluate(() => history.length);
 
-  await hierarchy.getByRole('button', { name: 'Collapse Streams' }).first().click();
+  await hierarchy.getByRole('button', { name: 'Collapse Shared path' }).first().click();
 
-  await expect(hierarchy.getByRole('button', { name: 'Expand Streams' })).toHaveCount(1);
-  await expect(hierarchy.getByRole('button', { name: 'Collapse Streams' })).toHaveCount(1);
-  await expect(page).toHaveURL(`/topics/${STREAMS_TOPIC_ID}`);
+  await expect(hierarchy.getByRole('button', { name: 'Expand Shared path' })).toHaveCount(1);
+  await expect(hierarchy.getByRole('button', { name: 'Collapse Shared path' })).toHaveCount(1);
+  await expect(page).toHaveURL(fixtureTopicPath(FIXTURE_TOPIC_IDS.sharedPath));
   expect(await page.evaluate(() => history.length)).toBe(historyLength);
 
   await page.setViewportSize({ width: 375, height: 720 });
   const narrowExplorer = page.locator('.topic-hierarchy-narrow');
   await narrowExplorer.locator('summary').click();
-  await expect(narrowExplorer.getByRole('button', { name: 'Expand Streams' })).toHaveCount(1);
-  await expect(narrowExplorer.getByRole('button', { name: 'Collapse Streams' })).toHaveCount(1);
+  await expect(narrowExplorer.getByRole('button', { name: 'Expand Shared path' })).toHaveCount(1);
+  await expect(narrowExplorer.getByRole('button', { name: 'Collapse Shared path' })).toHaveCount(1);
 });
 
 test(
@@ -255,7 +241,7 @@ test(
   { tag: '@smoke' },
   async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 720 });
-    await page.goto(`/topics/${STREAMS_TOPIC_ID}`);
+    await page.goto(fixtureTopicPath(FIXTURE_TOPIC_IDS.sharedPath));
 
     const explorer = page.locator('.topic-hierarchy-narrow');
     await expect(explorer).not.toHaveAttribute('open', '');
@@ -263,23 +249,19 @@ test(
     await explorer.locator('summary').click();
     await expect(explorer).toHaveAttribute('open', '');
 
-    await explorer
-      .getByRole('link', { name: 'Operations and collectors', exact: true })
-      .first()
-      .click();
+    await explorer.getByRole('link', { name: 'Detail table', exact: true }).first().click();
 
-    await expect(page).toHaveURL(`/topics/${OPERATIONS_AND_COLLECTORS_TOPIC_ID}`);
-    await expect(
-      page.getByRole('heading', { level: 1, name: 'Operations and collectors' }),
-    ).toBeFocused();
+    await expect(page).toHaveURL(fixtureTopicPath(FIXTURE_TOPIC_IDS.detailTable));
+    await expect(page.getByRole('heading', { level: 1, name: 'Detail table' })).toBeFocused();
     await expect(explorer).not.toHaveAttribute('open', '');
 
     await explorer.locator('summary').click();
-    await expect(explorer.getByRole('link', { name: 'Operations and collectors' })).toHaveCount(2);
-    await expect(
-      explorer.getByRole('link', { name: 'Operations and collectors' }).first(),
-    ).toHaveAttribute('aria-current', 'page');
-    await expect(explorer.getByRole('button', { name: 'Collapse Streams' })).toHaveCount(2);
+    await expect(explorer.getByRole('link', { name: 'Detail table' })).toHaveCount(2);
+    await expect(explorer.getByRole('link', { name: 'Detail table' }).first()).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+    await expect(explorer.getByRole('button', { name: 'Collapse Shared path' })).toHaveCount(2);
   },
 );
 
@@ -287,7 +269,7 @@ test('provides a wide-layout hierarchy bypass to the first Topic content region'
   page,
 }) => {
   await page.setViewportSize({ width: 1280, height: 420 });
-  await page.goto(`/topics/${QUEUE_TOPIC_ID}`);
+  await page.goto(fixtureTopicPath(FIXTURE_TOPIC_IDS.sharedPath));
 
   const skipLink = page.getByRole('link', { name: 'Skip to topic content' });
   const initialUrl = page.url();
@@ -311,7 +293,7 @@ test('provides wide in-page heading navigation for sufficiently structured Topic
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto(`/topics/${RELATIONSHIP_LOADING_TOPIC_ID}`);
+  await page.goto(fixtureTopicPath(FIXTURE_TOPIC_IDS.queryShape));
 
   const outline = page.getByRole('navigation', { name: 'On this page' });
   const guardrailsLink = outline.getByRole('link', { name: 'Guardrails', exact: true });
@@ -320,21 +302,23 @@ test('provides wide in-page heading navigation for sufficiently structured Topic
   await expect(outline.getByRole('list')).toHaveCount(1);
   await expect(guardrailsLink).toHaveAttribute(
     'href',
-    `/topics/${RELATIONSHIP_LOADING_TOPIC_ID}#section-guardrails`,
+    `${fixtureTopicPath(FIXTURE_TOPIC_IDS.queryShape)}#section-guardrails`,
   );
 
   await guardrailsLink.focus();
   await expect(guardrailsLink).toBeFocused();
   await page.keyboard.press('Enter');
 
-  await expect(page).toHaveURL(`/topics/${RELATIONSHIP_LOADING_TOPIC_ID}#section-guardrails`);
+  await expect(page).toHaveURL(
+    `${fixtureTopicPath(FIXTURE_TOPIC_IDS.queryShape)}#section-guardrails`,
+  );
   await expect(page.getByRole('heading', { level: 2, name: 'Guardrails' })).toBeFocused();
 
   await page.evaluate(() => window.scrollTo(0, 0));
   await guardrailsLink.click();
   await expect(page.getByRole('heading', { level: 2, name: 'Guardrails' })).toBeInViewport();
 
-  await page.goto(`/topics/${RELATIONSHIP_LOADING_TOPIC_ID}#section-references`);
+  await page.goto(`${fixtureTopicPath(FIXTURE_TOPIC_IDS.queryShape)}#section-references`);
   const directHeadingBounds = await page
     .getByRole('heading', { level: 2, name: 'References' })
     .boundingBox();
@@ -346,7 +330,7 @@ test('provides wide in-page heading navigation for sufficiently structured Topic
   await expect(outline).toBeHidden();
 
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto(`/topics/${ENTITY_MANAGER_TOPIC_ID}`);
+  await page.goto(fixtureTopicPath(FIXTURE_TOPIC_IDS.entityLifecycle));
   await expect(page.getByRole('navigation', { name: 'On this page' })).toHaveCount(0);
 });
 
@@ -354,39 +338,38 @@ test(
   'presents authored Related Topics as distinct directed onward navigation',
   { tag: '@smoke' },
   async ({ page }) => {
-    await page.goto(`/topics/${URL_SHORTENER_TOPIC_ID}`);
+    await page.goto(fixtureTopicPath(FIXTURE_TOPIC_IDS.navigatorExercise));
 
     const related = page.getByRole('navigation', { name: 'Related topics' });
     const links = related.getByRole('link');
     await expect(links).toHaveCount(2);
-    await expect(links.nth(0)).toContainText('Scale and estimation');
+    await expect(links.nth(0)).toContainText('Scale model');
     await expect(links.nth(0)).toContainText('Operations · System Design');
-    await expect(links.nth(0)).toHaveAttribute('href', `/topics/${SCALE_AND_ESTIMATION_TOPIC_ID}`);
-    await expect(links.nth(1)).toContainText('Trade-off triggers');
+    await expect(links.nth(0)).toHaveAttribute(
+      'href',
+      fixtureTopicPath(FIXTURE_TOPIC_IDS.scaleModel),
+    );
+    await expect(links.nth(1)).toContainText('Decision matrix');
 
     await links.nth(0).focus();
     await expect(links.nth(0)).toBeFocused();
     await page.keyboard.press('Enter');
 
-    await expect(page).toHaveURL(`/topics/${SCALE_AND_ESTIMATION_TOPIC_ID}`);
-    await expect(
-      page.getByRole('heading', { level: 1, name: 'Scale and estimation' }),
-    ).toBeFocused();
+    await expect(page).toHaveURL(fixtureTopicPath(FIXTURE_TOPIC_IDS.scaleModel));
+    await expect(page.getByRole('heading', { level: 1, name: 'Scale model' })).toBeFocused();
     await expect(page.getByRole('navigation', { name: 'Related topics' })).toHaveCount(0);
 
     await page.goBack();
-    await expect(page).toHaveURL(`/topics/${URL_SHORTENER_TOPIC_ID}`);
-    await expect(page.getByRole('heading', { level: 1, name: 'URL shortener' })).toBeFocused();
+    await expect(page).toHaveURL(fixtureTopicPath(FIXTURE_TOPIC_IDS.navigatorExercise));
+    await expect(page.getByRole('heading', { level: 1, name: 'Navigator exercise' })).toBeFocused();
 
     await page.goForward();
-    await expect(page).toHaveURL(`/topics/${SCALE_AND_ESTIMATION_TOPIC_ID}`);
-    await expect(
-      page.getByRole('heading', { level: 1, name: 'Scale and estimation' }),
-    ).toBeFocused();
+    await expect(page).toHaveURL(fixtureTopicPath(FIXTURE_TOPIC_IDS.scaleModel));
+    await expect(page.getByRole('heading', { level: 1, name: 'Scale model' })).toBeFocused();
 
     await page.goBack();
-    await expect(page).toHaveURL(`/topics/${URL_SHORTENER_TOPIC_ID}`);
-    await expect(page.getByRole('heading', { level: 1, name: 'URL shortener' })).toBeFocused();
+    await expect(page).toHaveURL(fixtureTopicPath(FIXTURE_TOPIC_IDS.navigatorExercise));
+    await expect(page.getByRole('heading', { level: 1, name: 'Navigator exercise' })).toBeFocused();
 
     await page.setViewportSize({ width: 320, height: 640 });
     await expect(related).toBeVisible();
@@ -401,15 +384,13 @@ test(
 test('finds a Topic from the landing page without knowing its parent', async ({ page }) => {
   await page.goto('/');
   const search = page.getByRole('searchbox', { name: 'Search topics' });
-  await search.fill('  Choosing storage for a URL shortener  ');
+  await search.fill('  Storage choice  ');
   await search.press('Enter');
 
-  await expect(page).toHaveURL(
-    /\/topics\?q=Choosing(?:%20|\+)storage(?:%20|\+)for(?:%20|\+)a(?:%20|\+)URL(?:%20|\+)shortener$/,
-  );
+  await expect(page).toHaveURL(/\/topics\?q=Storage(?:%20|\+)choice$/u);
   await expect(page.getByRole('heading', { level: 1, name: 'All topics' })).toBeFocused();
   await expect(page.getByRole('status')).toContainText('1 topic');
-  await expect(page.locator('.result__title')).toHaveText(['Choosing storage for a URL shortener']);
+  await expect(page.locator('.result__title')).toHaveText(['Storage choice']);
 });
 
 test('presents and expands the System Design hierarchy', async ({ page }) => {
@@ -427,26 +408,19 @@ test('presents and expands the System Design hierarchy', async ({ page }) => {
     hierarchy.locator(
       '.domain-hierarchy__children--root > ul > li > .domain-hierarchy__item .domain-hierarchy__title',
     ),
-  ).toHaveText([
-    'Scale and estimation',
-    'URL shortener',
-    'Trade-off triggers',
-    'Pagination: offset vs cursor',
-  ]);
+  ).toHaveText(['Scale model', 'Navigator exercise', 'Decision matrix', 'Pagination choice']);
 
-  await hierarchy.getByRole('button', { name: 'Expand URL shortener' }).click();
-  await expect(hierarchy.getByRole('link', { name: /^Short URL identifiers/ })).toBeVisible();
-  await expect(
-    hierarchy.getByRole('link', { name: /^Choosing storage for a URL shortener/ }),
-  ).toBeVisible();
+  await hierarchy.getByRole('button', { name: 'Expand Navigator exercise' }).click();
+  await expect(hierarchy.getByRole('link', { name: /^Identifier strategy/u })).toBeVisible();
+  await expect(hierarchy.getByRole('link', { name: /^Storage choice/u })).toBeVisible();
   await expect(hierarchy.locator('.domain-hierarchy__title')).toHaveText([
-    'System Design',
-    'Scale and estimation',
-    'URL shortener',
-    'Short URL identifiers',
-    'Choosing storage for a URL shortener',
-    'Trade-off triggers',
-    'Pagination: offset vs cursor',
+    'Workshop',
+    'Scale model',
+    'Navigator exercise',
+    'Identifier strategy',
+    'Storage choice',
+    'Decision matrix',
+    'Pagination choice',
   ]);
 });
 
@@ -458,10 +432,10 @@ test('keeps control focus and replaces URL state while searching and filtering',
   const historyLength = await page.evaluate(() => history.length);
   const search = page.getByRole('searchbox', { name: 'Search topics' });
 
-  await search.fill('Queue');
+  await search.fill('Beacon');
   await search.press('Enter');
   await expect(search).toBeFocused();
-  await expect(page).toHaveURL('/topics?q=Queue');
+  await expect(page).toHaveURL('/topics?q=Beacon');
   const domain = page.getByLabel('Domain');
   await domain.focus();
   await domain.selectOption('collections');
@@ -486,7 +460,7 @@ test('normalizes invalid filters and provides a useful no-results state', async 
 
   await page.getByRole('button', { name: 'Clear search and filters' }).click();
   await expect(page).toHaveURL('/topics');
-  await expect(page.getByRole('status')).toContainText('67 topics');
+  await expect(page.getByRole('status')).toContainText('20 topics');
 });
 
 test('keeps the complete index usable at a narrow viewport', async ({ page }) => {
@@ -508,7 +482,7 @@ test('restores scroll position without displacing focus on browser history navig
   page,
 }) => {
   await page.setViewportSize({ width: 640, height: 320 });
-  await page.goto(`/topics/${COLLECTIONS_TOPIC_ID}`);
+  await page.goto(fixtureTopicPath(FIXTURE_TOPIC_IDS.branchAlpha));
   await page.evaluate(() => {
     // The current fixture is short, so add test-only height to exercise native scroll restoration.
     document.body.style.minHeight = '2000px';
@@ -517,31 +491,30 @@ test('restores scroll position without displacing focus on browser history navig
 
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(400);
   await page
-    .getByRole('link', { name: 'Queue', exact: true })
+    .getByRole('link', { name: 'Shared path', exact: true })
+    .first()
     .evaluate((link: HTMLAnchorElement) => link.click());
 
-  await expect(page).toHaveURL(`/topics/${QUEUE_TOPIC_ID}`);
-  await expect(page.getByRole('heading', { level: 1, name: 'Queue' })).toBeFocused();
+  await expect(page).toHaveURL(fixtureTopicPath(FIXTURE_TOPIC_IDS.sharedPath));
+  await expect(page.getByRole('heading', { level: 1, name: 'Shared path' })).toBeFocused();
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
 
   await page.goBack();
 
-  await expect(page).toHaveURL(`/topics/${COLLECTIONS_TOPIC_ID}`);
-  await expect(
-    page.getByRole('heading', { level: 1, name: 'Collections framework' }),
-  ).toBeFocused();
+  await expect(page).toHaveURL(fixtureTopicPath(FIXTURE_TOPIC_IDS.branchAlpha));
+  await expect(page.getByRole('heading', { level: 1, name: 'Branch Alpha' })).toBeFocused();
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(400);
 });
 
 test('bounds generated Topic content at a narrow viewport', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 640 });
-  await page.goto(`/topics/${QUEUE_TOPIC_ID}`);
+  await page.goto(fixtureTopicPath(FIXTURE_TOPIC_IDS.sharedPath));
 
   const image = page.getByRole('img', {
-    name: 'Elements entering at the tail and leaving from the head of a queue',
+    name: 'Nodes entering and leaving a stable fixture flow',
   });
   const codeOverflowRegion = page.getByRole('region', {
-    name: 'Queue interface operations code block',
+    name: 'Common operations code block',
     exact: true,
   });
 
@@ -580,7 +553,7 @@ test('bounds generated Topic content at a narrow viewport', async ({ page }) => 
 
     const code = element.querySelector('pre code');
     if (code !== null) {
-      code.textContent = 'queue.offer(veryLongIdentifier);'.repeat(30);
+      code.textContent = 'fixture.offer(veryLongIdentifier);'.repeat(30);
     }
   });
 
@@ -614,10 +587,10 @@ test('bounds generated Topic content at a narrow viewport', async ({ page }) => 
     ),
   ).toBe(true);
 
-  await page.goto(`/topics/${COMPLEXITY_TOPIC_ID}`);
+  await page.goto(fixtureTopicPath(FIXTURE_TOPIC_IDS.detailTable));
 
   const tableOverflowRegion = page.getByRole('region', {
-    name: 'Complexity table',
+    name: 'Detail table table',
     exact: true,
   });
   const table = tableOverflowRegion.locator('table');
@@ -659,11 +632,11 @@ test('uses additional desktop width for dense generated content without widening
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto(`/topics/${HTTP_STATUS_CODES_TOPIC_ID}`);
+  await page.goto(fixtureTopicPath(FIXTURE_TOPIC_IDS.statusReference));
 
   const prose = page.locator('.topic-content > p').first();
   const tableRegion = page.getByRole('region', {
-    name: 'Status families table',
+    name: 'Success family table',
     exact: true,
   });
   const hierarchy = page.locator('.topic-hierarchy-wide');
@@ -694,10 +667,10 @@ test('uses additional desktop width for dense generated content without widening
   ).toBe(true);
 
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto(`/topics/${RELATIONSHIP_LOADING_TOPIC_ID}`);
+  await page.goto(fixtureTopicPath(FIXTURE_TOPIC_IDS.queryShape));
 
   const diagram = page.getByRole('img', {
-    name: 'Three common relationship-loading failure shapes',
+    name: 'Three stable fixture query shapes',
   });
   const diagramProse = page.locator('.topic-content > p:not(:has(> img:only-child))').first();
   await expect
@@ -732,18 +705,16 @@ test('renders the application without detectable accessibility violations', asyn
       '/topics',
       '/topics?domain=system-design',
       '/topics?q=does-not-exist',
-      `/topics/${QUEUE_TOPIC_ID}`,
-      `/topics/${COMPLEXITY_TOPIC_ID}`,
-      `/topics/${HTTP_STATUS_CODES_TOPIC_ID}`,
-      `/topics/${TRADEOFF_TRIGGERS_TOPIC_ID}`,
-      `/topics/${ARRAYS_AND_LISTS_TOPIC_ID}`,
-      `/topics/${STREAMS_TOPIC_ID}`,
-      `/topics/${URL_SHORTENER_TOPIC_ID}`,
-      `/topics/${RELATIONSHIP_LOADING_TOPIC_ID}`,
+      fixtureTopicPath(FIXTURE_TOPIC_IDS.sharedPath),
+      fixtureTopicPath(FIXTURE_TOPIC_IDS.detailTable),
+      fixtureTopicPath(FIXTURE_TOPIC_IDS.statusReference),
+      fixtureTopicPath(FIXTURE_TOPIC_IDS.decisionMatrix),
+      fixtureTopicPath(FIXTURE_TOPIC_IDS.navigatorExercise),
+      fixtureTopicPath(FIXTURE_TOPIC_IDS.queryShape),
     ]) {
       await page.goto(path);
 
-      if (viewport.name === 'narrow' && path === `/topics/${STREAMS_TOPIC_ID}`) {
+      if (viewport.name === 'narrow' && path === fixtureTopicPath(FIXTURE_TOPIC_IDS.sharedPath)) {
         await page.locator('.topic-hierarchy-narrow summary').click();
       }
 

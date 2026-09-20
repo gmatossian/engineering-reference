@@ -54,10 +54,18 @@ every pull-request revision.
 
 ### Browser verification
 
-`npm run test:e2e` builds the production application and serves it through the
-same static SPA fallback used by the CI gate. Chromium runs the complete
-browser suite. Firefox and WebKit run the tests tagged `@smoke`, covering the
-landing page, a direct Topic URL, child navigation, and the not-found view.
+`npm run test:e2e` builds the production application, then runs application-
+behavior tests against a small deterministic catalog in `e2e/fixtures/content`.
+That catalog passes through the same content generator and application import
+as production content; it is not a second runtime loading path. A separate
+`@real-catalog` smoke test serves the production build through the static SPA
+fallback and proves that the real generated catalog loads and is navigable.
+
+Chromium runs the complete fixture-backed browser suite. Firefox and WebKit run
+the fixture tests tagged `@smoke`, covering the landing page, search and
+filtering, a direct Topic URL, child and related navigation, narrow hierarchy
+behavior, and the not-found view. After Playwright exits, the runner restores
+the production generated catalog for subsequent development commands.
 
 To run one configured browser project while investigating a failure:
 
