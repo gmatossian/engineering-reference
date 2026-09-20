@@ -4,6 +4,10 @@ test(
   'loads the real generated catalog and a canonical nested route',
   { tag: '@real-catalog' },
   async ({ page }) => {
+    const expectedTopicCountText = process.env['ENGINEERING_REFERENCE_REAL_TOPIC_COUNT'];
+    expect(expectedTopicCountText).toMatch(/^[1-9]\d*$/u);
+    const expectedTopicCount = Number(expectedTopicCountText);
+
     await page.goto('/');
 
     await expect(
@@ -15,6 +19,16 @@ test(
     const destination = await firstTopic.getAttribute('href');
 
     expect(destination).toMatch(/^\/topics\/[0-9a-f-]+$/u);
+
+    await page.goto('/topics');
+    await expect(
+      page
+        .getByText(`${expectedTopicCount} ${expectedTopicCount === 1 ? 'topic' : 'topics'}`, {
+          exact: true,
+        })
+        .first(),
+    ).toBeVisible();
+
     await page.goto(destination!);
 
     await expect(page).toHaveURL(new RegExp(`${destination!}$`, 'u'));

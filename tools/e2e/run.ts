@@ -12,6 +12,7 @@ const productionBuildRoot = join(projectRoot, 'dist', 'engineering-reference');
 const realCatalogBuildRoot = join(projectRoot, 'dist', 'engineering-reference-real');
 const fixtureBuildRoot = join(projectRoot, 'dist', 'engineering-reference-fixture');
 const handledSignals = ['SIGINT', 'SIGTERM'] as const;
+const realTopicCountEnvironmentVariable = 'ENGINEERING_REFERENCE_REAL_TOPIC_COUNT';
 
 type HandledSignal = (typeof handledSignals)[number];
 
@@ -24,12 +25,11 @@ function signalExitCode(signal: HandledSignal): number {
 }
 
 function handleSignal(signal: HandledSignal): void {
-  if (receivedSignal !== undefined) {
-    return;
+  if (receivedSignal === undefined) {
+    receivedSignal = signal;
   }
 
-  receivedSignal = signal;
-  activeChild?.kill(signal);
+  activeChild?.kill('SIGINT');
 }
 
 for (const signal of handledSignals) {
@@ -38,10 +38,15 @@ for (const signal of handledSignals) {
   process.on(signal, handler);
 }
 
-function runChild(command: string, arguments_: readonly string[]): Promise<number> {
+function runChild(
+  command: string,
+  arguments_: readonly string[],
+  environment: Readonly<NodeJS.ProcessEnv> = {},
+): Promise<number> {
   return new Promise((resolveRun, rejectRun) => {
     const child = spawn(command, arguments_, {
       cwd: projectRoot,
+      env: { ...process.env, ...environment },
       stdio: 'inherit',
     });
     activeChild = child;
@@ -57,7 +62,7 @@ function runChild(command: string, arguments_: readonly string[]): Promise<numbe
       }
 
       if (signal !== null) {
-        if (signal === receivedSignal) {
+        if (receivedSignal !== undefined && handledSignals.includes(signal as HandledSignal)) {
           resolveRun(signalExitCode(receivedSignal));
           return;
         }
@@ -81,13 +86,20 @@ function buildFixtureApplication(): Promise<number> {
   ]);
 }
 
-function runPlaywright(arguments_: readonly string[]): Promise<number> {
-  return runChild(join(projectRoot, 'node_modules', '.bin', 'playwright'), ['test', ...arguments_]);
+function runPlaywright(arguments_: readonly string[], realTopicCount: number): Promise<number> {
+  return runChild(
+    join(projectRoot, 'node_modules', '.bin', 'playwright'),
+    ['test', ...arguments_],
+    { [realTopicCountEnvironmentVariable]: String(realTopicCount) },
+  );
 }
 
-let exitCode: number;
+let exitCode: number | undefined;
+let runFailed = false;
+let runError: unknown;
 
 try {
+  const productionCatalog = await generateContent(productionContentRoot, generatedRoot);
   await rm(realCatalogBuildRoot, { recursive: true, force: true });
   await rm(fixtureBuildRoot, { recursive: true, force: true });
   await cp(productionBuildRoot, realCatalogBuildRoot, { recursive: true });
@@ -96,16 +108,37 @@ try {
 
   if (exitCode === 0) {
     await generateContent(productionContentRoot, generatedRoot);
-    exitCode = await runPlaywright(process.argv.slice(2));
+    exitCode = await runPlaywright(process.argv.slice(2), productionCatalog.allTopicIds.length);
   }
+} catch (error) {
+  runFailed = true;
+  runError = error;
+}
+
+try {
+  await generateContent(productionContentRoot, generatedRoot);
+} catch (restorationError) {
+  if (runFailed) {
+    throw new AggregateError(
+      [runError, restorationError],
+      'The end-to-end run failed and restoring production content also failed.',
+      { cause: restorationError },
+    );
+  }
+
+  throw restorationError;
 } finally {
-  try {
-    await generateContent(productionContentRoot, generatedRoot);
-  } finally {
-    for (const signal of handledSignals) {
-      process.off(signal, signalHandlers.get(signal)!);
-    }
+  for (const signal of handledSignals) {
+    process.off(signal, signalHandlers.get(signal)!);
   }
+}
+
+if (runFailed) {
+  throw runError;
+}
+
+if (exitCode === undefined) {
+  throw new Error('The end-to-end runner completed without an exit code.');
 }
 
 process.exitCode = receivedSignal === undefined ? exitCode : signalExitCode(receivedSignal);
