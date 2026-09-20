@@ -174,9 +174,13 @@ The generator uses:
 The authored format is deliberately bounded to the semantic constructs listed
 in the content storage decision. Understanding additional syntax does not make
 it supported: task lists, footnotes, strikethrough, raw HTML, and other
-unaccepted constructs fail generation with a clear error. The pipeline does
-derive deterministic fragments and a nested outline from supported second- and
-third-level headings after allowlist sanitization. New authored constructs
+unaccepted constructs fail generation with a clear error. A supported top-level
+Markdown blockquote is deliberately reinterpreted as the single neutral callout
+construct and converted to an allowlisted `div.topic-callout[role='note']`;
+nested and non-top-level blockquotes fail generation. The non-landmark `note`
+semantic remains valid when a Topic contains more than one callout. The pipeline
+also derives deterministic fragments and a nested outline from supported second-
+and third-level headings after allowlist sanitization. New authored constructs
 still require an explicit content-contract change plus styling, sanitization,
 and test coverage.
 
@@ -434,6 +438,10 @@ Styles for generated semantic elements live in the global stylesheet under a
 attributes. Other component styles retain normal Angular encapsulation; the
 application does not use `::ng-deep` or disable encapsulation globally.
 
+The generic callout style is likewise namespaced under `.topic-content` and is
+selected only by the allowlisted `topic-callout` class emitted by generation.
+Angular does not infer callouts from Topic identity or prose content.
+
 ## Styling
 
 The MVP uses plain CSS with CSS custom properties and component-scoped styles.
@@ -528,6 +536,9 @@ navigation, focus behavior, and not-found behavior. Catalog lookup tests
 include JavaScript prototype property names. An Angular integration test
 verifies that its sanitizer preserves the supported generated elements and
 attributes semantically; it does not require byte-identical HTML serialization.
+
+Markdown transformation coverage includes the neutral callout conversion,
+sanitizer allowlist, and rejection of nested or non-top-level callouts.
 
 Direction C coverage also includes domain and kind validation, related
 relationship validation, derived index determinism, reverse-parent context,

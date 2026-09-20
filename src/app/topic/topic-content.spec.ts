@@ -18,6 +18,8 @@ describe('TopicContent', () => {
         '<div class="topic-content-overflow" role="region" aria-label="Complexity table" tabindex="0"><table><thead><tr><th>Operation</th></tr></thead><tbody><tr><td>offer</td></tr></tbody></table></div>',
         '<p><img src="/assets/topics/queue.svg" alt="Queue operations"></p>',
         '<p><a href="https://example.com/reference">External reference</a></p>',
+        '<div class="topic-callout" role="note"><p>Prefer <strong>offer</strong> when capacity failure is expected.</p></div>',
+        '<div class="topic-callout" role="note"><p>Revisit the choice when capacity changes.</p></div>',
       ].join(''),
     );
     fixture.componentRef.setInput('outline', [
@@ -51,6 +53,13 @@ describe('TopicContent', () => {
     expect(content.querySelector('img')?.getAttribute('alt')).toBe('Queue operations');
     expect(content.querySelector('a')?.getAttribute('href')).toBe('https://example.com/reference');
     expect(content.querySelector('a')?.getAttribute('target')).toBeNull();
+    const callouts = [...content.querySelectorAll<HTMLElement>('.topic-callout[role="note"]')];
+
+    expect(callouts).toHaveLength(2);
+    expect(callouts.map((callout) => callout.textContent)).toEqual([
+      'Prefer offer when capacity failure is expected.',
+      'Revisit the choice when capacity changes.',
+    ]);
 
     const overflowRegions = [...content.querySelectorAll<HTMLElement>('.topic-content-overflow')];
 

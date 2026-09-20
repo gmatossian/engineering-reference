@@ -142,6 +142,27 @@ For example:
 >
 > Range: start **inclusive**, end **exclusive**.
 
+## Reserve callouts for exceptional retrieval value
+
+Use a callout only when one compact note should remain visible while the reader
+scans past the surrounding prose. Suitable content includes a consequential
+constraint, a likely mistake, a reusable decision rule, or a formula worth
+recognizing as a unit.
+
+Author the callout as a top-level Markdown blockquote:
+
+```markdown
+> Because **[requirement]** must be true, start with **[choice]**. This costs
+> **[trade-off]**. Revisit it when **[trigger]** changes.
+```
+
+Callouts use one neutral treatment. Do not invent warning, tip, success, or other
+labelled variants; do not nest callouts or place them inside lists. Existing
+supported Markdown may appear inside a callout, but the callout must remain a
+compact retrieval aid rather than a container for a separate section. If several
+ordinary paragraphs need the same emphasis, improve the Topic's headings or
+representation instead.
+
 ## Use comparison tables as decision matrices
 
 When several choices vary across the same meaningful dimensions, place a compact

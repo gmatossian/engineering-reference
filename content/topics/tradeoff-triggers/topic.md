@@ -36,8 +36,8 @@ requirement, name its cost, and revisit it when the requirement changes.
 
 ## State the decision
 
-Because **[requirement]** must be true, start with **[choice]**. This costs
-**[trade-off]**. Revisit it when **[trigger]** changes.
+> Because **[requirement]** must be true, start with **[choice]**. This costs
+> **[trade-off]**. Revisit it when **[trigger]** changes.
 
 These choices are biases, not universal either-or rules. A system may combine them
 at different boundaries—for example, a cache still has an authority, and a

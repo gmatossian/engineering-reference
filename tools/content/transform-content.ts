@@ -21,6 +21,7 @@ export interface TransformedTopicContent {
 
 const SUPPORTED_MARKDOWN_NODE_TYPES = new Set([
   'root',
+  'blockquote',
   'paragraph',
   'heading',
   'text',
@@ -43,6 +44,7 @@ const SUPPORTED_IMAGE_EXTENSIONS = new Set(['.png', '.svg', '.webp']);
 const SUPPORTED_IMAGE_NAME_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
 
 const OVERFLOW_REGION_CLASS = 'topic-content-overflow';
+const CALLOUT_CLASS = 'topic-callout';
 const OVERFLOW_CONTEXT_MAX_LENGTH = 160;
 const OVERFLOW_REGION_LABEL_PATTERN = /^(?=.{1,200}$)[^\r\n]+ (?:code block|table)(?: \d+)?$/u;
 const HEADING_FRAGMENT_PREFIX = 'section-';
@@ -195,6 +197,23 @@ function wrapOverflowContent(topicTitle: string) {
   };
 }
 
+function renderCallouts() {
+  return (tree: Root) => {
+    visit(tree, 'element', (node) => {
+      if (node.tagName !== 'blockquote') {
+        return;
+      }
+
+      node.tagName = 'div';
+      node.properties = {
+        ...node.properties,
+        className: [CALLOUT_CLASS],
+        role: 'note',
+      };
+    });
+  };
+}
+
 export const HTML_SANITIZATION_SCHEMA: SanitizationSchema = {
   allowComments: false,
   allowDoctypes: false,
@@ -209,8 +228,8 @@ export const HTML_SANITIZATION_SCHEMA: SanitizationSchema = {
     a: ['href'],
     code: [['className', /^language-.+$/]],
     div: [
-      ['className', OVERFLOW_REGION_CLASS],
-      ['role', 'region'],
+      ['className', OVERFLOW_REGION_CLASS, CALLOUT_CLASS],
+      ['role', 'region', 'note'],
       ['ariaLabel', OVERFLOW_REGION_LABEL_PATTERN],
       ['tabIndex', 0],
     ],
@@ -307,6 +326,7 @@ async function renderMarkdown(
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkRehype)
+    .use(renderCallouts)
     .use(wrapOverflowContent, topicTitle)
     .use(rehypeSanitize, HTML_SANITIZATION_SCHEMA)
     .use(rehypeStringify);
@@ -356,6 +376,14 @@ async function renderMarkdown(
     }
   });
 
+  let containsNonTopLevelCallout = false;
+
+  visit(markdownTree, 'blockquote', (_node, _index, parent) => {
+    if (parent?.type !== 'root') {
+      containsNonTopLevelCallout = true;
+    }
+  });
+
   if (containsRawHtml) {
     throw new Error(`${sourcePath}: Raw HTML is not supported`);
   }
@@ -370,6 +398,10 @@ async function renderMarkdown(
 
   if (containsFootnotes) {
     throw new Error(`${sourcePath}: Footnotes are not supported`);
+  }
+
+  if (containsNonTopLevelCallout) {
+    throw new Error(`${sourcePath}: Callouts must be top-level and cannot be nested`);
   }
 
   if (unsupportedMarkdownNodeTypes.size > 0) {

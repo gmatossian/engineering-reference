@@ -13,8 +13,23 @@
 }
 
 .topic-content > .topic-content-overflow,
+.topic-content > .topic-callout,
 .topic-content > p:has(> img:only-child) {
   grid-column: 1 / -1;
+}
+
+.topic-content .topic-callout {
+  background: var(--color-accent-ochre-soft);
+  border: 1px solid color-mix(in srgb, var(--color-accent-ochre) 28%, var(--color-hairline));
+  border-inline-start: 0.25rem solid var(--color-accent-ochre);
+  border-radius: var(--radius-medium);
+  color: var(--color-text);
+  margin-block: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+}
+
+.topic-content .topic-callout > :last-child {
+  margin-bottom: 0;
 }
 
 .topic-content strong {

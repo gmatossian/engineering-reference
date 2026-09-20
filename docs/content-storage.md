@@ -251,6 +251,7 @@ The source format supports:
 - paragraphs and headings;
 - strong emphasis, inline code, and fenced code blocks;
 - ordered and unordered lists;
+- top-level callouts authored with Markdown blockquote syntax;
 - external HTTPS links;
 - tables; and
 - local images.
@@ -258,6 +259,15 @@ The source format supports:
 Raw HTML is not an authoring escape hatch. It is rejected so that the source
 format retains a bounded semantic contract. The generated HTML is sanitized as
 a defense-in-depth measure before it reaches the application.
+
+A top-level Markdown blockquote is reserved as authoring syntax for the one
+supported neutral callout treatment. Generation converts it to a `div` with the
+allowlisted `topic-callout` class and `note` role rather than preserving
+quotation semantics or creating a complementary landmark. Callouts may contain
+the otherwise supported Markdown syntax, but they cannot be nested or placed
+inside another construct. There are no authored callout types, labels, colors,
+or layout variants. The [content-authoring guide](content-authoring.md) defines
+when this additional visual weight is warranted.
 
 During generation, fenced code blocks and tables are placed inside predictable
 `topic-content-overflow` presentation wrappers. Each wrapper is a
@@ -470,6 +480,7 @@ Generation fails when it encounters:
 - a duplicate child reference, self-reference, or indirect cycle;
 - a missing, duplicate, or self-referential Related Topic reference;
 - raw HTML or an internal file, route, or Topic link;
+- a nested or non-top-level callout;
 - a noncanonical external link or an unsupported or unsafe link protocol;
 - a missing image, unsupported image type, unsafe image filename, or image
   without alternative text;
