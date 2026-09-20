@@ -350,12 +350,16 @@ the generated runtime value is `null` when no specific key is authored.
 Main content uses the same typography, surfaces, and spacing as the surrounding
 application while retaining the semantic structure supplied by authored
 Markdown. Generic presentation may style headings, prose, lists, links, images,
-code, and tables. It must not infer Topic-specific components such as warning
-cards, diagrams, status badges, or operation matrices from a Topic's identity.
+code, tables, and the one authored neutral callout treatment. A callout uses a
+quiet tinted surface, restrained boundary, and ordinary content typography so
+it remains noticeable without competing with headings or diagrams. It must not
+infer Topic-specific components such as warning variants, diagrams, status
+badges, or operation matrices from a Topic's identity.
 
 The Queue concepts demonstrate density, hierarchy, and responsive behavior.
-Their text, diagram, bespoke callout cards, copy action, and technical labels
-are synthetic design material rather than canonical content or required UI.
+Their text, diagram, bespoke multi-variant callout cards, copy action, and
+technical labels are synthetic design material rather than canonical content
+or required UI.
 
 Code blocks and tables use their generated, labelled
 `topic-content-overflow` regions. Those regions own horizontal scrolling and

@@ -71,6 +71,48 @@ describe('transformContent', () => {
     ]);
   });
 
+  it('renders top-level Markdown blockquotes as semantic non-landmark callouts', async () => {
+    const topicId = '11111111-1111-4111-8111-111111111111';
+
+    generatedRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-generated-'));
+
+    const contentSource: LoadedContentSource = {
+      catalog: {
+        sourcePath: 'content/catalog.yaml',
+        landingTopicIds: [topicId],
+      },
+      topics: [
+        {
+          sourcePath: 'content/topics/queue/topic.md',
+          ...defaultTopicClassification,
+          id: topicId,
+          title: 'Queue',
+          childTopicIds: [],
+          markdownBody: [
+            '> Prefer **offer** when capacity failure is expected.',
+            '',
+            '> Revisit the choice when capacity changes.',
+          ].join('\n'),
+        },
+      ],
+    };
+
+    await expect(transformContent(contentSource, generatedRoot)).resolves.toEqual([
+      {
+        contentOutline: [],
+        id: topicId,
+        mainContentHtml: [
+          '<div class="topic-callout" role="note">',
+          '<p>Prefer <strong>offer</strong> when capacity failure is expected.</p>',
+          '</div>',
+          '<div class="topic-callout" role="note">',
+          '<p>Revisit the choice when capacity changes.</p>',
+          '</div>',
+        ].join('\n'),
+      },
+    ]);
+  });
+
   it('represents a navigation-only Topic with null main content', async () => {
     const parentTopicId = '11111111-1111-4111-8111-111111111111';
     const childTopicId = '22222222-2222-4222-8222-222222222222';
@@ -484,6 +526,72 @@ describe('transformContent', () => {
     expect((error.errors[0] as Error).message).toBe(`${sourcePath}: Footnotes are not supported`);
   });
 
+  it('rejects nested callouts', async () => {
+    const topicId = '11111111-1111-4111-8111-111111111111';
+    const sourcePath = 'content/topics/queue/topic.md';
+
+    generatedRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-generated-'));
+
+    const contentSource: LoadedContentSource = {
+      catalog: {
+        sourcePath: 'content/catalog.yaml',
+        landingTopicIds: [topicId],
+      },
+      topics: [
+        {
+          sourcePath,
+          ...defaultTopicClassification,
+          id: topicId,
+          title: 'Queue',
+          childTopicIds: [],
+          markdownBody: ['> Outer callout.', '', '> > Nested callout.'].join('\n'),
+        },
+      ],
+    };
+
+    const error = await captureAggregateError(() =>
+      transformContent(contentSource, generatedRoot!),
+    );
+
+    expect(error.errors).toHaveLength(1);
+    expect((error.errors[0] as Error).message).toBe(
+      `${sourcePath}: Callouts must be top-level and cannot be nested`,
+    );
+  });
+
+  it('rejects a callout placed inside another Markdown construct', async () => {
+    const topicId = '11111111-1111-4111-8111-111111111111';
+    const sourcePath = 'content/topics/queue/topic.md';
+
+    generatedRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-generated-'));
+
+    const contentSource: LoadedContentSource = {
+      catalog: {
+        sourcePath: 'content/catalog.yaml',
+        landingTopicIds: [topicId],
+      },
+      topics: [
+        {
+          sourcePath,
+          ...defaultTopicClassification,
+          id: topicId,
+          title: 'Queue',
+          childTopicIds: [],
+          markdownBody: ['- Queue choice', '', '  > Prefer bounded capacity.'].join('\n'),
+        },
+      ],
+    };
+
+    const error = await captureAggregateError(() =>
+      transformContent(contentSource, generatedRoot!),
+    );
+
+    expect(error.errors).toHaveLength(1);
+    expect((error.errors[0] as Error).message).toBe(
+      `${sourcePath}: Callouts must be top-level and cannot be nested`,
+    );
+  });
+
   it('rejects Markdown outside the supported syntax allowlist', async () => {
     const topicId = '11111111-1111-4111-8111-111111111111';
     const sourcePath = 'content/topics/queue/topic.md';
@@ -502,7 +610,7 @@ describe('transformContent', () => {
           id: topicId,
           title: 'Queue',
           childTopicIds: [],
-          markdownBody: '> Queues are often FIFO.',
+          markdownBody: '*Unsupported emphasis*',
         },
       ],
     };
@@ -513,7 +621,7 @@ describe('transformContent', () => {
 
     expect(error.errors).toHaveLength(1);
     expect((error.errors[0] as Error).message).toBe(
-      `${sourcePath}: Unsupported Markdown syntax: blockquote`,
+      `${sourcePath}: Unsupported Markdown syntax: emphasis`,
     );
   });
 
