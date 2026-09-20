@@ -54,10 +54,19 @@ every pull-request revision.
 
 ### Browser verification
 
-`npm run test:e2e` builds the production application and serves it through the
-same static SPA fallback used by the CI gate. Chromium runs the complete
-browser suite. Firefox and WebKit run the tests tagged `@smoke`, covering the
-landing page, a direct Topic URL, child navigation, and the not-found view.
+`npm run test:e2e` creates separate production builds for the real catalog and
+a small deterministic catalog in `e2e/fixtures/content`, restores the normal
+generated catalog, and then serves both immutable builds through the static SPA
+fallback. The fixture passes through the same content generator and application
+import as production content; it is not a second runtime loading path. A
+separate `@real-catalog` smoke test proves that the real generated catalog loads
+and is navigable.
+
+Chromium runs the complete fixture-backed browser suite. Firefox and WebKit run
+the fixture tests tagged `@smoke`, covering the landing page, search and
+filtering, a direct Topic URL, child and related navigation, narrow hierarchy
+behavior, and the not-found view. The runner also restores the production
+generated catalog after failures or interruptions during fixture preparation.
 
 To run one configured browser project while investigating a failure:
 
