@@ -8,6 +8,10 @@ const JAVA_TOPIC_ID = 'd3ef7c8b-ee6b-48f5-9039-2aa94d03c19c';
 const ARRAYS_TOPIC_ID = '2fe75411-92f0-4e6f-bfd0-1756dc08ebe2';
 const COLLECTIONS_TOPIC_ID = 'c29c5725-0b1f-480d-88f4-5c9d3b7f0dc5';
 const COMPARABLE_VS_COMPARATOR_TOPIC_ID = 'b0b3b8e7-8403-4279-8f03-2e8aa2effa69';
+const DATE_TIME_TYPES_TOPIC_ID = 'aae2e69e-f92f-4672-912e-117d5a404a6a';
+const ZONES_OFFSETS_LOCALE_TOPIC_ID = '26ccdc15-718d-4924-b707-9e6969f8f326';
+const PERSISTING_DATE_TIME_TOPIC_ID = 'eb6449dd-f815-42a9-8f95-7a6dc0d5341a';
+const JPA_TOPIC_ID = '57b0dc57-7a64-4c09-9140-2a470748da38';
 const SYSTEM_DESIGN_TOPIC_ID = '43a1a5e8-f5b7-46b7-bbd6-0fb212d7212b';
 const URL_SHORTENER_TOPIC_ID = 'b19de3ee-dc7d-4d9d-9b82-06d997a825e1';
 const SCALE_AND_ESTIMATION_TOPIC_ID = '17e411bb-2c99-49e8-93ec-18b767e4a890';
@@ -133,7 +137,7 @@ describe('CatalogService', () => {
     const view = service.getTopicBrowseView({ query: '', domain: null, kind: null });
 
     expect(view.mode).toBe('hierarchy');
-    expect(view.resultCount).toBe(71);
+    expect(view.resultCount).toBe(74);
     expect(view.sections).toEqual([]);
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
       'Java',
@@ -149,7 +153,7 @@ describe('CatalogService', () => {
 
     expect(occurrences).toHaveLength(2);
     expect(occurrences.every(({ id }) => id === STREAMS_TOPIC_ID)).toBe(true);
-    expect(roots[0].matchingTopicCount).toBe(57);
+    expect(roots[0].matchingTopicCount).toBe(60);
   });
 
   it('intersects domain and kind filters', () => {
@@ -236,10 +240,38 @@ describe('CatalogService', () => {
       ARRAYS_TOPIC_ID,
       COLLECTIONS_TOPIC_ID,
       COMPARABLE_VS_COMPARATOR_TOPIC_ID,
+      DATE_TIME_TYPES_TOPIC_ID,
       '2d23f8e8-66db-4d0a-b5bc-bfc0536d5ab8',
       '750d6258-e1be-4813-9487-18c6ba78af0a',
       '57b0dc57-7a64-4c09-9140-2a470748da38',
       '78b29290-d46f-45b2-aaba-c31597ceb6d4',
+    ]);
+  });
+
+  it('exposes the date/time choice, zone, and persistence references through their intended paths', () => {
+    const choice = service.getTopic(DATE_TIME_TYPES_TOPIC_ID);
+    const zones = service.getTopic(ZONES_OFFSETS_LOCALE_TOPIC_ID);
+    const persistence = service.getTopic(PERSISTING_DATE_TIME_TOPIC_ID);
+    const jpa = service.getTopic(JPA_TOPIC_ID);
+
+    expect(choice).toMatchObject({ kind: 'decision-aid', domains: ['java'] });
+    expect(zones).toMatchObject({ kind: 'operations', domains: ['java'] });
+    expect(persistence).toMatchObject({
+      kind: 'decision-aid',
+      domains: ['java', 'persistence', 'databases'],
+    });
+    expect(service.getChildTopics(choice!).map(({ id }) => id)).toEqual([
+      ZONES_OFFSETS_LOCALE_TOPIC_ID,
+    ]);
+    expect(service.getChildTopics(jpa!).map(({ id }) => id)).toContain(
+      PERSISTING_DATE_TIME_TOPIC_ID,
+    );
+    expect(service.getRelatedTopics(choice!).map(({ id }) => id)).toEqual([
+      PERSISTING_DATE_TIME_TOPIC_ID,
+    ]);
+    expect(service.getRelatedTopics(persistence!).map(({ id }) => id)).toEqual([
+      DATE_TIME_TYPES_TOPIC_ID,
+      ZONES_OFFSETS_LOCALE_TOPIC_ID,
     ]);
   });
 
