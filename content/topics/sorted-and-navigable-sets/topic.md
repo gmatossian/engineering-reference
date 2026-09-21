@@ -9,7 +9,8 @@ domains:
   - 'algorithms-data-structures'
 kind: 'operations'
 childTopicIds: []
-relatedTopicIds: []
+relatedTopicIds:
+  - 'b0b3b8e7-8403-4279-8f03-2e8aa2effa69'
 ---
 
 ![SortedSet and NavigableSet interface responsibilities with TreeSet construction choices](./set-ordering-hierarchy.svg)
