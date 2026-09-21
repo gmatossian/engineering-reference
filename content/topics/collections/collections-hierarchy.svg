@@ -1,42 +1,61 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 400" role="img" aria-labelledby="title description">
-  <title id="title">Core Java Collections Framework hierarchy</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 600" role="img" aria-labelledby="title description">
+  <title id="title">Java Collections Framework interface hierarchy</title>
   <desc id="description">
-    Collection extends Iterable. List, Set, and Queue extend Collection. Deque extends Queue. Map belongs to a separate hierarchy.
+    Collection extends Iterable. List, Set, and Queue extend Collection. SortedSet extends Set, and NavigableSet extends SortedSet. Deque extends Queue. Map belongs to a separate hierarchy, with SortedMap extending Map and NavigableMap extending SortedMap.
   </desc>
 
   <defs>
     <style>
       .box { fill: #ffffff; stroke: #c6c1b6; stroke-width: 2; }
+      .specialized { fill: #eef4ff; stroke: #4773d8; stroke-width: 2; }
       .branch { fill: none; stroke: #76777b; stroke-width: 2; }
       .type { fill: #1b1c19; font: 600 18px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
       .note { fill: #5f6064; font: 500 13px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
     </style>
   </defs>
 
-  <path class="branch" d="M350 66v48" />
-  <path class="branch" d="M350 174v42H105v28" />
-  <path class="branch" d="M350 216H290v28" />
-  <path class="branch" d="M350 216h125v28" />
-  <path class="branch" d="M475 298v42" />
-  <rect class="box" x="260" y="12" width="180" height="54" rx="8" />
-  <text class="type" x="350" y="46">Iterable&lt;E&gt;</text>
+  <path class="branch" d="M365 76v54" />
+  <path class="branch" d="M365 196v54H105v38" />
+  <path class="branch" d="M365 250H365v38" />
+  <path class="branch" d="M365 250H625v38" />
+  <path class="branch" d="M365 354v54" />
+  <path class="branch" d="M365 474v54" />
+  <path class="branch" d="M625 354v54" />
+  <path class="branch" d="M925 196v32" />
+  <path class="branch" d="M925 272v56" />
+  <path class="branch" d="M925 394v134" />
 
-  <rect class="box" x="250" y="114" width="200" height="60" rx="8" />
-  <text class="type" x="350" y="151">Collection&lt;E&gt;</text>
+  <rect class="box" x="265" y="16" width="200" height="60" rx="9" />
+  <text class="type" x="365" y="53">Iterable&lt;E&gt;</text>
 
-  <rect class="box" x="20" y="244" width="170" height="54" rx="8" />
-  <text class="type" x="105" y="278">List&lt;E&gt;</text>
+  <rect class="box" x="255" y="130" width="220" height="66" rx="9" />
+  <text class="type" x="365" y="170">Collection&lt;E&gt;</text>
 
-  <rect class="box" x="205" y="244" width="170" height="54" rx="8" />
-  <text class="type" x="290" y="278">Set&lt;E&gt;</text>
+  <rect class="box" x="20" y="288" width="170" height="66" rx="9" />
+  <text class="type" x="105" y="328">List&lt;E&gt;</text>
 
-  <rect class="box" x="390" y="244" width="170" height="54" rx="8" />
-  <text class="type" x="475" y="278">Queue&lt;E&gt;</text>
+  <rect class="box" x="280" y="288" width="170" height="66" rx="9" />
+  <text class="type" x="365" y="328">Set&lt;E&gt;</text>
 
-  <rect class="box" x="390" y="340" width="170" height="54" rx="8" />
-  <text class="type" x="475" y="374">Deque&lt;E&gt;</text>
+  <rect class="specialized" x="260" y="408" width="210" height="66" rx="9" />
+  <text class="type" x="365" y="448">SortedSet&lt;E&gt;</text>
 
-  <rect class="box" x="610" y="114" width="210" height="60" rx="8" />
-  <text class="type" x="715" y="151">Map&lt;K, V&gt;</text>
-  <text class="note" x="715" y="198">separate hierarchy</text>
+  <rect class="specialized" x="245" y="528" width="240" height="66" rx="9" />
+  <text class="type" x="365" y="568">NavigableSet&lt;E&gt;</text>
+
+  <rect class="box" x="530" y="288" width="190" height="66" rx="9" />
+  <text class="type" x="625" y="328">Queue&lt;E&gt;</text>
+
+  <rect class="box" x="530" y="408" width="190" height="66" rx="9" />
+  <text class="type" x="625" y="448">Deque&lt;E&gt;</text>
+
+  <rect class="box" x="810" y="130" width="230" height="66" rx="9" />
+  <text class="type" x="925" y="170">Map&lt;K, V&gt;</text>
+  <text class="note" x="925" y="254">separate hierarchy</text>
+
+  <rect class="specialized" x="790" y="328" width="270" height="66" rx="9" />
+  <text class="type" x="925" y="368">SortedMap&lt;K, V&gt;</text>
+
+  <rect class="specialized" x="775" y="528" width="300" height="66" rx="9" />
+  <text class="type" x="925" y="568">NavigableMap&lt;K, V&gt;</text>
 </svg>

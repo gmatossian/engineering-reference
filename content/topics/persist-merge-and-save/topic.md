@@ -14,11 +14,11 @@ relatedTopicIds:
   - '62196430-caa5-48c7-bb68-c064209d6291'
 ---
 
-| Operation               | Intended input         | What becomes managed                    | Return value               |
-| ----------------------- | ---------------------- | --------------------------------------- | -------------------------- |
-| `EntityManager.persist` | New entity             | The **same instance**                   | Nothing                    |
-| `EntityManager.merge`   | New or detached state  | A managed instance receiving that state | The **managed instance**   |
-| Spring Data `save`      | New or existing entity | Uses `persist` or `merge`               | The instance to keep using |
+| Operation                    | Intended input         | What becomes managed                    | Return value               |
+| ---------------------------- | ---------------------- | --------------------------------------- | -------------------------- |
+| `entityManager.persist(...)` | New entity             | The **same instance**                   | Nothing                    |
+| `entityManager.merge(...)`   | New or detached state  | A managed instance receiving that state | The **managed instance**   |
+| `repository.save(...)`       | New or existing entity | Uses `persist` or `merge`               | The instance to keep using |
 
 `merge` does **not reattach the argument**. It copies that object's state into a
 managed instance and returns the managed result:

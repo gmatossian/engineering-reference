@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 835" role="img" aria-labelledby="title description">
+  <title id="title">Choose and use a Java map</title>
+  <desc id="description">
+    Map provides get, containsKey, put, and remove operations. Choose HashMap when key order does not matter, LinkedHashMap for insertion order, SortedMap with TreeMap for sorted keys and ranges, or NavigableMap with TreeMap for nearest-key and descending navigation. EnumMap specializes enum keys, while ConcurrentHashMap provides concurrent access.
+  </desc>
+
+  <defs>
+    <style>
+      .interface { fill: #fff4d6; stroke: #ae6d00; stroke-width: 2.5; }
+      .prompt { fill: #f7f3ea; stroke: #c6c1b6; stroke-width: 2; }
+      .choice { fill: #ffffff; stroke: #c6c1b6; stroke-width: 2; }
+      .specialized { fill: #eef8f2; stroke: #2f8d5c; stroke-width: 2; }
+      .branch { fill: none; stroke: #85868a; stroke-width: 2; }
+      .divider { fill: none; stroke: #b8b4aa; stroke-width: 1.5; }
+      .kind { fill: #5f6064; font: 700 12px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; letter-spacing: 1px; text-anchor: middle; }
+      .rootType { fill: #1b1c19; font: 700 25px 'SFMono-Regular', Consolas, monospace; text-anchor: middle; }
+      .method { fill: #1b1c19; font: 600 16px 'SFMono-Regular', Consolas, monospace; text-anchor: middle; }
+      .result { fill: #4f5054; font: 500 13px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .promptText { fill: #1b1c19; font: 700 23px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .accent { fill: #2457a7; font: 700 16px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .greenAccent { fill: #237047; }
+      .type { fill: #1b1c19; font: 700 18px 'SFMono-Regular', Consolas, monospace; text-anchor: middle; }
+      .className { fill: #35363a; font: 600 17px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .detail { fill: #5f6064; font: 500 14px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .sectionLabel { fill: #5f6064; font: 700 13px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; letter-spacing: 1.3px; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <rect class="interface" x="60" y="18" width="960" height="180" rx="12" />
+  <text class="kind" x="540" y="44">INTERFACE · KEYED OPERATIONS</text>
+  <text class="rootType" x="540" y="78">Map&lt;K, V&gt;</text>
+  <path class="divider" d="M90 96h900" />
+
+  <text class="method" x="180" y="131">get(key)</text>
+  <text class="result" x="180" y="158">value or null</text>
+  <text class="result" x="180" y="179">absence can be ambiguous</text>
+
+  <text class="method" x="420" y="131">containsKey(key)</text>
+  <text class="result" x="420" y="158">true when mapped</text>
+  <text class="result" x="420" y="179">even if the value is null</text>
+
+  <text class="method" x="660" y="131">put(key, value)</text>
+  <text class="result" x="660" y="158">associates or replaces</text>
+  <text class="result" x="660" y="179">returns previous value</text>
+
+  <text class="method" x="900" y="131">remove(key)</text>
+  <text class="result" x="900" y="158">removes mapping</text>
+  <text class="result" x="900" y="179">returns previous value</text>
+
+  <path class="branch" d="M540 198v34" />
+  <rect class="prompt" x="300" y="232" width="480" height="66" rx="11" />
+  <text class="promptText" x="540" y="273">What key ordering or navigation is required?</text>
+
+  <path class="branch" d="M540 298v34H137.5v28" />
+  <path class="branch" d="M540 332H405v28" />
+  <path class="branch" d="M540 332h135v28" />
+  <path class="branch" d="M540 332h402.5v28" />
+
+  <rect class="choice" x="20" y="360" width="235" height="208" rx="11" />
+  <text class="accent" x="137.5" y="395">No ordering needed</text>
+  <text class="kind" x="137.5" y="431">DECLARE — INTERFACE</text>
+  <text class="type" x="137.5" y="460">Map&lt;K, V&gt;</text>
+  <text class="kind" x="137.5" y="496">CONSTRUCT — CLASS</text>
+  <text class="className" x="137.5" y="524">HashMap</text>
+  <text class="detail" x="137.5" y="550">default · O(1) expected</text>
+
+  <rect class="choice" x="287.5" y="360" width="235" height="208" rx="11" />
+  <text class="accent" x="405" y="395">Insertion order</text>
+  <text class="kind" x="405" y="431">DECLARE — INTERFACE</text>
+  <text class="type" x="405" y="460">Map&lt;K, V&gt;</text>
+  <text class="kind" x="405" y="496">CONSTRUCT — CLASS</text>
+  <text class="className" x="405" y="524">LinkedHashMap</text>
+  <text class="detail" x="405" y="550">predictable traversal</text>
+
+  <rect class="choice" x="557.5" y="360" width="235" height="208" rx="11" />
+  <text class="accent" x="675" y="395">Sorted keys or ranges</text>
+  <text class="kind" x="675" y="431">DECLARE — INTERFACE</text>
+  <text class="type" x="675" y="460">SortedMap&lt;K, V&gt;</text>
+  <text class="kind" x="675" y="496">CONSTRUCT — CLASS</text>
+  <text class="className" x="675" y="524">TreeMap</text>
+  <text class="detail" x="675" y="550">O(log n)</text>
+
+  <rect class="choice" x="825" y="360" width="235" height="208" rx="11" />
+  <text class="accent" x="942.5" y="395">Nearest or descending</text>
+  <text class="kind" x="942.5" y="431">DECLARE — INTERFACE</text>
+  <text class="type" x="942.5" y="460">NavigableMap&lt;K, V&gt;</text>
+  <text class="kind" x="942.5" y="496">CONSTRUCT — CLASS</text>
+  <text class="className" x="942.5" y="524">TreeMap</text>
+  <text class="detail" x="942.5" y="550">O(log n)</text>
+
+  <text class="sectionLabel" x="540" y="617">SPECIALIZED CONSTRAINTS</text>
+
+  <rect class="specialized" x="135" y="642" width="370" height="158" rx="11" />
+  <text class="accent greenAccent" x="320" y="677">Every key belongs to one enum</text>
+  <text class="kind" x="320" y="711">DECLARE — INTERFACE</text>
+  <text class="type" x="320" y="739">Map&lt;K, V&gt;</text>
+  <text class="kind" x="320" y="767">CONSTRUCT — CLASS</text>
+  <text class="className" x="320" y="791">EnumMap</text>
+
+  <rect class="specialized" x="575" y="642" width="370" height="158" rx="11" />
+  <text class="accent greenAccent" x="760" y="677">Mappings are shared across threads</text>
+  <text class="kind" x="760" y="711">DECLARE — INTERFACE</text>
+  <text class="type" x="760" y="739">ConcurrentMap&lt;K, V&gt;</text>
+  <text class="kind" x="760" y="767">CONSTRUCT — CLASS</text>
+  <text class="className" x="760" y="791">ConcurrentHashMap</text>
+</svg>

@@ -137,3 +137,7 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
+
+.topic-content tr.topic-table-group-start > td {
+  border-top: 0.125rem solid color-mix(in srgb, var(--color-secondary) 28%, var(--color-hairline));
+}

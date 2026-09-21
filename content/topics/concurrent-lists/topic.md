@@ -15,12 +15,7 @@ relatedTopicIds: []
 Choose a concurrent list only when the program genuinely requires **shared indexed
 access across threads**.
 
-| Choice                                            | Traversal                  | Writes                 | Use when                           |
-| ------------------------------------------------- | -------------------------- | ---------------------- | ---------------------------------- |
-| `CopyOnWriteArrayList`                            | Snapshot; no explicit lock | Copy the entire array  | Reads greatly outnumber writes     |
-| `Collections.synchronizedList(new ArrayList<>())` | Explicitly synchronize     | Serialized by one lock | Reads and writes are more balanced |
-
-## Read-heavy workloads
+## Reads dominate; writes are rare
 
 ```java
 List<Listener> listeners = new CopyOnWriteArrayList<>();
@@ -29,7 +24,7 @@ List<Listener> listeners = new CopyOnWriteArrayList<>();
 Each mutation creates a **new array**, so frequent writes are expensive. An iterator
 sees a **snapshot** from when it was created and does not reflect later changes.
 
-## Synchronized wrapper
+## Reads and writes are more balanced
 
 ```java
 List<String> names = Collections.synchronizedList(new ArrayList<>());

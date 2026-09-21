@@ -18,28 +18,4 @@ childTopicIds:
 relatedTopicIds: []
 ---
 
-A `Map<K, V>` associates **unique keys** with values. Different keys may map to the
-same value. `Map` belongs to the Java Collections Framework, but it does **not**
-extend `Collection`.
-
-## Choose an implementation
-
-| Implementation      | Key iteration order    | Typical operations | Use when                                                 |
-| ------------------- | ---------------------- | ------------------ | -------------------------------------------------------- |
-| `HashMap`           | No guarantee           | O(1) expected      | The **default choice** for key-based lookup              |
-| `LinkedHashMap`     | Insertion order        | O(1) expected      | Traversal order must be predictable                      |
-| `TreeMap`           | Sorted key order       | O(log n)           | Sorted navigation or range queries matter                |
-| `EnumMap`           | Enum declaration order | O(1)               | Every key belongs to one enum type                       |
-| `ConcurrentHashMap` | No guarantee           | O(1) expected      | General concurrent access; see **Concurrent maps** below |
-
-## Core operations
-
-| Intent                    | Operation          | Important result                           |
-| ------------------------- | ------------------ | ------------------------------------------ |
-| Read by key               | `get(key)`         | Value, or `null` when no mapping exists    |
-| Test whether a key exists | `containsKey(key)` | Distinguishes absence from a mapped `null` |
-| Associate a value         | `put(key, value)`  | Replaces and returns the previous value    |
-| Remove a mapping          | `remove(key)`      | Returns the previous value                 |
-
-Each key maps to **at most one value**. Calling `put` with an existing key replaces
-its current value.
+![Map operations and implementation choices by required key ordering or navigation](./map-choice-map.svg)

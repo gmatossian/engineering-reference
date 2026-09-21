@@ -12,17 +12,13 @@ childTopicIds: []
 relatedTopicIds: []
 ---
 
-`TreeSet` implements `NavigableSet`, which adds closest-match and range operations to
-a sorted set.
+![SortedSet and NavigableSet interface responsibilities with TreeSet construction choices](./set-ordering-hierarchy.svg)
 
-![Set interface hierarchy showing SequencedSet, SortedSet, and NavigableSet with LinkedHashSet and TreeSet implementations](./set-ordering-hierarchy.svg)
+> **Need to remove an endpoint?** `SortedSet` lets you inspect it with
+> `first()` or `last()`, then remove it separately. `NavigableSet` adds
+> `pollFirst()` and `pollLast()` to return and remove it in one call.
 
-## Choose the ordering
-
-| Required order     | Construction                                      |
-| ------------------ | ------------------------------------------------- |
-| Natural, ascending | `new TreeSet<Integer>()`                          |
-| Custom             | `new TreeSet<Integer>(Comparator.reverseOrder())` |
+## Define the ordering
 
 Natural ordering requires mutually comparable elements, normally through
 `Comparable`. Alternatively, provide a `Comparator` when creating the set.
@@ -38,9 +34,8 @@ iteration and all navigation methods below.
 | `ceiling(value)` | Least element `>= value`    |
 | `higher(value)`  | Least element `> value`     |
 
-`first()` and `last()` return the endpoints and throw `NoSuchElementException` when
-the set is empty. `pollFirst()` and `pollLast()` return and **remove** the endpoints,
-or return `null` when the set is empty.
+On an empty set, `first()` and `last()` throw `NoSuchElementException`, while
+`pollFirst()` and `pollLast()` return `null`.
 
 ## Range views
 

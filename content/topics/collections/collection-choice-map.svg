@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 650" role="img" aria-labelledby="title description">
+  <title id="title">Choose a Java collection from the behavior you need</title>
+  <desc id="description">
+    Four paths map indexed sequences to List, unique membership to Set, SortedSet, or NavigableSet, processing the next item to Queue or Deque, and keyed lookup to Map, SortedMap, or NavigableMap. Each path shows the usual implementation and when to select a more specialized interface.
+  </desc>
+
+  <defs>
+    <style>
+      .prompt { fill: #f7f3ea; stroke: #c6c1b6; stroke-width: 2; }
+      .sequence { fill: #eef4ff; stroke: #4773d8; stroke-width: 2; }
+      .membership { fill: #f0ecff; stroke: #7157d9; stroke-width: 2; }
+      .processing { fill: #eaf7ef; stroke: #2b8a57; stroke-width: 2; }
+      .lookup { fill: #fff4d9; stroke: #aa7111; stroke-width: 2; }
+      .branch { fill: none; stroke: #85868a; stroke-width: 2; }
+      .title { fill: #1b1c19; font: 700 24px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .cardTitle { fill: #1b1c19; font: 700 19px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .label { fill: #5f6064; font: 600 12px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; letter-spacing: 1px; text-anchor: middle; }
+      .type { fill: #1b1c19; font: 700 18px 'SFMono-Regular', Consolas, monospace; text-anchor: middle; }
+      .detail { fill: #414247; font: 500 14px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .accent { fill: #2457a7; font: 700 14px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <rect class="prompt" x="330" y="20" width="420" height="70" rx="12" />
+  <text class="title" x="540" y="63">What must the collection do?</text>
+
+  <path class="branch" d="M540 90v42H140v38" />
+  <path class="branch" d="M540 132H405v38" />
+  <path class="branch" d="M540 132h135v38" />
+  <path class="branch" d="M540 132h400v38" />
+
+  <rect class="sequence" x="20" y="170" width="240" height="230" rx="12" />
+  <text class="cardTitle" x="140" y="210">Keep a sequence</text>
+  <text class="detail" x="140" y="238">index access · duplicates allowed</text>
+  <text class="label" x="140" y="279">DECLARE — INTERFACE</text>
+  <text class="type" x="140" y="310">List&lt;E&gt;</text>
+  <text class="label" x="140" y="346">CONSTRUCT — CLASS</text>
+  <text class="type" x="140" y="373">ArrayList</text>
+
+  <rect class="membership" x="285" y="170" width="240" height="450" rx="12" />
+  <text class="cardTitle" x="405" y="210">Keep unique values</text>
+  <text class="detail" x="405" y="238">membership without duplicates</text>
+  <text class="accent" x="405" y="273">No ordering needed</text>
+  <text class="type" x="405" y="301">Set&lt;E&gt;</text>
+  <text class="detail" x="405" y="327">HashSet</text>
+  <path class="branch" d="M325 346h160" />
+  <text class="accent" x="405" y="369">Insertion order</text>
+  <text class="type" x="405" y="397">Set&lt;E&gt;</text>
+  <text class="detail" x="405" y="423">LinkedHashSet</text>
+  <path class="branch" d="M325 442h160" />
+  <text class="accent" x="405" y="465">Sorted values or ranges</text>
+  <text class="type" x="405" y="493">SortedSet&lt;E&gt;</text>
+  <text class="detail" x="405" y="519">TreeSet</text>
+  <text class="accent" x="405" y="551">Nearest / descending too?</text>
+  <text class="type" x="405" y="581">NavigableSet&lt;E&gt;</text>
+
+  <rect class="processing" x="550" y="170" width="250" height="450" rx="12" />
+  <text class="cardTitle" x="675" y="210">Take the next item</text>
+  <text class="detail" x="675" y="238">remove items in a useful order</text>
+  <text class="accent" x="675" y="281">First in, first out</text>
+  <text class="type" x="675" y="311">Queue&lt;E&gt;</text>
+  <text class="detail" x="675" y="337">ArrayDeque</text>
+  <path class="branch" d="M590 358h170" />
+  <text class="accent" x="675" y="389">Both ends or LIFO</text>
+  <text class="type" x="675" y="419">Deque&lt;E&gt;</text>
+  <text class="detail" x="675" y="445">ArrayDeque</text>
+  <path class="branch" d="M590 466h170" />
+  <text class="accent" x="675" y="497">By priority</text>
+  <text class="type" x="675" y="527">Queue&lt;E&gt;</text>
+  <text class="detail" x="675" y="553">PriorityQueue</text>
+  <text class="detail" x="675" y="589">peek() · poll()</text>
+
+  <rect class="lookup" x="825" y="170" width="235" height="450" rx="12" />
+  <text class="cardTitle" x="942.5" y="210">Look up by key</text>
+  <text class="detail" x="942.5" y="238">each key identifies one value</text>
+  <text class="accent" x="942.5" y="273">No ordering needed</text>
+  <text class="type" x="942.5" y="301">Map&lt;K, V&gt;</text>
+  <text class="detail" x="942.5" y="327">HashMap</text>
+  <path class="branch" d="M862 346h161" />
+  <text class="accent" x="942.5" y="369">Insertion order</text>
+  <text class="type" x="942.5" y="397">Map&lt;K, V&gt;</text>
+  <text class="detail" x="942.5" y="423">LinkedHashMap</text>
+  <path class="branch" d="M862 442h161" />
+  <text class="accent" x="942.5" y="465">Sorted keys or ranges</text>
+  <text class="type" x="942.5" y="493">SortedMap</text>
+  <text class="detail" x="942.5" y="519">TreeMap</text>
+  <text class="accent" x="942.5" y="551">Nearest / descending too?</text>
+  <text class="type" x="942.5" y="581">NavigableMap</text>
+</svg>

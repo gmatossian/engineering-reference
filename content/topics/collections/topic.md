@@ -14,37 +14,31 @@ childTopicIds:
 relatedTopicIds: []
 ---
 
-Choose the interface by the **behavior the program requires**; choose a concrete
-implementation separately.
+![Decision map for choosing a collection family from the required behavior](./collection-choice-map.svg)
 
-## Choose from the required behavior
+## Declare the interface; construct a class
 
-In **Declare → construct**, the interface comes first and the typical implementation
-comes second. Choose a different implementation when another constraint requires it.
+| Need                                               | Declare              | Typical construction    |
+| -------------------------------------------------- | -------------------- | ----------------------- |
+| **Indexed sequence**; duplicates allowed           | `List<E>`            | `new ArrayList<>()`     |
+| ---                                                |                      |                         |
+| **Unique membership**                              | `Set<E>`             | `new HashSet<>()`       |
+| **Insertion-ordered unique values**                | `Set<E>`             | `new LinkedHashSet<>()` |
+| **Sorted values**; endpoints and ranges            | `SortedSet<E>`       | `new TreeSet<>()`       |
+| **Nearest-value navigation**; descending order too | `NavigableSet<E>`    | `new TreeSet<>()`       |
+| ---                                                |                      |                         |
+| **FIFO processing**                                | `Queue<E>`           | `new ArrayDeque<>()`    |
+| **Both ends or LIFO**                              | `Deque<E>`           | `new ArrayDeque<>()`    |
+| **Priority processing**                            | `Queue<E>`           | `new PriorityQueue<>()` |
+| ---                                                |                      |                         |
+| **Unique-key lookup**                              | `Map<K, V>`          | `new HashMap<>()`       |
+| **Insertion-ordered keys**                         | `Map<K, V>`          | `new LinkedHashMap<>()` |
+| **Sorted keys**; endpoints and ranges              | `SortedMap<K, V>`    | `new TreeMap<>()`       |
+| **Nearest-key navigation**; descending order too   | `NavigableMap<K, V>` | `new TreeMap<>()`       |
 
-- **Indexed sequence; duplicates allowed:** `List<E>` → `new ArrayList<>()`
-- **Unique membership:** `Set<E>` → `new HashSet<>()`
-- **First-in, first-out processing:** `Queue<E>` → `new ArrayDeque<>()`
-- **Both ends or a LIFO stack:** `Deque<E>` → `new ArrayDeque<>()`
-- **Next value by priority:** `Queue<E>` → `new PriorityQueue<>()`
-- **Value lookup by a unique key:** `Map<K, V>` → `new HashMap<>()`
-- **Unique values in insertion order:** `Set<E>` → `new LinkedHashSet<>()`
-- **Keyed values in insertion order:** `Map<K, V>` → `new LinkedHashMap<>()`
-- **Sorted values, endpoints, or range views:** `SortedSet<E>` → `new TreeSet<>()`
-- **Nearest-value or descending navigation as well:** `NavigableSet<E>` → `new TreeSet<>()`
-- **Sorted keys, endpoints, or range views:** `SortedMap<K, V>` → `new TreeMap<>()`
-- **Nearest-key or descending navigation as well:** `NavigableMap<K, V>` → `new TreeMap<>()`
+## See the interface hierarchy
 
-> Need to process **one item at a time in order**? Use `PriorityQueue` when only
-> `peek()` and `poll()` by priority matter. Use a `SortedMap` backed by `TreeMap`
-> when each value has a unique ordered key and you need key lookup, endpoints, or
-> range views. Declare it as `NavigableMap` instead when you also need
-> `lower`/`floor`/`ceiling`/`higher` or descending navigation.
-
-![Java Collections Framework hierarchy showing Collection extending Iterable; List, Set, and Queue extending Collection; Deque extending Queue; and Map in a separate hierarchy](./collections-hierarchy.svg)
-
-The List, Set, Queue, and Map Topics contain family-specific selection guidance,
-operations, and trade-offs.
+![Java Collections Framework interface hierarchy showing Collection extending Iterable; List, Set, and Queue extending Collection; SortedSet and NavigableSet extending Set; Deque extending Queue; and Map, SortedMap, and NavigableMap in a separate hierarchy](./collections-hierarchy.svg)
 
 ## Similar names, different roles
 

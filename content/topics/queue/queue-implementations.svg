@@ -1,41 +1,95 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 390" role="img" aria-labelledby="title description">
-  <title id="title">Common Queue and Deque implementations</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 880" role="img" aria-labelledby="title description">
+  <title id="title">Choose and use a Java queue</title>
   <desc id="description">
-    Deque extends Queue. PriorityQueue implements Queue directly. ArrayDeque and LinkedList implement Deque and can therefore also be used as queues.
+    Queue provides paired insertion, examination, and removal operations: one form throws when it cannot succeed and the other returns a special value. Choose Queue with ArrayDeque for FIFO processing, Deque with ArrayDeque for both-end or LIFO access, or Queue with PriorityQueue for priority order. LinkedList is a specialized alternative when List and Deque behavior are both required; concurrent queues are covered separately.
   </desc>
 
   <defs>
     <style>
-      .interface { fill: #ffffff; stroke: #c6c1b6; stroke-width: 2; }
-      .implementation { fill: #eef4ff; stroke: #2457a7; stroke-width: 2; }
-      .branch { fill: none; stroke: #76777b; stroke-width: 2; }
-      .type { fill: #1b1c19; font: 600 18px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
-      .kind { fill: #5f6064; font: 500 13px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .interface { fill: #eaf7ef; stroke: #2f8d5c; stroke-width: 2.5; }
+      .prompt { fill: #f7f3ea; stroke: #c6c1b6; stroke-width: 2; }
+      .choice { fill: #ffffff; stroke: #c6c1b6; stroke-width: 2; }
+      .specialized { fill: #eef4ff; stroke: #4274d6; stroke-width: 2; }
+      .branch { fill: none; stroke: #85868a; stroke-width: 2; }
+      .divider { fill: none; stroke: #b8b4aa; stroke-width: 1.5; }
+      .kind { fill: #5f6064; font: 700 12px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; letter-spacing: 1px; text-anchor: middle; }
+      .rootType { fill: #1b1c19; font: 700 25px 'SFMono-Regular', Consolas, monospace; text-anchor: middle; }
+      .method { fill: #1b1c19; font: 600 17px 'SFMono-Regular', Consolas, monospace; text-anchor: middle; }
+      .result { fill: #4f5054; font: 500 14px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .promptText { fill: #1b1c19; font: 700 23px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .accent { fill: #2457a7; font: 700 17px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .greenAccent { fill: #237047; }
+      .type { fill: #1b1c19; font: 700 19px 'SFMono-Regular', Consolas, monospace; text-anchor: middle; }
+      .className { fill: #35363a; font: 600 17px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .detail { fill: #5f6064; font: 500 14px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .sectionLabel { fill: #5f6064; font: 700 13px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; letter-spacing: 1.3px; text-anchor: middle; }
+      .smallType { fill: #1b1c19; font: 700 16px 'SFMono-Regular', Consolas, monospace; text-anchor: middle; }
     </style>
   </defs>
 
-  <path class="branch" d="M420 76v45H230v30" />
-  <path class="branch" d="M420 121h210v30" />
-  <path class="branch" d="M230 221v45H115v30" />
-  <path class="branch" d="M230 266h230v30" />
+  <rect class="interface" x="80" y="18" width="920" height="178" rx="12" />
+  <text class="kind" x="540" y="44">INTERFACE · HEAD OPERATIONS</text>
+  <text class="rootType" x="540" y="78">Queue&lt;E&gt;</text>
+  <path class="divider" d="M110 96h860" />
 
-  <rect class="interface" x="320" y="16" width="200" height="60" rx="8" />
-  <text class="type" x="420" y="43">Queue&lt;E&gt;</text>
-  <text class="kind" x="420" y="63">interface</text>
+  <text class="accent greenAccent" x="240" y="125">Insert</text>
+  <text class="method" x="240" y="154">add(e) · offer(e)</text>
+  <text class="result" x="240" y="179">throws · returns false</text>
 
-  <rect class="interface" x="130" y="151" width="200" height="70" rx="8" />
-  <text class="type" x="230" y="181">Deque&lt;E&gt;</text>
-  <text class="kind" x="230" y="203">extends Queue</text>
+  <text class="accent greenAccent" x="540" y="125">Examine head</text>
+  <text class="method" x="540" y="154">element() · peek()</text>
+  <text class="result" x="540" y="179">throws · returns null</text>
 
-  <rect class="implementation" x="525" y="151" width="210" height="70" rx="8" />
-  <text class="type" x="630" y="181">PriorityQueue&lt;E&gt;</text>
-  <text class="kind" x="630" y="203">implements Queue</text>
+  <text class="accent greenAccent" x="840" y="125">Remove head</text>
+  <text class="method" x="840" y="154">remove() · poll()</text>
+  <text class="result" x="840" y="179">throws · returns null</text>
 
-  <rect class="implementation" x="20" y="296" width="190" height="70" rx="8" />
-  <text class="type" x="115" y="326">ArrayDeque&lt;E&gt;</text>
-  <text class="kind" x="115" y="348">implements Deque</text>
+  <path class="branch" d="M540 196v34" />
+  <rect class="prompt" x="300" y="230" width="480" height="66" rx="11" />
+  <text class="promptText" x="540" y="271">How should the next item be chosen?</text>
 
-  <rect class="implementation" x="355" y="296" width="210" height="70" rx="8" />
-  <text class="type" x="460" y="326">LinkedList&lt;E&gt;</text>
-  <text class="kind" x="460" y="348">implements Deque</text>
+  <path class="branch" d="M540 296v34H180v28" />
+  <path class="branch" d="M540 330v28" />
+  <path class="branch" d="M540 330h360v28" />
+
+  <rect class="choice" x="20" y="358" width="320" height="220" rx="11" />
+  <text class="accent" x="180" y="393">First in, first out</text>
+  <text class="kind" x="180" y="429">DECLARE — INTERFACE</text>
+  <text class="type" x="180" y="458">Queue&lt;E&gt;</text>
+  <text class="kind" x="180" y="494">CONSTRUCT — CLASS</text>
+  <text class="className" x="180" y="522">ArrayDeque</text>
+  <text class="detail" x="180" y="551">default ordinary queue</text>
+
+  <rect class="choice" x="380" y="358" width="320" height="220" rx="11" />
+  <text class="accent" x="540" y="393">Both ends or LIFO</text>
+  <text class="kind" x="540" y="429">DECLARE — INTERFACE</text>
+  <text class="type" x="540" y="458">Deque&lt;E&gt;</text>
+  <text class="kind" x="540" y="494">CONSTRUCT — CLASS</text>
+  <text class="className" x="540" y="522">ArrayDeque</text>
+  <text class="detail" x="540" y="551">Deque extends Queue</text>
+
+  <rect class="choice" x="740" y="358" width="320" height="220" rx="11" />
+  <text class="accent" x="900" y="393">Natural or comparator priority</text>
+  <text class="kind" x="900" y="429">DECLARE — INTERFACE</text>
+  <text class="type" x="900" y="458">Queue&lt;E&gt;</text>
+  <text class="kind" x="900" y="494">CONSTRUCT — CLASS</text>
+  <text class="className" x="900" y="522">PriorityQueue</text>
+  <text class="detail" x="900" y="551">not insertion order</text>
+
+  <text class="sectionLabel" x="540" y="626">SPECIALIZED CONSTRAINTS</text>
+
+  <rect class="specialized" x="105" y="650" width="390" height="190" rx="11" />
+  <text class="accent" x="300" y="685">List behavior is also required</text>
+  <text class="kind" x="300" y="721">CONSTRUCT — CLASS</text>
+  <text class="type" x="300" y="751">LinkedList</text>
+  <text class="detail" x="300" y="781">implements both List and Deque</text>
+  <text class="detail" x="300" y="811">otherwise prefer ArrayDeque</text>
+
+  <rect class="specialized" x="585" y="650" width="390" height="190" rx="11" />
+  <text class="accent" x="780" y="685">Items are shared across threads</text>
+  <text class="kind" x="780" y="721">NON-BLOCKING — CLASS</text>
+  <text class="smallType" x="780" y="749">ConcurrentLinkedQueue</text>
+  <text class="kind" x="780" y="780">WAITING OR BACKPRESSURE — INTERFACE</text>
+  <text class="smallType" x="780" y="808">BlockingQueue&lt;E&gt;</text>
+  <text class="detail" x="780" y="831">see Concurrent queues</text>
 </svg>

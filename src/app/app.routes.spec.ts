@@ -87,9 +87,7 @@ describe('application routes', () => {
       'nav[aria-label="Explore this topic"] a',
     );
 
-    expect(content?.textContent).toContain(
-      'Choose the interface by the behavior the program requires',
-    );
+    expect(content?.textContent).toContain('Declare the interface; construct a class');
     expect(childLink?.textContent?.trim()).toBe('List');
     expect(content?.compareDocumentPosition(childLink!)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
   });

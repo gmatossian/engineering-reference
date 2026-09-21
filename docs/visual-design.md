@@ -452,9 +452,9 @@ All topics
 15 topics
 
 Concepts in Java
-[ ArrayList versus LinkedList
+[ Sorted and navigable sets
   Concept · Java · Collections   ]
-[ Choosing a Set implementation
+[ ArrayList versus LinkedList
   Concept · Java · Collections   ]
 ```
 

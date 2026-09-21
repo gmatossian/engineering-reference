@@ -206,6 +206,42 @@ describe('transformContent', () => {
     ]);
   });
 
+  it('renders table group markers as a stronger rule on the following row', async () => {
+    const topicId = '11111111-1111-4111-8111-111111111111';
+
+    generatedRoot = await mkdtemp(join(tmpdir(), 'engineering-reference-generated-'));
+
+    const contentSource: LoadedContentSource = {
+      catalog: {
+        sourcePath: 'content/catalog.yaml',
+        landingTopicIds: [topicId],
+      },
+      topics: [
+        {
+          sourcePath: 'content/topics/collections/topic.md',
+          ...defaultTopicClassification,
+          id: topicId,
+          title: 'Collections',
+          childTopicIds: [],
+          markdownBody: [
+            '| Need | Declare |',
+            '| --- | --- |',
+            '| Indexed sequence | List |',
+            '| --- | |',
+            '| Unique membership | Set |',
+          ].join('\n'),
+        },
+      ],
+    };
+
+    const [topic] = await transformContent(contentSource, generatedRoot);
+
+    expect(topic?.mainContentHtml).toContain(
+      '<tr class="topic-table-group-start">\n<td>Unique membership</td>',
+    );
+    expect(topic?.mainContentHtml).not.toContain('<td>---</td>');
+  });
+
   it('gives repeated overflow regions unique accessible names', async () => {
     const topicId = '11111111-1111-4111-8111-111111111111';
 

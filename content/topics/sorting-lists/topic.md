@@ -11,8 +11,14 @@ childTopicIds: []
 relatedTopicIds: []
 ---
 
-`List.sort(...)` rearranges the **existing list** and requires the list to support
+`list.sort(...)` rearranges the **existing list** and requires the list to support
 replacement.
+
+```java
+List<String> names = new ArrayList<>(List.of("Zoe", "Ana", "Mia"));
+names.sort(null);
+// names is now [Ana, Mia, Zoe]
+```
 
 | Required order         | Operation                                             |
 | ---------------------- | ----------------------------------------------------- |
