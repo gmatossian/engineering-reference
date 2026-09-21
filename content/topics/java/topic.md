@@ -9,6 +9,7 @@ kind: 'area'
 childTopicIds:
   - '2fe75411-92f0-4e6f-bfd0-1756dc08ebe2'
   - 'c29c5725-0b1f-480d-88f4-5c9d3b7f0dc5'
+  - 'b0b3b8e7-8403-4279-8f03-2e8aa2effa69'
   - '2d23f8e8-66db-4d0a-b5bc-bfc0536d5ab8'
   - '750d6258-e1be-4813-9487-18c6ba78af0a'
   - '57b0dc57-7a64-4c09-9140-2a470748da38'

@@ -7,6 +7,7 @@ import { CatalogService } from './catalog.service';
 const JAVA_TOPIC_ID = 'd3ef7c8b-ee6b-48f5-9039-2aa94d03c19c';
 const ARRAYS_TOPIC_ID = '2fe75411-92f0-4e6f-bfd0-1756dc08ebe2';
 const COLLECTIONS_TOPIC_ID = 'c29c5725-0b1f-480d-88f4-5c9d3b7f0dc5';
+const COMPARABLE_VS_COMPARATOR_TOPIC_ID = 'b0b3b8e7-8403-4279-8f03-2e8aa2effa69';
 const SYSTEM_DESIGN_TOPIC_ID = '43a1a5e8-f5b7-46b7-bbd6-0fb212d7212b';
 const URL_SHORTENER_TOPIC_ID = 'b19de3ee-dc7d-4d9d-9b82-06d997a825e1';
 const SCALE_AND_ESTIMATION_TOPIC_ID = '17e411bb-2c99-49e8-93ec-18b767e4a890';
@@ -132,7 +133,7 @@ describe('CatalogService', () => {
     const view = service.getTopicBrowseView({ query: '', domain: null, kind: null });
 
     expect(view.mode).toBe('hierarchy');
-    expect(view.resultCount).toBe(70);
+    expect(view.resultCount).toBe(71);
     expect(view.sections).toEqual([]);
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
       'Java',
@@ -148,7 +149,7 @@ describe('CatalogService', () => {
 
     expect(occurrences).toHaveLength(2);
     expect(occurrences.every(({ id }) => id === STREAMS_TOPIC_ID)).toBe(true);
-    expect(roots[0].matchingTopicCount).toBe(56);
+    expect(roots[0].matchingTopicCount).toBe(57);
   });
 
   it('intersects domain and kind filters', () => {
@@ -198,19 +199,21 @@ describe('CatalogService', () => {
     const view = service.getTopicBrowseView({ query: '', domain: 'collections', kind: null });
     const java = view.hierarchyRoots[0];
 
-    expect(view.resultCount).toBe(28);
+    expect(view.resultCount).toBe(29);
     expect(java.title).toBe('Java');
     expect(java.matchesDomain).toBe(false);
-    expect(java.matchingTopicCount).toBe(28);
+    expect(java.matchingTopicCount).toBe(29);
     expect(java.children.map(({ title }) => title)).toEqual([
       'Arrays',
       'Collections framework',
+      'Comparable vs Comparator',
       'Java language evolution',
     ]);
     expect(java.children[0].matchesDomain).toBe(false);
     expect(java.children[1].matchesDomain).toBe(true);
-    expect(java.children[2].matchesDomain).toBe(false);
-    expect(java.children[2].children.map(({ title }) => title)).toEqual(['Sequenced collections']);
+    expect(java.children[2].matchesDomain).toBe(true);
+    expect(java.children[3].matchesDomain).toBe(false);
+    expect(java.children[3].children.map(({ title }) => title)).toEqual(['Sequenced collections']);
   });
 
   it('describes filtered and searched result context explicitly', () => {
@@ -232,11 +235,32 @@ describe('CatalogService', () => {
     expect(service.getChildTopics(javaTopic!).map((topic) => topic.id)).toEqual([
       ARRAYS_TOPIC_ID,
       COLLECTIONS_TOPIC_ID,
+      COMPARABLE_VS_COMPARATOR_TOPIC_ID,
       '2d23f8e8-66db-4d0a-b5bc-bfc0536d5ab8',
       '750d6258-e1be-4813-9487-18c6ba78af0a',
       '57b0dc57-7a64-4c09-9140-2a470748da38',
       '78b29290-d46f-45b2-aaba-c31597ceb6d4',
     ]);
+  });
+
+  it('exposes the ordering decision aid from Java and focused sorting references', () => {
+    const choice = service.getTopic(COMPARABLE_VS_COMPARATOR_TOPIC_ID);
+    const sortingEntries = service.getTopic(SORTING_MAP_ENTRIES_TOPIC_ID);
+
+    expect(choice).toMatchObject({
+      kind: 'decision-aid',
+      domains: ['java', 'collections'],
+    });
+    expect(catalog.parentTopicIdsById[COMPARABLE_VS_COMPARATOR_TOPIC_ID]).toEqual([JAVA_TOPIC_ID]);
+    expect(service.getRelatedTopics(choice!).map(({ id }) => id)).toEqual([
+      'fd0a59c5-ab12-4492-b862-05bb9e50e3b9',
+      SORTING_MAP_ENTRIES_TOPIC_ID,
+      '1cfa160f-9b9b-4f56-855d-74b87a5f76da',
+      SORTED_MAPS_TOPIC_ID,
+    ]);
+    expect(service.getRelatedTopics(sortingEntries!).map(({ id }) => id)).toContain(
+      COMPARABLE_VS_COMPARATOR_TOPIC_ID,
+    );
   });
 
   it('exposes sorting map entries through Map and nearby references', () => {

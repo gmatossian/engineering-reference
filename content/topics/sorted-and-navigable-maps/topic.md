@@ -11,6 +11,7 @@ kind: 'operations'
 childTopicIds: []
 relatedTopicIds:
   - 'e28eb58c-f60a-43df-99e0-7f51d031f5c4'
+  - 'b0b3b8e7-8403-4279-8f03-2e8aa2effa69'
 ---
 
 ![SortedMap and NavigableMap interface responsibilities with TreeMap construction choices](./map-ordering-hierarchy.svg)

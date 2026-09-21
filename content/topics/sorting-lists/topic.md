@@ -8,7 +8,8 @@ domains:
   - 'collections'
 kind: 'operations'
 childTopicIds: []
-relatedTopicIds: []
+relatedTopicIds:
+  - 'b0b3b8e7-8403-4279-8f03-2e8aa2effa69'
 ---
 
 `list.sort(...)` rearranges the **existing list** and requires the list to support
