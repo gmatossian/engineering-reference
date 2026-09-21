@@ -16,6 +16,10 @@ const ENTITY_MANAGER_LIFECYCLE_TOPIC_ID = '072fc2b2-2755-45ec-aabe-d8a4740fa4e9'
 const DIRTY_CHECKING_TOPIC_ID = '62196430-caa5-48c7-bb68-c064209d6291';
 const ARRAYS_AND_LISTS_TOPIC_ID = 'a2fc39d5-9564-4260-b247-f38d53bedecc';
 const STREAMS_TOPIC_ID = '2d23f8e8-66db-4d0a-b5bc-bfc0536d5ab8';
+const MAP_TOPIC_ID = 'd972ae23-879d-4f2c-9ede-5532e69ca15f';
+const MAP_VIEWS_TOPIC_ID = 'fc3f3ad0-3d94-42a5-a79b-9309c1140cf0';
+const SORTED_MAPS_TOPIC_ID = '7ddf26ac-1481-4b56-a897-e72a8a881c84';
+const SORTING_MAP_ENTRIES_TOPIC_ID = 'e28eb58c-f60a-43df-99e0-7f51d031f5c4';
 const catalog = generatedCatalog as RuntimeCatalog;
 
 const flattenHierarchy = (
@@ -128,7 +132,7 @@ describe('CatalogService', () => {
     const view = service.getTopicBrowseView({ query: '', domain: null, kind: null });
 
     expect(view.mode).toBe('hierarchy');
-    expect(view.resultCount).toBe(69);
+    expect(view.resultCount).toBe(70);
     expect(view.sections).toEqual([]);
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
       'Java',
@@ -144,7 +148,7 @@ describe('CatalogService', () => {
 
     expect(occurrences).toHaveLength(2);
     expect(occurrences.every(({ id }) => id === STREAMS_TOPIC_ID)).toBe(true);
-    expect(roots[0].matchingTopicCount).toBe(55);
+    expect(roots[0].matchingTopicCount).toBe(56);
   });
 
   it('intersects domain and kind filters', () => {
@@ -194,10 +198,10 @@ describe('CatalogService', () => {
     const view = service.getTopicBrowseView({ query: '', domain: 'collections', kind: null });
     const java = view.hierarchyRoots[0];
 
-    expect(view.resultCount).toBe(27);
+    expect(view.resultCount).toBe(28);
     expect(java.title).toBe('Java');
     expect(java.matchesDomain).toBe(false);
-    expect(java.matchingTopicCount).toBe(27);
+    expect(java.matchingTopicCount).toBe(28);
     expect(java.children.map(({ title }) => title)).toEqual([
       'Arrays',
       'Collections framework',
@@ -233,6 +237,25 @@ describe('CatalogService', () => {
       '57b0dc57-7a64-4c09-9140-2a470748da38',
       '78b29290-d46f-45b2-aaba-c31597ceb6d4',
     ]);
+  });
+
+  it('exposes sorting map entries through Map and nearby references', () => {
+    const map = service.getTopic(MAP_TOPIC_ID);
+    const mapViews = service.getTopic(MAP_VIEWS_TOPIC_ID);
+    const sortedMaps = service.getTopic(SORTED_MAPS_TOPIC_ID);
+
+    expect(map).toBeDefined();
+    expect(mapViews).toBeDefined();
+    expect(sortedMaps).toBeDefined();
+    expect(service.getChildTopics(map!).map(({ id }) => id)).toContain(
+      SORTING_MAP_ENTRIES_TOPIC_ID,
+    );
+    expect(service.getRelatedTopics(mapViews!).map(({ id }) => id)).toContain(
+      SORTING_MAP_ENTRIES_TOPIC_ID,
+    );
+    expect(service.getRelatedTopics(sortedMaps!).map(({ id }) => id)).toContain(
+      SORTING_MAP_ENTRIES_TOPIC_ID,
+    );
   });
 
   it('resolves Related Topics in their authored order with canonical metadata', () => {
