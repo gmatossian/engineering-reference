@@ -10,30 +10,25 @@ childTopicIds: []
 relatedTopicIds: []
 ---
 
-## Why `WorkItem::priority` works
-
-```java
-record WorkItem(String name, int priority) {}
-
-Comparator<WorkItem> byPriority = Comparator.comparingInt(WorkItem::priority);
-Comparator<WorkItem> sameOrder = Comparator.comparingInt(item -> item.priority());
-```
-
-`WorkItem::priority` is an **unbound instance-method reference**, not a static
-call. `Comparator.comparingInt(...)` needs a `WorkItem → int` extractor
-(`ToIntFunction<WorkItem>`); each `WorkItem` passed to it becomes the receiver
-of `priority()`.
-
 ## Read a method reference as a lambda
 
-- **Static — `Type::staticMethod`:** `Integer::parseInt` →
-  `text -> Integer.parseInt(text)`
-- **Unbound instance — `Type::instanceMethod`:** `WorkItem::priority` →
-  `item -> item.priority()`; the argument supplies the receiver.
-- **Bound instance — `instance::method`:** `System.out::println` →
-  `text -> System.out.println(text)`; the receiver is fixed.
-- **Constructor — `Type::new`:** `ArrayList::new` →
-  `() -> new ArrayList<>()`
+**Static method**
+
+`Integer::parseInt` → `text -> Integer.parseInt(text)`
+
+**Instance method · object supplied**
+
+`String::length` → `text -> text.length()`
+
+The method runs on the object passed in (`text`), not on `String` itself.
+
+**Instance method · object fixed**
+
+`System.out::println` → `text -> System.out.println(text)`
+
+**Constructor**
+
+`ArrayList::new` → `() -> new ArrayList<>()`
 
 The API's expected functional interface supplies the parameter and return types
 for either form. For example, `System.out::println` can target a
