@@ -12,6 +12,7 @@ childTopicIds:
   - 'c3e7b0c0-b574-4edd-89ec-24f50f206522'
   - '0ad85071-497d-4891-9d3d-8cc8d207495e'
   - 'fc3f3ad0-3d94-42a5-a79b-9309c1140cf0'
+  - 'e28eb58c-f60a-43df-99e0-7f51d031f5c4'
   - 'e080cdee-eecc-4c33-92d8-3a75acbf5d34'
   - '7ddf26ac-1481-4b56-a897-e72a8a881c84'
   - 'b1273826-a36d-4b96-8c91-e20a85c191b9'

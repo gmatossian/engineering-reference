@@ -9,7 +9,8 @@ domains:
   - 'algorithms-data-structures'
 kind: 'operations'
 childTopicIds: []
-relatedTopicIds: []
+relatedTopicIds:
+  - 'e28eb58c-f60a-43df-99e0-7f51d031f5c4'
 ---
 
 ![SortedMap and NavigableMap interface responsibilities with TreeMap construction choices](./map-ordering-hierarchy.svg)
