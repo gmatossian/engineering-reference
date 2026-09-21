@@ -12,40 +12,33 @@ childTopicIds: []
 relatedTopicIds: []
 ---
 
-`TreeMap` implements `NavigableMap`, which adds closest-match and range operations
-to a map sorted by its keys.
+![SortedMap and NavigableMap interface responsibilities with TreeMap construction choices](./map-ordering-hierarchy.svg)
 
-![Map interface hierarchy showing SequencedMap, SortedMap, and NavigableMap with LinkedHashMap and TreeMap implementations](./map-ordering-hierarchy.svg)
+> **Need the mapping, not only its key?** The `...Key(...)` methods return a key;
+> the corresponding `...Entry(...)` methods return both the key and value.
+>
+> **Need to consume an endpoint?** `firstEntry()` and `lastEntry()` inspect the
+> endpoint mappings. `pollFirstEntry()` and `pollLastEntry()` return and remove
+> them in one call.
 
-## Choose the key ordering
-
-| Required order     | Construction                                              |
-| ------------------ | --------------------------------------------------------- |
-| Natural, ascending | `new TreeMap<Integer, String>()`                          |
-| Custom             | `new TreeMap<Integer, String>(Comparator.reverseOrder())` |
+## Define the key ordering
 
 Natural ordering requires mutually comparable keys, normally through `Comparable`.
 Alternatively, provide a `Comparator` when creating the map. The same ordering
 controls iteration and all navigation methods below.
 
-## Find the nearest key
+## Closest matches
 
-Given stored keys `10`, `20`, and `30`, navigation methods find the nearest key
-before or after the requested value:
+| Method            | Result relative to `key` |
+| ----------------- | ------------------------ |
+| `lowerKey(key)`   | Greatest key `< key`     |
+| `floorKey(key)`   | Greatest key `<= key`    |
+| `ceilingKey(key)` | Least key `>= key`       |
+| `higherKey(key)`  | Least key `> key`        |
 
-| Method       | Search for `20` | Search for `25` | Meaning                        |
-| ------------ | --------------- | --------------- | ------------------------------ |
-| `lowerKey`   | `10`            | `20`            | Nearest key **strictly below** |
-| `floorKey`   | `20`            | `20`            | Nearest key **at or below**    |
-| `ceilingKey` | `20`            | `30`            | Nearest key **at or above**    |
-| `higherKey`  | `30`            | `30`            | Nearest key **strictly above** |
-
-Use the corresponding `lowerEntry`, `floorEntry`, `ceilingEntry`, or
-`higherEntry` method when the key and value are both needed. These methods return
-`null` when no matching key exists.
-
-`firstEntry()` and `lastEntry()` return the endpoint mappings. `pollFirstEntry()`
-and `pollLastEntry()` return and **remove** them, or return `null` when empty.
+`firstKey()` and `lastKey()` throw `NoSuchElementException` when the map is empty.
+The nearest-match methods and `firstEntry()` or `lastEntry()` return `null` when
+no matching entry exists.
 
 ## Range views
 

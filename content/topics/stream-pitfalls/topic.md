@@ -16,7 +16,7 @@ relatedTopicIds: []
 | No terminal operation                    | The lazy pipeline is never traversed            |
 | Mutate shared state in `map` or `filter` | Fragile sequential code; unsafe parallel code   |
 | Modify the source during traversal       | May fail or produce unpredictable results       |
-| Assume `Stream.toList()` is mutable      | Mutation throws `UnsupportedOperationException` |
+| Assume `stream.toList()` is mutable      | Mutation throws `UnsupportedOperationException` |
 | Duplicate keys in `Collectors.toMap`     | Throws `IllegalStateException`                  |
 
 A stream is single-use:

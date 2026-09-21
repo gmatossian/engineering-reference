@@ -128,7 +128,7 @@ describe('CatalogService', () => {
     const view = service.getTopicBrowseView({ query: '', domain: null, kind: null });
 
     expect(view.mode).toBe('hierarchy');
-    expect(view.resultCount).toBe(70);
+    expect(view.resultCount).toBe(69);
     expect(view.sections).toEqual([]);
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
       'Java',
@@ -144,7 +144,7 @@ describe('CatalogService', () => {
 
     expect(occurrences).toHaveLength(2);
     expect(occurrences.every(({ id }) => id === STREAMS_TOPIC_ID)).toBe(true);
-    expect(roots[0].matchingTopicCount).toBe(56);
+    expect(roots[0].matchingTopicCount).toBe(55);
   });
 
   it('intersects domain and kind filters', () => {
@@ -194,10 +194,10 @@ describe('CatalogService', () => {
     const view = service.getTopicBrowseView({ query: '', domain: 'collections', kind: null });
     const java = view.hierarchyRoots[0];
 
-    expect(view.resultCount).toBe(28);
+    expect(view.resultCount).toBe(27);
     expect(java.title).toBe('Java');
     expect(java.matchesDomain).toBe(false);
-    expect(java.matchingTopicCount).toBe(28);
+    expect(java.matchingTopicCount).toBe(27);
     expect(java.children.map(({ title }) => title)).toEqual([
       'Arrays',
       'Collections framework',

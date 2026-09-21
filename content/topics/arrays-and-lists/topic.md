@@ -16,13 +16,7 @@ Choose a conversion based on the **array element type** and the required
 
 ## Array → list
 
-| Construction                                              | Result                  | `set`? | `add`/`remove`? | Source-linked? | `null`?        |
-| --------------------------------------------------------- | ----------------------- | ------ | --------------- | -------------- | -------------- |
-| `Arrays.asList(names)`                                    | Fixed-size view         | Yes    | No              | Yes            | Allowed        |
-| `new ArrayList<>(Arrays.asList(names))`                   | Mutable copy            | Yes    | Yes             | No             | Allowed        |
-| `List.copyOf(Arrays.asList(names))`                       | Unmodifiable snapshot   | No     | No              | No             | Rejected       |
-| `Arrays.stream(values).boxed().toList()`                  | Unmodifiable boxed list | No     | No              | No             | Not applicable |
-| `new ArrayList<>(Arrays.stream(values).boxed().toList())` | Mutable boxed copy      | Yes    | Yes             | No             | Not applicable |
+![Decision guide for converting reference and primitive arrays into lists](./array-to-list-decision.svg)
 
 ## List → reference array
 

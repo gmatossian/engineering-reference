@@ -26,3 +26,14 @@ input should be handled.
 
 “Unmodifiable” applies to the set structure. It does **not make mutable elements
 immutable**.
+
+## Enum sets
+
+```java
+EnumSet<Permission> readable = EnumSet.of(READ, LIST);
+EnumSet<Permission> none = EnumSet.noneOf(Permission.class);
+EnumSet<Permission> all = EnumSet.allOf(Permission.class);
+```
+
+`EnumSet` follows **enum declaration order**, accepts values from one enum type, and
+rejects `null`.

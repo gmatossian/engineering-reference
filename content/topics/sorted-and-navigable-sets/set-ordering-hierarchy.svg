@@ -1,43 +1,70 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="920" height="580" viewBox="0 0 920 580" role="img" aria-labelledby="title desc">
-  <title id="title">Set ordering interface hierarchy</title>
-  <desc id="desc">Set is extended by SequencedSet, which is implemented by LinkedHashSet and extended by SortedSet. SortedSet is extended by NavigableSet, which is implemented by TreeSet.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 860" role="img" aria-labelledby="title description">
+  <title id="title">SortedSet and NavigableSet responsibilities</title>
+  <desc id="description">
+    SortedSet provides sorted traversal, endpoints, comparator access, and range views. NavigableSet extends SortedSet with nearest-match, descending, and removable-endpoint operations. TreeSet implements NavigableSet and may use natural or custom ordering.
+  </desc>
+
   <defs>
     <style>
-      .interface { fill: #f3f0e8; stroke: #343434; stroke-width: 2; }
-      .implementation { fill: #e4f2ed; stroke: #287a67; stroke-width: 2; }
-      .line { fill: none; stroke: #6b6b6b; stroke-width: 2; }
-      .name { fill: #202020; font: 600 20px 'Plus Jakarta Sans', sans-serif; text-anchor: middle; }
-      .kind { fill: #676767; font: 13px 'Plus Jakarta Sans', sans-serif; text-anchor: middle; }
+      .sorted { fill: #f0ecff; stroke: #7157d9; stroke-width: 2.5; }
+      .navigable { fill: #eef4ff; stroke: #4773d8; stroke-width: 2.5; }
+      .implementation { fill: #eef8f2; stroke: #2f8d5c; stroke-width: 2.5; }
+      .construction { fill: #ffffff; stroke: #c6c1b6; stroke-width: 1.5; }
+      .branch { fill: none; stroke: #76777b; stroke-width: 2; }
+      .divider { fill: none; stroke: #b8b4aa; stroke-width: 1.5; }
+      .kind { fill: #5f6064; font: 600 12px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; letter-spacing: 1px; text-anchor: middle; }
+      .type { fill: #1b1c19; font: 700 26px 'SFMono-Regular', Consolas, monospace; text-anchor: middle; }
+      .purpose { fill: #2457a7; font: 700 18px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .method { fill: #1b1c19; font: 600 17px 'SFMono-Regular', Consolas, monospace; text-anchor: middle; }
+      .detail { fill: #4f5054; font: 500 15px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .connectorLabel { fill: #5f6064; font: 700 12px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; letter-spacing: 1px; text-anchor: middle; }
+      .className { fill: #1b1c19; font: 700 25px 'SFMono-Regular', Consolas, monospace; text-anchor: middle; }
+      .choiceLabel { fill: #237047; font: 700 16px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .code { fill: #1b1c19; font: 600 16px 'SFMono-Regular', Consolas, monospace; text-anchor: middle; }
     </style>
   </defs>
 
-  <path class="line" d="M460 82 V118"/>
-  <path class="line" d="M460 190 V226"/>
-  <path class="line" d="M460 298 V334"/>
-  <path class="line" d="M460 190 H190 V226"/>
-  <path class="line" d="M460 406 V486"/>
+  <rect class="sorted" x="135" y="18" width="810" height="240" rx="13" />
+  <text class="kind" x="540" y="46">INTERFACE · SORTED ORDER</text>
+  <text class="type" x="540" y="82">SortedSet&lt;E&gt;</text>
+  <text class="purpose" x="540" y="116">Sorted traversal, endpoints, and range views</text>
+  <path class="divider" d="M175 138h730" />
+  <text class="method" x="285" y="178">comparator()</text>
+  <text class="detail" x="285" y="205">ordering source</text>
+  <text class="method" x="540" y="178">first() · last()</text>
+  <text class="detail" x="540" y="205">endpoints</text>
+  <text class="method" x="795" y="178">headSet · tailSet · subSet</text>
+  <text class="detail" x="795" y="205">backed range views</text>
 
-  <rect class="interface" x="350" y="18" width="220" height="64" rx="12"/>
-  <text class="name" x="460" y="46">Set</text>
-  <text class="kind" x="460" y="68">interface</text>
+  <path class="branch" d="M540 258v55" />
+  <text class="connectorLabel" x="540" y="289">EXTENDS WITH NEAREST AND DIRECTIONAL NAVIGATION</text>
 
-  <rect class="interface" x="350" y="126" width="220" height="64" rx="12"/>
-  <text class="name" x="460" y="154">SequencedSet</text>
-  <text class="kind" x="460" y="176">defined encounter order</text>
+  <rect class="navigable" x="135" y="313" width="810" height="250" rx="13" />
+  <text class="kind" x="540" y="341">INTERFACE · NAVIGATION</text>
+  <text class="type" x="540" y="377">NavigableSet&lt;E&gt;</text>
+  <text class="purpose" x="540" y="411">Declare this when nearest matches or descending access matter</text>
+  <path class="divider" d="M175 433h730" />
+  <text class="method" x="285" y="474">lower · floor</text>
+  <text class="detail" x="285" y="501">nearest values below</text>
+  <text class="method" x="540" y="474">ceiling · higher</text>
+  <text class="detail" x="540" y="501">nearest values above</text>
+  <text class="method" x="795" y="474">descendingSet()</text>
+  <text class="detail" x="795" y="501">reverse-order view</text>
+  <text class="method" x="540" y="535">pollFirst() · pollLast()</text>
 
-  <rect class="implementation" x="80" y="226" width="220" height="64" rx="12"/>
-  <text class="name" x="190" y="254">LinkedHashSet</text>
-  <text class="kind" x="190" y="276">implementation</text>
+  <path class="branch" d="M540 563v55" />
+  <text class="connectorLabel" x="540" y="594">IMPLEMENTED BY</text>
 
-  <rect class="interface" x="350" y="234" width="220" height="64" rx="12"/>
-  <text class="name" x="460" y="262">SortedSet</text>
-  <text class="kind" x="460" y="284">comparator-defined order</text>
+  <rect class="implementation" x="165" y="618" width="750" height="218" rx="13" />
+  <text class="kind" x="540" y="646">CLASS · USE WITH EITHER INTERFACE</text>
+  <text class="className" x="540" y="682">TreeSet&lt;E&gt;</text>
+  <path class="divider" d="M205 704h670" />
 
-  <rect class="interface" x="350" y="342" width="220" height="64" rx="12"/>
-  <text class="name" x="460" y="370">NavigableSet</text>
-  <text class="kind" x="460" y="392">closest-match navigation</text>
+  <rect class="construction" x="205" y="726" width="310" height="82" rx="9" />
+  <text class="choiceLabel" x="360" y="754">Natural order</text>
+  <text class="code" x="360" y="784">new TreeSet&lt;&gt;()</text>
 
-  <rect class="implementation" x="350" y="494" width="220" height="64" rx="12"/>
-  <text class="name" x="460" y="522">TreeSet</text>
-  <text class="kind" x="460" y="544">implementation</text>
+  <rect class="construction" x="565" y="726" width="310" height="82" rx="9" />
+  <text class="choiceLabel" x="720" y="754">Custom order</text>
+  <text class="code" x="720" y="784">new TreeSet&lt;&gt;(comparator)</text>
 </svg>

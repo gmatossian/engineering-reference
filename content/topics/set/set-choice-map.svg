@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 810" role="img" aria-labelledby="title description">
+  <title id="title">Choose and use a Java set</title>
+  <desc id="description">
+    Set provides add, contains, and remove membership operations. Choose HashSet when no ordering is needed, LinkedHashSet for insertion order, SortedSet with TreeSet for sorted values and ranges, or NavigableSet with TreeSet for nearest-value and descending navigation. EnumSet specializes enum values, while ConcurrentHashMap newKeySet provides concurrent membership.
+  </desc>
+
+  <defs>
+    <style>
+      .interface { fill: #f0ecff; stroke: #7157d9; stroke-width: 2.5; }
+      .prompt { fill: #f7f3ea; stroke: #c6c1b6; stroke-width: 2; }
+      .choice { fill: #ffffff; stroke: #c6c1b6; stroke-width: 2; }
+      .specialized { fill: #eef8f2; stroke: #2f8d5c; stroke-width: 2; }
+      .branch { fill: none; stroke: #85868a; stroke-width: 2; }
+      .divider { fill: none; stroke: #b8b4aa; stroke-width: 1.5; }
+      .kind { fill: #5f6064; font: 600 12px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; letter-spacing: 1px; text-anchor: middle; }
+      .rootType { fill: #1b1c19; font: 700 25px 'SFMono-Regular', Consolas, monospace; text-anchor: middle; }
+      .method { fill: #1b1c19; font: 600 17px 'SFMono-Regular', Consolas, monospace; text-anchor: middle; }
+      .result { fill: #4f5054; font: 500 14px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .promptText { fill: #1b1c19; font: 700 23px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .accent { fill: #2457a7; font: 700 17px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .greenAccent { fill: #237047; }
+      .type { fill: #1b1c19; font: 700 19px 'SFMono-Regular', Consolas, monospace; text-anchor: middle; }
+      .className { fill: #35363a; font: 600 17px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .factory { font-size: 14px; }
+      .detail { fill: #5f6064; font: 500 14px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .sectionLabel { fill: #5f6064; font: 700 13px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; letter-spacing: 1.3px; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <rect class="interface" x="195" y="18" width="690" height="160" rx="12" />
+  <text class="kind" x="540" y="44">INTERFACE · MEMBERSHIP OPERATIONS</text>
+  <text class="rootType" x="540" y="78">Set&lt;E&gt;</text>
+  <path class="divider" d="M225 94h630" />
+  <text class="method" x="310" y="126">add(value)</text>
+  <text class="result" x="310" y="151">true when changed</text>
+  <text class="method" x="540" y="126">contains(value)</text>
+  <text class="result" x="540" y="151">true when present</text>
+  <text class="method" x="770" y="126">remove(value)</text>
+  <text class="result" x="770" y="151">true when changed</text>
+
+  <path class="branch" d="M540 178v34" />
+  <rect class="prompt" x="300" y="212" width="480" height="66" rx="11" />
+  <text class="promptText" x="540" y="253">What ordering or navigation is required?</text>
+
+  <path class="branch" d="M540 278v34H137.5v28" />
+  <path class="branch" d="M540 312H405v28" />
+  <path class="branch" d="M540 312h135v28" />
+  <path class="branch" d="M540 312h402.5v28" />
+
+  <rect class="choice" x="20" y="340" width="235" height="208" rx="11" />
+  <text class="accent" x="137.5" y="375">No ordering needed</text>
+  <text class="kind" x="137.5" y="411">DECLARE — INTERFACE</text>
+  <text class="type" x="137.5" y="440">Set&lt;E&gt;</text>
+  <text class="kind" x="137.5" y="476">CONSTRUCT — CLASS</text>
+  <text class="className" x="137.5" y="504">HashSet</text>
+  <text class="detail" x="137.5" y="530">default · O(1) expected</text>
+
+  <rect class="choice" x="287.5" y="340" width="235" height="208" rx="11" />
+  <text class="accent" x="405" y="375">Insertion order</text>
+  <text class="kind" x="405" y="411">DECLARE — INTERFACE</text>
+  <text class="type" x="405" y="440">Set&lt;E&gt;</text>
+  <text class="kind" x="405" y="476">CONSTRUCT — CLASS</text>
+  <text class="className" x="405" y="504">LinkedHashSet</text>
+  <text class="detail" x="405" y="530">predictable traversal</text>
+
+  <rect class="choice" x="557.5" y="340" width="235" height="208" rx="11" />
+  <text class="accent" x="675" y="375">Sorted values or ranges</text>
+  <text class="kind" x="675" y="411">DECLARE — INTERFACE</text>
+  <text class="type" x="675" y="440">SortedSet&lt;E&gt;</text>
+  <text class="kind" x="675" y="476">CONSTRUCT — CLASS</text>
+  <text class="className" x="675" y="504">TreeSet</text>
+  <text class="detail" x="675" y="530">O(log n)</text>
+
+  <rect class="choice" x="825" y="340" width="235" height="208" rx="11" />
+  <text class="accent" x="942.5" y="375">Nearest or descending</text>
+  <text class="kind" x="942.5" y="411">DECLARE — INTERFACE</text>
+  <text class="type" x="942.5" y="440">NavigableSet&lt;E&gt;</text>
+  <text class="kind" x="942.5" y="476">CONSTRUCT — CLASS</text>
+  <text class="className" x="942.5" y="504">TreeSet</text>
+  <text class="detail" x="942.5" y="530">O(log n)</text>
+
+  <text class="sectionLabel" x="540" y="603">SPECIALIZED CONSTRAINTS</text>
+
+  <rect class="specialized" x="135" y="628" width="370" height="150" rx="11" />
+  <text class="accent greenAccent" x="320" y="661">Every value belongs to one enum</text>
+  <text class="kind" x="320" y="694">CONSTRUCT — CLASS</text>
+  <text class="type" x="320" y="724">EnumSet</text>
+  <text class="detail" x="320" y="753">enum declaration order · compact</text>
+
+  <rect class="specialized" x="575" y="628" width="370" height="150" rx="11" />
+  <text class="accent greenAccent" x="760" y="661">Membership shared across threads</text>
+  <text class="kind" x="760" y="694">CONSTRUCT — FACTORY</text>
+  <text class="type factory" x="760" y="724">ConcurrentHashMap.newKeySet()</text>
+  <text class="detail" x="760" y="753">see Concurrent sets</text>
+</svg>

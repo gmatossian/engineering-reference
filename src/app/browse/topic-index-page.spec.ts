@@ -39,7 +39,7 @@ describe('TopicIndexPage', () => {
         host.querySelectorAll('.domain-hierarchy__root > .domain-hierarchy__item app-topic-icon'),
       ).map((icon) => icon.getAttribute('data-icon-key')),
     ).toEqual(['java', 'architecture', 'architecture', 'database']);
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('70 topics');
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('69 topics');
   });
 
   it('renders the default System Design view as an expandable hierarchy', async () => {

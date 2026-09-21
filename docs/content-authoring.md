@@ -175,6 +175,10 @@ choose an option without first reading every section.
   it that merely repeats the same facts.
 - Retain copyable examples and exceptional caveats that the table cannot express
   clearly.
+- When one matrix contains several meaningful row groups, place a divider row with
+  `---` in its first cell and leave the remaining cells empty. Generation removes
+  that marker and adds a stronger rule above the following row; do not use it when
+  ordinary row ordering already makes the groups clear.
 - Do not add a table when the content lacks repeated comparison dimensions.
 
 The [Arrays and lists Topic](../content/topics/arrays-and-lists/topic.md) is the

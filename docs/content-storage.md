@@ -277,6 +277,12 @@ content type. Repeated regions beneath the same context receive an index. The
 wrapper owns horizontal scrolling; the semantic `pre`, `code`, and `table`
 elements remain intact inside it.
 
+A table body row whose first cell contains exactly `---` and whose remaining
+cells are empty is an authored group-divider marker. Generation removes the marker
+row and adds the allowlisted `topic-table-group-start` class to the following
+semantic row. This produces a stronger visual rule without adding an empty or
+decorative row to the accessible table.
+
 Second- and third-level authored headings also produce deterministic outline
 metadata for in-page navigation. Each entry contains the heading label and a
 fragment beginning with `section-`; duplicate labels receive a stable numeric

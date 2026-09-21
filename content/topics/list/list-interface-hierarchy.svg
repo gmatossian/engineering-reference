@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 700" role="img" aria-labelledby="title description">
+  <title id="title">List interface hierarchy and key operations</title>
+  <desc id="description">
+    Iterable provides iterator. Collection provides common value and size operations. List adds indexed access, replacement, insertion, removal, search, and range-view operations. ArrayList, LinkedList, and CopyOnWriteArrayList implement List.
+  </desc>
+
+  <defs>
+    <style>
+      .interface { fill: #eef4ff; stroke: #4773d8; stroke-width: 2; }
+      .listInterface { fill: #e7efff; stroke: #2457a7; stroke-width: 2.5; }
+      .class { fill: #ffffff; stroke: #c6c1b6; stroke-width: 2; }
+      .branch { fill: none; stroke: #76777b; stroke-width: 2; }
+      .divider { fill: none; stroke: #b8b4aa; stroke-width: 1.5; }
+      .kind { fill: #5f6064; font: 600 11px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; letter-spacing: 1px; text-anchor: middle; }
+      .type { fill: #1b1c19; font: 700 21px 'SFMono-Regular', Consolas, monospace; text-anchor: middle; }
+      .longType { font-size: 18px; }
+      .method { fill: #35363a; font: 500 15px 'SFMono-Regular', Consolas, monospace; }
+      .note { fill: #5f6064; font: 500 13px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <path class="branch" d="M540 106v38" />
+  <path class="branch" d="M540 294v38" />
+  <path class="branch" d="M540 532v42H180v22" />
+  <path class="branch" d="M540 574v22" />
+  <path class="branch" d="M540 574h360v22" />
+
+  <rect class="interface" x="390" y="18" width="300" height="88" rx="10" />
+  <text class="kind" x="540" y="43">INTERFACE</text>
+  <text class="type" x="540" y="70">Iterable&lt;E&gt;</text>
+  <text class="method" x="458" y="94">iterator()</text>
+
+  <rect class="interface" x="310" y="144" width="460" height="150" rx="10" />
+  <text class="kind" x="540" y="169">INTERFACE · COMMON COLLECTION OPERATIONS</text>
+  <text class="type" x="540" y="198">Collection&lt;E&gt;</text>
+  <path class="divider" d="M340 216h400" />
+  <text class="method" x="355" y="246">add(value)</text>
+  <text class="method" x="565" y="246">contains(value)</text>
+  <text class="method" x="355" y="274">remove(value)</text>
+  <text class="method" x="565" y="274">size()</text>
+
+  <rect class="listInterface" x="270" y="332" width="540" height="200" rx="10" />
+  <text class="kind" x="540" y="357">INTERFACE · INDEXED OPERATIONS</text>
+  <text class="type" x="540" y="386">List&lt;E&gt;</text>
+  <path class="divider" d="M300 404h480" />
+  <text class="method" x="315" y="436">get(index)</text>
+  <text class="method" x="560" y="436">set(index, value)</text>
+  <text class="method" x="315" y="466">add(index, value)</text>
+  <text class="method" x="560" y="466">remove(index)</text>
+  <text class="method" x="315" y="496">indexOf(value)</text>
+  <text class="method" x="560" y="496">subList(from, to)</text>
+
+  <rect class="class" x="60" y="596" width="240" height="72" rx="9" />
+  <text class="kind" x="180" y="621">CLASS</text>
+  <text class="type" x="180" y="646">ArrayList</text>
+
+  <rect class="class" x="420" y="596" width="240" height="72" rx="9" />
+  <text class="kind" x="540" y="621">CLASS · ALSO DEQUE</text>
+  <text class="type" x="540" y="646">LinkedList</text>
+
+  <rect class="class" x="780" y="596" width="240" height="72" rx="9" />
+  <text class="kind" x="900" y="621">CLASS</text>
+  <text class="type longType" x="900" y="646">CopyOnWriteArrayList</text>
+</svg>

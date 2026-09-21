@@ -45,6 +45,7 @@ const SUPPORTED_IMAGE_NAME_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
 
 const OVERFLOW_REGION_CLASS = 'topic-content-overflow';
 const CALLOUT_CLASS = 'topic-callout';
+const TABLE_GROUP_START_CLASS = 'topic-table-group-start';
 const OVERFLOW_CONTEXT_MAX_LENGTH = 160;
 const OVERFLOW_REGION_LABEL_PATTERN = /^(?=.{1,200}$)[^\r\n]+ (?:code block|table)(?: \d+)?$/u;
 const HEADING_FRAGMENT_PREFIX = 'section-';
@@ -214,6 +215,62 @@ function renderCallouts() {
   };
 }
 
+function isTableGroupDivider(node: Element): boolean {
+  if (node.tagName !== 'tr' || node.children.length === 0) {
+    return false;
+  }
+
+  const cells = node.children.filter(
+    (child): child is Element => child.type === 'element' && child.tagName === 'td',
+  );
+  const [firstCell, ...remainingCells] = cells;
+  const containsOnlyCellsAndWhitespace = node.children.every(
+    (child) =>
+      (child.type === 'element' && child.tagName === 'td') ||
+      (child.type === 'text' && child.value.trim().length === 0),
+  );
+
+  return (
+    containsOnlyCellsAndWhitespace &&
+    firstCell !== undefined &&
+    elementText(firstCell).trim() === '---' &&
+    remainingCells.every((cell) => elementText(cell).trim().length === 0)
+  );
+}
+
+function renderTableGroupDividers() {
+  return (tree: Root) => {
+    visit(tree, 'element', (node) => {
+      if (node.tagName !== 'tbody') {
+        return;
+      }
+
+      const children: Element['children'] = [];
+      let markNextRow = false;
+
+      for (const child of node.children) {
+        if (child.type === 'element' && isTableGroupDivider(child)) {
+          markNextRow = true;
+          continue;
+        }
+
+        if (markNextRow && child.type === 'element' && child.tagName === 'tr') {
+          const existingClassNames = Array.isArray(child.properties.className)
+            ? child.properties.className
+            : [];
+
+          child.properties.className = [...existingClassNames, TABLE_GROUP_START_CLASS];
+          markNextRow = false;
+        }
+
+        children.push(child);
+      }
+
+      node.children = children;
+    });
+  };
+}
+
 export const HTML_SANITIZATION_SCHEMA: SanitizationSchema = {
   allowComments: false,
   allowDoctypes: false,
@@ -237,6 +294,7 @@ export const HTML_SANITIZATION_SCHEMA: SanitizationSchema = {
     ol: ['start'],
     td: ['align'],
     th: ['align'],
+    tr: [['className', TABLE_GROUP_START_CLASS]],
   },
   clobber: ['id', 'name'],
   clobberPrefix: 'user-content-',
@@ -327,6 +385,7 @@ async function renderMarkdown(
     .use(remarkGfm)
     .use(remarkRehype)
     .use(renderCallouts)
+    .use(renderTableGroupDividers)
     .use(wrapOverflowContent, topicTitle)
     .use(rehypeSanitize, HTML_SANITIZATION_SCHEMA)
     .use(rehypeStringify);

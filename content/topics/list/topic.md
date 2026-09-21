@@ -18,34 +18,17 @@ childTopicIds:
 relatedTopicIds: []
 ---
 
-A `List<E>` is an **ordered sequence** with **zero-based indexes**. Use one when
-position or repetition matters; unlike a set, a list permits **duplicate elements**.
-
-Ordered means that elements have **defined positions**, not that their values are
-automatically sorted. Appending preserves insertion sequence, while indexed insertion
-and reordering operations can change it.
-
 ## Choose an implementation
 
-| Implementation                                 | Structure          | Use when                                              |
-| ---------------------------------------------- | ------------------ | ----------------------------------------------------- |
-| `ArrayList`                                    | Resizable array    | The **default choice** for most list use              |
-| `LinkedList`                                   | Doubly linked list | List and `Deque` behavior are both required           |
-| `CopyOnWriteArrayList` or synchronized wrapper | Specialized        | Shared indexed access; see **Concurrent lists** below |
+| Implementation                                 | Use when                                              |
+| ---------------------------------------------- | ----------------------------------------------------- |
+| `ArrayList`                                    | The **default choice** for most list use              |
+| `LinkedList`                                   | List and `Deque` behavior are both required           |
+| `CopyOnWriteArrayList` or synchronized wrapper | Shared indexed access; see **Concurrent lists** below |
 
 `LinkedList` does **not make arbitrary indexed insertion fast**: finding an index
 still requires walking through the list.
 
-## `List` interface operations
+## See the interface hierarchy and operations
 
-| Intent             | Operation           |
-| ------------------ | ------------------- |
-| Append             | `add(value)`        |
-| Read by position   | `get(index)`        |
-| Replace            | `set(index, value)` |
-| Insert at position | `add(index, value)` |
-| Remove by position | `remove(index)`     |
-| Find               | `contains(value)`   |
-
-Operations that use an index require `0 <= index < size()`—except insertion, which
-also permits `index == size()` to append.
+![List interface hierarchy showing common Iterable and Collection operations, indexed operations added by List, and common implementing classes](./list-interface-hierarchy.svg)
