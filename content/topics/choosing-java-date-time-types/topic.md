@@ -1,6 +1,6 @@
 ---
 id: 'aae2e69e-f92f-4672-912e-117d5a404a6a'
-title: 'Java date/time types'
+title: 'Date/time types'
 iconKey: 'ordering'
 domains:
   - 'java'
