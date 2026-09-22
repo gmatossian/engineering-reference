@@ -11,6 +11,10 @@ relatedTopicIds:
   - 'eb6449dd-f815-42a9-8f95-7a6dc0d5341a'
 ---
 
+> **Offset = how far the clock is from UTC** (`-07:00` = seven hours behind). It lets a local date/time identify an exact instant: `2026-09-21T09:30-07:00` → `2026-09-21T16:30Z`.
+>
+> Keep a reported local time **and** its offset (for example, from an API)? `OffsetDateTime`. Only the instant? `Instant`. A named region's changing rules? `ZonedDateTime`.
+
 | Need to represent                               | Use              | Watch for                                                  |
 | ----------------------------------------------- | ---------------- | ---------------------------------------------------------- |
 | A calendar date                                 | `LocalDate`      | No time of day or instant                                  |
