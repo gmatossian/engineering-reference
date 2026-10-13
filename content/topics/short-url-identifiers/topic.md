@@ -1,6 +1,7 @@
 ---
 id: '8cd3c5fb-eea7-4398-ba7e-8b6496ec431f'
 title: 'Short URL identifiers'
+status: 'accepted'
 summary: 'Choose how a short code is generated, represented, and placed safely in a URL.'
 iconKey: 'conversion'
 domains:

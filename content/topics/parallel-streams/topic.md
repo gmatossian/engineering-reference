@@ -1,6 +1,7 @@
 ---
 id: '57cd79fd-a949-4942-b6bf-34aba40ad7cd'
 title: 'Parallel streams'
+status: 'accepted'
 summary: 'Use data parallelism only for measured workloads that split well and avoid ordering or shared-state costs.'
 iconKey: 'concurrency'
 domains:

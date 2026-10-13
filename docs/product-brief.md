@@ -110,8 +110,8 @@ The accepted presentation is **browse-first hybrid**:
 - complete domain entry is the primary landing path;
 - compact persistent title search remains available from every view;
 - the all-Topics surface presents the child graph as an expandable forest when
-  browsing without a title query or kind filter, while explicit search and
-  kind-filter states remain flat, scannable result lists;
+  browsing without a title query, kind filter, or status filter, while explicit
+  search, kind, and status states remain flat, scannable result lists;
 - ordered-child hierarchy becomes local context on Topic views as well as the
   default structure for complete and domain-filtered catalog browsing; and
 - contextual paths and Related Topics provide distinct onward navigation after
@@ -125,7 +125,7 @@ and make every exploratory journey begin in an undifferentiated catalog. Pure
 search-first, pure flat-catalog, and graph/network visualization are also
 rejected as primary experiences. The accepted hybrid instead uses the hierarchy
 where structural browsing is useful, and flat results where an explicit title
-query or kind filter already expresses the user's intent. These choices can be
+query, kind filter, or status filter already expresses the user's intent. These choices can be
 reconsidered only with evidence that the browse-first hybrid fails a concrete
 job.
 
@@ -154,6 +154,17 @@ main content.
 
 Some broad Topics, such as Java, may exist only to organize immediate children.
 Other Topics may contain main content, children, or both.
+
+### Drafts evaluated through retrieval
+
+New Topics start as Draft and remain available through the same search, browsing,
+and contextual navigation as accepted Topics. A visible Draft label distinguishes
+editorial state, and `/topics` provides All, Draft, and Accepted status filtering
+with unique-topic counts. Acceptance is an explicit owner decision informed by
+actual retrieval use; builds and merges do not promote drafts. Ordinary edits
+preserve acceptance, while the owner can explicitly return substantial revisions
+to Draft. This is authored reference metadata and does not add in-app authoring,
+usage tracking, or an automated editorial workflow.
 
 ### Read-only presentation
 
@@ -186,7 +197,7 @@ The accepted incremental expansion adds:
 - an addressable all-Topics browse and search surface;
 - a deliberately small domain and content-kind classification;
 - complete and domain-filtered catalog forests projected from authored child
-  relationships, with flat results for explicit title and kind constraints;
+  relationships, with flat results for explicit title, kind, and status constraints;
 - path-independent classification through domain browsing and the all-Topics
   index;
 - contextual ancestor paths and a graph-projected hierarchy forest on every

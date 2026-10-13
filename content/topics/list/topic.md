@@ -1,6 +1,7 @@
 ---
 id: '6d028a15-f716-4862-80e7-ea5e3b89d946'
 title: 'List'
+status: 'accepted'
 summary: 'Choose and use an ordered, indexed collection that permits repeated elements.'
 iconKey: 'list'
 domains:

@@ -65,7 +65,7 @@
             [attr.aria-current]="node.id === currentTopicId() ? 'page' : null"
             [routerLink]="['/topics', node.id]"
           >
-            {{ node.title }}
+            {{ node.title }}<app-draft-status [status]="node.status" />
           </a>
         </div>
 

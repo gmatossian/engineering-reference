@@ -1,6 +1,7 @@
 ---
 id: '57b0dc57-7a64-4c09-9140-2a470748da38'
 title: 'JPA'
+status: 'accepted'
 summary: 'Understand repositories, entity lifecycle, dirty checking, flushing, and lazy-loading boundaries.'
 iconKey: 'persistence'
 domains:

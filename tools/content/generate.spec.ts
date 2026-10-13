@@ -8,6 +8,7 @@ import type {
   TopicDomainKey,
   TopicIconKey,
   TopicKindKey,
+  TopicStatusKey,
 } from '../../contracts/runtime-catalog.ts';
 import type { LoadedContentSource } from './load-content-source.ts';
 import { createRuntimeCatalog, generateContent, serializeRuntimeCatalog } from './generate.ts';
@@ -24,6 +25,7 @@ async function writeTopic(
   metadata: {
     id: string;
     title: string;
+    status?: TopicStatusKey;
     summary?: string;
     iconKey?: TopicIconKey;
     domains: readonly TopicDomainKey[];
@@ -46,6 +48,7 @@ async function writeTopic(
       ...(metadata.iconKey === undefined ? [] : [`iconKey: "${metadata.iconKey}"`]),
       'domains:',
       ...metadata.domains.map((domain) => `  - "${domain}"`),
+      `status: "${metadata.status ?? 'accepted'}"`,
       `kind: "${metadata.kind}"`,
       ...(metadata.childTopicIds.length === 0
         ? ['childTopicIds: []']
@@ -75,6 +78,7 @@ async function writeContentFixture(sourceRoot: string): Promise<void> {
   await writeTopic(sourceRoot, 'java', {
     id: javaTopicId,
     title: 'Java',
+    status: 'accepted',
     summary: 'Core language and platform concepts.',
     iconKey: 'java',
     domains: ['java'],
@@ -88,6 +92,7 @@ async function writeContentFixture(sourceRoot: string): Promise<void> {
     {
       id: collectionsTopicId,
       title: 'Collections',
+      status: 'accepted',
       iconKey: 'collection',
       domains: ['collections', 'java'],
       kind: 'concept',
@@ -102,6 +107,7 @@ async function writeContentFixture(sourceRoot: string): Promise<void> {
     {
       id: queueTopicId,
       title: 'Queue',
+      status: 'draft',
       iconKey: 'queue',
       domains: ['algorithms-data-structures', 'collections', 'java'],
       kind: 'concept',
@@ -118,6 +124,7 @@ async function writeContentFixture(sourceRoot: string): Promise<void> {
       id: complexityTopicId,
       title: 'Complexity',
       domains: ['algorithms-data-structures', 'collections'],
+      status: 'accepted',
       kind: 'concept',
       childTopicIds: [],
       relatedTopicIds: [queueTopicId],
@@ -162,6 +169,7 @@ describe('createRuntimeCatalog', () => {
         id: zuluId,
         title: 'Zulu',
         domains: ['java'],
+        status: 'accepted',
         kind: 'concept',
         childTopicIds: [childId],
         relatedTopicIds: [],
@@ -172,6 +180,7 @@ describe('createRuntimeCatalog', () => {
         id: alphaHighId,
         title: 'alpha',
         domains: ['java'],
+        status: 'accepted',
         kind: 'concept',
         childTopicIds: [childId],
         relatedTopicIds: [],
@@ -182,6 +191,7 @@ describe('createRuntimeCatalog', () => {
         id: childId,
         title: 'Child',
         domains: ['java'],
+        status: 'accepted',
         kind: 'concept',
         childTopicIds: [],
         relatedTopicIds: [],
@@ -192,6 +202,7 @@ describe('createRuntimeCatalog', () => {
         id: alphaLowId,
         title: 'Alpha',
         domains: ['java'],
+        status: 'accepted',
         kind: 'concept',
         childTopicIds: [childId],
         relatedTopicIds: [],
@@ -281,6 +292,7 @@ describe('generateContent', () => {
     });
     expect(parsedCatalog.topicsById[javaTopicId]).toEqual({
       title: 'Java',
+      status: 'accepted',
       summary: 'Core language and platform concepts.',
       iconKey: 'java',
       domains: ['java'],
@@ -294,6 +306,7 @@ describe('generateContent', () => {
       summary: null,
       iconKey: 'queue',
       domains: ['java', 'collections', 'algorithms-data-structures'],
+      status: 'draft',
       kind: 'concept',
       relatedTopicIds: [javaTopicId, collectionsTopicId],
     });
@@ -356,6 +369,7 @@ describe('generateContent', () => {
       {
         id: queueTopicId,
         title: 'Queue',
+        status: 'draft',
         domains: ['java'],
         kind: 'concept',
         childTopicIds: [complexityTopicId],

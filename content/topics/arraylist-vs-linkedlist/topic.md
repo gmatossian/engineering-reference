@@ -1,6 +1,7 @@
 ---
 id: '8df831eb-e81b-450e-9f40-0ec30afaace3'
 title: 'ArrayList versus LinkedList'
+status: 'accepted'
 summary: 'Compare positional access, insertion costs, and memory behavior before choosing an implementation.'
 iconKey: 'complexity'
 domains:

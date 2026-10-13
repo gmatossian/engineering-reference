@@ -1,6 +1,7 @@
 ---
 id: 'fc3f3ad0-3d94-42a5-a79b-9309c1140cf0'
 title: 'Map views and iteration'
+status: 'accepted'
 summary: 'Iterate keys, values, or entries without extra lookups or accidental changes through backed views.'
 iconKey: 'collection'
 domains:

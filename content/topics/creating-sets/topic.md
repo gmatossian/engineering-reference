@@ -1,6 +1,7 @@
 ---
 id: '131944ce-d9f9-4053-889d-87f229e38516'
 title: 'Creating sets'
+status: 'accepted'
 summary: 'Choose a set construction based on mutability, duplicate handling, nulls, and ordering.'
 iconKey: 'creation'
 domains:

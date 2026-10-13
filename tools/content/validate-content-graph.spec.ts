@@ -3,6 +3,7 @@ import type { LoadedContentSource } from './load-content-source.ts';
 import { validateContentGraph } from './validate-content-graph.ts';
 
 const defaultTopicClassification = {
+  status: 'accepted' as const,
   domains: ['java'] as 'java'[],
   kind: 'concept' as const,
   relatedTopicIds: [] as string[],

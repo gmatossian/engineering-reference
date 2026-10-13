@@ -1,6 +1,7 @@
 ---
 id: '00000000-0000-4000-8000-000000000007'
 title: 'Beacon operations'
+status: 'accepted'
 summary: 'Prefix-match search fixture.'
 iconKey: 'operations'
 domains:

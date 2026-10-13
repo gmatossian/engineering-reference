@@ -1,6 +1,7 @@
 ---
 id: 'e28eb58c-f60a-43df-99e0-7f51d031f5c4'
 title: 'Sorting map entries'
+status: 'accepted'
 summary: 'Order key-value pairs by value, then break ties by key without changing the map.'
 iconKey: 'ordering'
 domains:

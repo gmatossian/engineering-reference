@@ -69,6 +69,15 @@ export const TOPIC_KIND_LABELS: Readonly<Record<TopicKindKey, string>> = {
   pattern: 'Pattern or technique',
 };
 
+export const TOPIC_STATUS_KEYS = ['draft', 'accepted'] as const;
+
+export type TopicStatusKey = (typeof TOPIC_STATUS_KEYS)[number];
+
+export const TOPIC_STATUS_LABELS: Readonly<Record<TopicStatusKey, string>> = {
+  draft: 'Draft',
+  accepted: 'Accepted',
+};
+
 export interface TopicContentOutlineItem {
   readonly fragment: string;
   readonly label: string;
@@ -76,6 +85,7 @@ export interface TopicContentOutlineItem {
 }
 
 export interface RuntimeTopic {
+  readonly status: TopicStatusKey;
   readonly title: string;
   readonly summary: string | null;
   readonly iconKey: TopicIconKey | null;

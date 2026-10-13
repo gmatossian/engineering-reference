@@ -1,6 +1,7 @@
 ---
 id: '080e9bef-0cdf-49a8-b812-2a65ff06d78b'
 title: 'Creating lists'
+status: 'accepted'
 summary: 'Choose a list construction based on mutability, copying, and null handling.'
 iconKey: 'creation'
 domains:

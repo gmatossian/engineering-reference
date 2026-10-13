@@ -56,14 +56,14 @@ The direction was selected because it:
 
 The base palette is warm and restrained:
 
-| Role | Reference value | Use |
-| --- | --- | --- |
-| Canvas | `#fbf9f4` | Page background |
-| Card | `#ffffff` | Navigational cards, rows, and bounded content surfaces |
-| Primary text | `#1b1c19` | Headings and primary labels |
-| Secondary text | `#46474b` | Supporting text |
-| Hairline | `#e5e0d5` | Borders and dividers |
-| Strong outline | `#76777b` | Focus and emphasized boundaries where appropriate |
+| Role           | Reference value | Use                                                    |
+| -------------- | --------------- | ------------------------------------------------------ |
+| Canvas         | `#fbf9f4`       | Page background                                        |
+| Card           | `#ffffff`       | Navigational cards, rows, and bounded content surfaces |
+| Primary text   | `#1b1c19`       | Headings and primary labels                            |
+| Secondary text | `#46474b`       | Supporting text                                        |
+| Hairline       | `#e5e0d5`       | Borders and dividers                                   |
+| Strong outline | `#76777b`       | Focus and emphasized boundaries where appropriate      |
 
 The implementation uses restrained accent families for related icon concepts:
 
@@ -88,11 +88,11 @@ consistent default treatment in the UI.
 
 Typography supplies much of the interface's hierarchy:
 
-| Role | Preferred family | Character |
-| --- | --- | --- |
-| Application identity and headings | Plus Jakarta Sans | Distinctive, compact, and contemporary |
-| Body and navigation | Plus Jakarta Sans | Humanist, approachable, and readable at interface and reference densities |
-| Code | JetBrains Mono | Reserved for authored code and inline technical notation |
+| Role                              | Preferred family  | Character                                                                 |
+| --------------------------------- | ----------------- | ------------------------------------------------------------------------- |
+| Application identity and headings | Plus Jakarta Sans | Distinctive, compact, and contemporary                                    |
+| Body and navigation               | Plus Jakarta Sans | Humanist, approachable, and readable at interface and reference densities |
+| Code                              | JetBrains Mono    | Reserved for authored code and inline technical notation                  |
 
 The page title, introductory copy, Topic titles, supporting text, and body
 content must remain visibly distinct through size, weight, line height, and
@@ -378,13 +378,30 @@ The rail is navigation rather than a progress sequence, so it does not number
 entries or present them as pills or cards. Short Topics and layouts without room
 for hierarchy, content, and outline omit it.
 
+## Draft Status Presentation
+
+Draft Topics use one quiet text badge beside the canonical title across navigation,
+results, hierarchy occurrences, breadcrumbs, and the Topic header. Use the existing
+warm ochre text and soft surface, small ordinary sentence-case text, and a restrained
+radius. Keep title and badge readable when wrapping. Avoid fading the whole Topic,
+using a warning treatment, replacing its recognition icon, or relying on color alone.
+Accepted Topics do not need a badge. The Topic heading retains its title and is
+programmatically associated with the visible Draft text.
+
+Add a labelled native Status dropdown beside Domain in the existing index filter
+region: All, Draft, Accepted. Retain the Topic type controls. The status dropdown
+stacks with other controls at narrow widths. Explicit status filtering produces a
+flat list with unique-topic counts and active-status headings; All preserves the
+existing forest/flat rules. Labels and controls remain accessible, with no in-app
+promotion action.
+
 ## All-Topics Presentation
 
 The all-Topics page is a reference index, not a faceted analytics dashboard.
 It begins with a clear `All topics` heading and short orientation text, followed
 by one compact control region containing:
 
-- native domain and kind controls;
+- native domain, kind, and status controls;
 - the result count; and
 - a visible clear action when constraints are active.
 
@@ -396,7 +413,7 @@ Their boundaries, focus indicators, and selected values remain clear without
 depending on color. At narrow widths they stack to the available measure; they
 do not move into a modal, drawer, or horizontally scrolling toolbar.
 
-Without a title query or kind filter, the index uses an expandable forest rather
+Without a title query, kind filter, or status filter, the index uses an expandable forest rather
 than an alphabetical card list. Each real root occupies a calm bounded surface
 and starts expanded; immediate children reveal the catalog's main structure,
 while deeper branches remain available through separate disclosure controls.
@@ -410,7 +427,7 @@ to explain where matching Topics are found. Branch rows show unique matching
 Topic counts; leaves show their friendly content kind. Counts are supporting
 information rather than badges or rankings.
 
-A title query, kind filter, or both produce a flat result list with an explicit
+A title query, kind filter, status filter, or a combination produce a flat result list with an explicit
 heading that names the active result set. Each result is a native link whose
 primary line is the title and whose supporting text names its kind and domains
 so duplicate or ambiguous titles remain understandable. The UI does not

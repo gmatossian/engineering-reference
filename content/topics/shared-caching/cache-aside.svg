@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="310" viewBox="0 0 560 310" role="img" aria-labelledby="title description">
+  <title id="title">Cache-aside: the application owns miss handling</title>
+  <desc id="description">The application checks the shared cache. A hit returns immediately. On a miss, the application reads the database, caches the result with a TTL, and returns it.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#52616d"/></marker>
+    <style>
+      text { font-family: 'Avenir Next', 'Segoe UI', sans-serif; fill: #1b1c19; }
+      .heading { font-size: 18px; font-weight: 700; }
+      .node { font-size: 17px; font-weight: 600; text-anchor: middle; }
+      .label { font-size: 14px; fill: #4f5054; }
+      .line { fill: none; stroke: #52616d; stroke-width: 2; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect x="1" y="1" width="558" height="308" rx="10" fill="#f7f8fa"/>
+  <text class="heading" x="18" y="30">Cache-aside · application handles the miss</text>
+  <rect x="20" y="119" width="130" height="70" rx="8" fill="#fff" stroke="#c6c1b6"/>
+  <text class="node" x="85" y="160">Application</text>
+  <rect x="365" y="60" width="175" height="66" rx="8" fill="#eaf7ef" stroke="#2f8d5c"/>
+  <text class="node" x="452" y="99">Shared cache</text>
+  <path class="line" d="M150 132L365 79"/>
+  <text class="label" x="183" y="85">1 Check key</text>
+  <path class="line" d="M365 114L150 151"/>
+  <text class="label" x="206" y="165">Hit: return value</text>
+  <rect x="365" y="210" width="175" height="66" rx="8" fill="#fff" stroke="#c6c1b6"/>
+  <text class="node" x="452" y="249">Database</text>
+  <path class="line" d="M150 175H205V226H365"/>
+  <text class="label" x="222" y="210">2 On miss: read source</text>
+  <path class="line" d="M365 260H175V190H150"/>
+  <text class="label" x="222" y="281">Source result</text>
+  <text class="label" x="20" y="294">3 Application caches result with TTL, then returns it</text>
+</svg>

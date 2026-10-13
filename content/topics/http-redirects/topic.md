@@ -1,6 +1,7 @@
 ---
 id: '6fa244ce-5f77-427b-b4a6-4217400d54ed'
 title: 'HTTP redirects'
+status: 'accepted'
 summary: 'Choose a redirect by permanence and method-preservation behavior.'
 iconKey: 'conversion'
 domains:

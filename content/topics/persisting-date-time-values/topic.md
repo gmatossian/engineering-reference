@@ -1,6 +1,7 @@
 ---
 id: 'eb6449dd-f815-42a9-8f95-7a6dc0d5341a'
 title: 'Persisting date/time values'
+status: 'accepted'
 iconKey: 'persistence'
 domains:
   - 'java'

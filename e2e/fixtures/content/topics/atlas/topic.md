@@ -1,6 +1,7 @@
 ---
 id: '00000000-0000-4000-8000-000000000001'
 title: 'Atlas'
+status: 'accepted'
 summary: 'Stable fixture root for browser behavior.'
 iconKey: 'java'
 domains:

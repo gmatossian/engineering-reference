@@ -35,6 +35,7 @@ Catalog
 Topic
   id: UUID
   title: string
+  status: draft | accepted
   summary: optional concise plain text
   iconKey: optional supported icon key
   domains: non-empty set of supported domain keys
@@ -68,6 +69,23 @@ Every Topic has a non-empty title. Titles are display text and are not
 identifiers, so they do not need to be globally unique. Two distinct Topics
 may both be titled `Complexity` when their content belongs to different
 contexts.
+
+## Editorial Status
+
+Every Topic explicitly declares `draft` or `accepted`. Draft means editorial
+acceptance is pending; Accepted means the owner has decided that actual retrieval
+use supports its place in the reference. New Topics start as Draft, including
+agent-authored and navigation-only Topics. Builds, commits, merges, and authored
+text review do not promote them automatically.
+
+Only explicit owner direction promotes a Topic or returns it to Draft after a
+substantial revision. Ordinary edits preserve acceptance. Status changes preserve
+UUID identity, canonical URLs, classification, authored ordering, and relationships.
+Status does not inherit from a parent or child.
+
+Drafts participate in ordinary discovery and navigation and satisfy all the same
+content, graph, safety, and rendering invariants. The application remains read-only:
+status is maintained in authored content, not through UI editing controls.
 
 ## Presentation Metadata
 
@@ -103,15 +121,15 @@ assert exclusive ownership or a canonical parent.
 The initial domain vocabulary is deliberately small and derived from the
 published corpus:
 
-| Key | Display label | Scope |
-| --- | --- | --- |
-| `java` | Java | The Java language, runtime, and general ecosystem |
-| `collections` | Collections | Collection APIs, collection choices, and collection-backed structures |
-| `concurrency` | Concurrency | Concurrency, parallel execution, coordination, and resource limits |
-| `persistence` | Persistence | JPA, ORM, repositories, and application persistence behavior |
-| `databases` | Databases | Database systems, SQL, storage, and data-access design |
-| `http` | HTTP | HTTP protocol semantics and lookup references |
-| `system-design` | System Design | Architecture decisions, estimation, and design exercises |
+| Key                          | Display label                  | Scope                                                                    |
+| ---------------------------- | ------------------------------ | ------------------------------------------------------------------------ |
+| `java`                       | Java                           | The Java language, runtime, and general ecosystem                        |
+| `collections`                | Collections                    | Collection APIs, collection choices, and collection-backed structures    |
+| `concurrency`                | Concurrency                    | Concurrency, parallel execution, coordination, and resource limits       |
+| `persistence`                | Persistence                    | JPA, ORM, repositories, and application persistence behavior             |
+| `databases`                  | Databases                      | Database systems, SQL, storage, and data-access design                   |
+| `http`                       | HTTP                           | HTTP protocol semantics and lookup references                            |
+| `system-design`              | System Design                  | Architecture decisions, estimation, and design exercises                 |
 | `algorithms-data-structures` | Algorithms and data structures | Complexity, algorithms, and language-independent data-structure concepts |
 
 These keys are a closed contract rather than author-defined tags. A Topic can
@@ -126,14 +144,14 @@ not an ordinary Topic edit.
 
 Every Topic has exactly one primary retrieval-oriented content kind:
 
-| Key | Display label | Meaning |
-| --- | --- | --- |
-| `area` | Area | An organizing overview such as Java or Databases; not the domain itself or its required gateway |
-| `concept` | Concept | An explanatory reference for a principle or behavior |
-| `operations` | Operations | API, syntax, task, or lookup material used while doing work |
-| `decision-aid` | Decision aid | A comparison, selection guide, or trade-off reference |
-| `exercise` | Exercise | An applied problem or case-study container |
-| `pattern` | Pattern or technique | A reusable solution shape or engineering technique |
+| Key            | Display label        | Meaning                                                                                         |
+| -------------- | -------------------- | ----------------------------------------------------------------------------------------------- |
+| `area`         | Area                 | An organizing overview such as Java or Databases; not the domain itself or its required gateway |
+| `concept`      | Concept              | An explanatory reference for a principle or behavior                                            |
+| `operations`   | Operations           | API, syntax, task, or lookup material used while doing work                                     |
+| `decision-aid` | Decision aid         | A comparison, selection guide, or trade-off reference                                           |
+| `exercise`     | Exercise             | An applied problem or case-study container                                                      |
+| `pattern`      | Pattern or technique | A reusable solution shape or engineering technique                                              |
 
 Kind describes how a reader uses the Topic, not its technical domain or visual
 style. Every Topic is already a reference, so `reference` is not a useful
@@ -290,8 +308,8 @@ as secondary curated paths on the landing page. The existing
 does not make those Topics the primary catalog gateways. Being included in this
 list is not an intrinsic property of a Topic, so there is no `isRoot` field.
 
-A landing Topic may also appear as another Topic's child. The terms *landing
-Topic* and *top-level Topic* therefore describe placement on the landing page,
+A landing Topic may also appear as another Topic's child. The terms _landing
+Topic_ and _top-level Topic_ therefore describe placement on the landing page,
 not a graph-theory root with no parents.
 
 Every curated landing Topic defines a summary for its landing presentation.

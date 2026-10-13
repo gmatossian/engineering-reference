@@ -1,4 +1,5 @@
 import { DOCUMENT } from '@angular/common';
+import { DraftStatus } from '../ui/draft-status/draft-status';
 import { Component, computed, effect, inject, input } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { CatalogService } from '../catalog/catalog.service';
@@ -13,6 +14,7 @@ import { TopicOutline } from './topic-outline';
 
 @Component({
   imports: [
+    DraftStatus,
     TopicBreadcrumbs,
     TopicContent,
     TopicHierarchy,

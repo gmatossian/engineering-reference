@@ -1,6 +1,7 @@
 ---
 id: '00000000-0000-4000-8000-00000000000f'
 title: 'Storage choice'
+status: 'draft'
 summary: 'Child decision fixture discoverable through search.'
 iconKey: 'database'
 domains:

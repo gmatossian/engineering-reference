@@ -1,6 +1,7 @@
 ---
 id: '78b29290-d46f-45b2-aaba-c31597ceb6d4'
 title: 'Java language evolution'
+status: 'accepted'
 summary: 'Find the Java release that introduced a significant modern language or core-library feature.'
 iconKey: 'java'
 domains:

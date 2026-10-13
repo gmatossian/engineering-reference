@@ -1,6 +1,7 @@
 ---
 id: '30e2c64a-8978-447e-bde6-022686cefe8d'
 title: 'Virtual threads and resource limits'
+status: 'accepted'
 summary: 'Use a virtual thread per blocking task while limiting scarce downstream resources separately.'
 iconKey: 'concurrency'
 domains:

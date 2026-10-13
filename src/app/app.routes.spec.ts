@@ -69,7 +69,7 @@ describe('application routes', () => {
     );
 
     expect(topicPage.id()).toBe(JAVA_TOPIC_ID);
-    expect(routeElement?.querySelector('h1')?.textContent).toBe('Java');
+    expect(routeElement?.querySelector('h1')?.textContent?.trim()).toBe('Java');
     expect(routeElement?.querySelector('.topic-content')).toBeNull();
     expect(childLink?.textContent?.trim()).toBe('Collections framework');
     expect(childLink?.getAttribute('href')).toBe(`/topics/${COLLECTIONS_TOPIC_ID}`);

@@ -1,6 +1,7 @@
 ---
 id: 'f9ff7ed9-ecd3-432c-b2e6-5ae1e323f3b0'
 title: 'Streams vs loops'
+status: 'accepted'
 summary: 'Choose declarative pipelines for transformations and explicit loops for control flow or coordinated mutation.'
 iconKey: 'conversion'
 domains:

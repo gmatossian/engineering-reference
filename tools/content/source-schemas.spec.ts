@@ -4,6 +4,7 @@ import { catalogSourceSchema, topicMetadataSchema } from './source-schemas.ts';
 const topicId = '11111111-1111-4111-8111-111111111111';
 const childTopicId = '22222222-2222-4222-8222-222222222222';
 const requiredClassification = {
+  status: 'accepted' as const,
   domains: ['java', 'collections'],
   kind: 'concept',
   relatedTopicIds: [] as string[],
@@ -57,6 +58,31 @@ describe('topicMetadataSchema', () => {
       ...requiredClassification,
       childTopicIds: [childTopicId],
     });
+  });
+
+  it.each(['draft', 'accepted'])('accepts explicit %s status', (status) => {
+    expect(
+      topicMetadataSchema.parse({
+        id: topicId,
+        title: 'Queue',
+        ...requiredClassification,
+        status,
+        childTopicIds: [],
+      }).status,
+    ).toBe(status);
+  });
+
+  it.each([undefined, 'published', null])('rejects missing or unsupported status %s', (status) => {
+    const result = topicMetadataSchema.safeParse({
+      id: topicId,
+      title: 'Queue',
+      ...requiredClassification,
+      status,
+      childTopicIds: [],
+    });
+    expect(result.success).toBe(false);
+    if (!result.success)
+      expect(result.error.issues.some((issue) => issue.path[0] === 'status')).toBe(true);
   });
 
   it('allows optional presentation metadata to be omitted', () => {
@@ -161,6 +187,7 @@ describe('topicMetadataSchema', () => {
         id: topicId,
         title: 'Queue',
         childTopicIds: [],
+        status: 'accepted',
         ...metadata,
       }).success,
     ).toBe(false);

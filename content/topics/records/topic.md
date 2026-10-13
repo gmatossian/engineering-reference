@@ -1,6 +1,7 @@
 ---
 id: '9e290750-ab85-4acb-bca2-88d7ad758cd7'
 title: 'Records'
+status: 'accepted'
 summary: 'Declare transparent data carriers with generated accessors, value equality, and concise construction.'
 iconKey: 'creation'
 domains:

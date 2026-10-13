@@ -132,7 +132,7 @@ to a shared boundary only after a concrete reuse requirement appears.
 
 `contracts/runtime-catalog.ts` is a framework-neutral boundary containing the
 `RuntimeCatalog` and `RuntimeTopic` TypeScript types and the closed
-`TOPIC_ICON_KEYS`, `TOPIC_DOMAIN_KEYS`, and `TOPIC_KIND_KEYS` vocabularies.
+`TOPIC_ICON_KEYS`, `TOPIC_DOMAIN_KEYS`, `TOPIC_KIND_KEYS`, and `TOPIC_STATUS_KEYS` vocabularies.
 Source validation imports the vocabularies as runtime values, while the
 generator and Angular application share their derived TypeScript types and
 display-label and ordering metadata. The boundary contains neither Angular-
@@ -184,7 +184,7 @@ and third-level headings after allowlist sanitization. New authored constructs
 still require an explicit content-contract change plus styling, sanitization,
 and test coverage.
 
-Custom catalog validation enforces UUID identity, required classification,
+Custom catalog validation enforces UUID identity, required explicit editorial status, classification,
 supported vocabulary keys, child and related references, authored ordering,
 uniqueness, child-graph acyclicity, and the requirement that every curated
 landing Topic has a summary. Child-graph reachability from a curated landing
@@ -207,7 +207,7 @@ Generation recreates this ignored directory deterministically:
 
 The generated JSON has the shape defined in the content storage decision and
 is type-checked against `RuntimeCatalog`. Optional `summary` and `iconKey`
-source fields become explicit nullable runtime properties; required `domains`,
+source fields become explicit nullable runtime properties; required `status`, `domains`,
 `kind`, `contentOutline`, `childTopicIds`, and `relatedTopicIds` retain
 predictable shapes. Each outline entry carries a deterministic fragment, label,
 and nested children. The generator also emits alphabetical Topic IDs, IDs by
@@ -360,14 +360,14 @@ derived from the Topic graph.
   owning catalog data or navigation history.
 - `TopicIndexPageComponent` normalizes query parameters, composes search and
   filters, exposes the result count, and selects hierarchy or flat-results
-  presentation. No query and no kind filter selects hierarchy presentation;
-  any title query or kind filter selects flat results with an explicit heading.
+  presentation. No query, kind filter, or status filter selects hierarchy presentation;
+  any title query, kind filter, or status filter selects flat results with an explicit heading.
 - `DomainTopicHierarchy` renders the complete or domain-pruned catalog forest
   as nested lists with native Topic links and independent disclosure controls.
   It starts every real root expanded, leaves deeper branches collapsed, retains
   out-of-domain ancestors when they provide necessary structural context, and
   reports unique matching Topic counts per branch.
-- `TopicResultListComponent` renders flat search or kind-filter results as
+- `TopicResultListComponent` renders flat search, kind-filter, or status-filter results as
   native links with kind and domain context.
 - `TopicPageComponent` resolves the route input, sets view metadata, and
   composes the selected Topic header, contextual paths, hierarchy, content,
@@ -398,6 +398,13 @@ derived from the Topic graph.
 - `RelatedTopicListComponent` renders the authored related UUID order as a
   separately labelled native-link region with canonical title, icon, kind, and
   domain context. It remains independent from the graph-projected hierarchy.
+- `DraftStatus` renders the shared quiet Draft text badge from canonical status
+  and renders no badge for accepted Topics. Summaries and hierarchy projections
+  propagate status unchanged; generic navigation and Topic headers consume it.
+  Source validation rejects missing/unsupported status, and the generator copies
+  the required value without deriving acceptance from publication or Git state.
+  Status filtering intersects existing browse constraints over the bundled catalog;
+  it needs no new runtime request, persistence layer, or generated status index.
 - `TopicNotFoundComponent` provides the explicit unknown-route or unknown-Topic
   view.
 

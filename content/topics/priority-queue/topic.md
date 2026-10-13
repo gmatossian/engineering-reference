@@ -1,6 +1,7 @@
 ---
 id: 'bb3dda6e-7ad8-4358-834d-094a0b333a5e'
 title: 'PriorityQueue'
+status: 'accepted'
 summary: 'Use Java’s heap-backed collection to process elements by natural or comparator-defined priority.'
 iconKey: 'priority'
 domains:

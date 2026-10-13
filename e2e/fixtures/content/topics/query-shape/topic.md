@@ -1,6 +1,7 @@
 ---
 id: '00000000-0000-4000-8000-000000000013'
 title: 'Query shape'
+status: 'accepted'
 summary: 'Structured diagram fixture for outline and layout behavior.'
 iconKey: 'database'
 domains:

@@ -1,6 +1,7 @@
 ---
 id: '044ec0de-f354-4a1c-958e-98a3d1b833fb'
 title: 'Concurrent queues'
+status: 'accepted'
 summary: 'Choose between immediate concurrent access and blocking producer-consumer coordination.'
 iconKey: 'concurrency'
 domains:

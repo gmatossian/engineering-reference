@@ -1,6 +1,7 @@
 ---
 id: '1dbd7b94-8a7b-41d0-8b1f-46d2e5b21720'
 title: 'Relationship loading and query shape'
+status: 'accepted'
 summary: 'Choose a fetch strategy from the data a use case needs, then verify the SQL, rows, round trips, and pagination behavior.'
 iconKey: 'architecture'
 domains:

@@ -38,6 +38,7 @@ const createRootTopic = (title: string): RuntimeTopic => ({
   iconKey: null,
   domains: ['java'],
   kind: 'area',
+  status: 'accepted',
   mainContentHtml: null,
   contentOutline: [],
   childTopicIds: [],
@@ -63,6 +64,7 @@ describe('CatalogService', () => {
     expect(landingTopics[0]).toEqual({
       id: JAVA_TOPIC_ID,
       title: 'Java',
+      status: 'accepted',
       summary: 'Core language, collections, concurrency, and persistence concepts.',
       iconKey: 'java',
     });
@@ -76,6 +78,7 @@ describe('CatalogService', () => {
     expect(service.getTopic(URL_SHORTENER_TOPIC_ID)).toMatchObject({
       domains: ['system-design'],
       kind: 'exercise',
+      status: 'accepted',
       relatedTopicIds: [
         '17e411bb-2c99-49e8-93ec-18b767e4a890',
         '9009159b-54aa-4724-94a2-5189a1e21437',
@@ -101,8 +104,8 @@ describe('CatalogService', () => {
       'system-design',
       'algorithms-data-structures',
     ]);
-    expect(service.getDomainTopicCount('system-design')).toBe(7);
-    expect(service.getDomainTopicCount('http')).toBe(5);
+    expect(service.getDomainTopicCount('system-design')).toBe(11);
+    expect(service.getDomainTopicCount('http')).toBe(6);
     expect(service.getKindOptions().map(({ key }) => key)).toEqual([
       'area',
       'concept',
@@ -120,11 +123,65 @@ describe('CatalogService', () => {
         domain: 'not-a-domain',
         kind: 'not-a-kind',
       }),
-    ).toEqual({ query: 'Queue', domain: null, kind: null });
+    ).toEqual({ query: 'Queue', domain: null, kind: null, status: null });
+  });
+
+  it('keeps the four initial drafts discoverable and counts each UUID once', () => {
+    const draftView = service.getTopicBrowseView(
+      service.normalizeBrowseCriteria({ status: 'draft' }),
+    );
+    const expectedDraftIds = [
+      '92179879-7f1c-49b1-8751-cf296302bb82',
+      'fa8a91df-3ad6-4a30-bba7-34ea42c9b1ac',
+      '4aa75f9e-93ce-46e3-80d7-ac13d14a77c0',
+      '0eab5dfb-d4ab-4cf8-a56c-41b4548da56c',
+    ];
+    expect(draftView.mode).toBe('results');
+    expect(draftView.resultCount).toBe(4);
+    expect(draftView.resultHeading).toBe('Draft topics');
+    expect(draftView.sections[0].topics.map(({ id }) => id).sort()).toEqual(
+      expectedDraftIds.sort(),
+    );
+    const allView = service.getTopicBrowseView(service.normalizeBrowseCriteria({}));
+    const occurrences = flattenHierarchy(allView.hierarchyRoots).filter(
+      ({ status }) => status === 'draft',
+    );
+    expect(occurrences.length).toBeGreaterThanOrEqual(4);
+    expect(new Set(occurrences.map(({ id }) => id)).size).toBe(4);
+    const acceptedView = service.getTopicBrowseView(
+      service.normalizeBrowseCriteria({ status: 'accepted' }),
+    );
+    expect(acceptedView.resultCount + draftView.resultCount).toBe(allView.resultCount);
+    expect(acceptedView.sections[0].topics.every(({ status }) => status === 'accepted')).toBe(true);
+  });
+
+  it('intersects status, domain, kind, and title without altering deterministic ordering', () => {
+    const criteria = service.normalizeBrowseCriteria({
+      status: 'draft',
+      domain: 'java',
+      kind: 'operations',
+      query: 'caching',
+    });
+    const view = service.getTopicBrowseView(criteria);
+    expect(view.sections[0].topics.map(({ title }) => title)).toEqual([
+      'Spring caching with Redis',
+    ]);
+    expect(view.resultHeading).toBe('Operations matching “caching” in Java · Draft');
+    expect(service.getTopicBrowseView({ ...criteria, status: 'accepted' }).resultCount).toBe(0);
+    expect(service.normalizeBrowseCriteria({ status: 'published' }).status).toBeNull();
+    expect(service.getStatusOptions()).toEqual([
+      { key: 'draft', label: 'Draft' },
+      { key: 'accepted', label: 'Accepted' },
+    ]);
   });
 
   it('ranks exact, prefix, and remaining title matches deterministically', () => {
-    const view = service.getTopicBrowseView({ query: 'queue', domain: null, kind: null });
+    const view = service.getTopicBrowseView({
+      query: 'queue',
+      domain: null,
+      kind: null,
+      status: null,
+    });
 
     expect(view.sections[0].topics.map(({ title }) => title)).toEqual([
       'Queue',
@@ -134,10 +191,10 @@ describe('CatalogService', () => {
   });
 
   it('projects the unconstrained catalog as the complete root forest', () => {
-    const view = service.getTopicBrowseView({ query: '', domain: null, kind: null });
+    const view = service.getTopicBrowseView({ query: '', domain: null, kind: null, status: null });
 
     expect(view.mode).toBe('hierarchy');
-    expect(view.resultCount).toBe(74);
+    expect(view.resultCount).toBe(78);
     expect(view.sections).toEqual([]);
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
       'Java',
@@ -161,6 +218,7 @@ describe('CatalogService', () => {
       query: '',
       domain: 'system-design',
       kind: 'exercise',
+      status: null,
     });
 
     expect(view.resultCount).toBe(1);
@@ -174,33 +232,54 @@ describe('CatalogService', () => {
       query: '',
       domain: 'system-design',
       kind: null,
+      status: null,
     });
 
-    expect(view.resultCount).toBe(7);
+    expect(view.resultCount).toBe(11);
     expect(view.mode).toBe('hierarchy');
     expect(view.sections).toEqual([]);
-    expect(view.hierarchyRoots.map(({ title }) => title)).toEqual(['System Design']);
-    expect(view.hierarchyRoots[0].matchingTopicCount).toBe(7);
+    expect(view.hierarchyRoots.map(({ title }) => title)).toEqual(['System Design', 'Databases']);
+    expect(view.hierarchyRoots[1].matchesDomain).toBe(false);
+    expect(view.hierarchyRoots[1].children.map(({ title }) => title)).toEqual([
+      'Relational databases (SQL)',
+    ]);
+    expect(view.hierarchyRoots[0].matchingTopicCount).toBe(10);
     expect(view.hierarchyRoots[0].children.map(({ title }) => title)).toEqual([
       'Scale and estimation',
       'URL shortener',
       'Trade-off triggers',
       'Pagination: offset vs cursor',
+      'Content delivery networks (CDNs)',
+      'Shared caching',
     ]);
   });
 
   it('keeps a small root domain in the same hierarchy presentation', () => {
-    const view = service.getTopicBrowseView({ query: '', domain: 'http', kind: null });
+    const view = service.getTopicBrowseView({
+      query: '',
+      domain: 'http',
+      kind: null,
+      status: null,
+    });
 
     expect(view.mode).toBe('hierarchy');
-    expect(view.hierarchyRoots.map(({ title }) => title)).toEqual(['HTTP']);
+    expect(view.hierarchyRoots.map(({ title }) => title)).toEqual(['System Design', 'HTTP']);
+    expect(view.hierarchyRoots[0].matchesDomain).toBe(false);
     expect(view.hierarchyRoots[0].children.map(({ title }) => title)).toEqual([
+      'Content delivery networks (CDNs)',
+    ]);
+    expect(view.hierarchyRoots[1].children.map(({ title }) => title)).toEqual([
       'HTTP status codes',
     ]);
   });
 
   it('retains non-matching ancestors as context for a non-root domain', () => {
-    const view = service.getTopicBrowseView({ query: '', domain: 'collections', kind: null });
+    const view = service.getTopicBrowseView({
+      query: '',
+      domain: 'collections',
+      kind: null,
+      status: null,
+    });
     const java = view.hierarchyRoots[0];
 
     expect(view.resultCount).toBe(29);
@@ -222,13 +301,16 @@ describe('CatalogService', () => {
 
   it('describes filtered and searched result context explicitly', () => {
     expect(
-      service.getTopicBrowseView({ query: '', domain: 'java', kind: 'concept' }).resultHeading,
+      service.getTopicBrowseView({ query: '', domain: 'java', kind: 'concept', status: null })
+        .resultHeading,
     ).toBe('Concepts in Java');
     expect(
-      service.getTopicBrowseView({ query: 'queue', domain: 'java', kind: 'concept' }).resultHeading,
+      service.getTopicBrowseView({ query: 'queue', domain: 'java', kind: 'concept', status: null })
+        .resultHeading,
     ).toBe('Concepts matching “queue” in Java');
     expect(
-      service.getTopicBrowseView({ query: 'queue', domain: null, kind: null }).resultHeading,
+      service.getTopicBrowseView({ query: 'queue', domain: null, kind: null, status: null })
+        .resultHeading,
     ).toBe('Results for “queue”');
   });
 
@@ -321,6 +403,7 @@ describe('CatalogService', () => {
     expect(service.getRelatedTopics(urlShortener!)).toEqual([
       {
         id: SCALE_AND_ESTIMATION_TOPIC_ID,
+        status: 'accepted',
         title: 'Scale and estimation',
         summary:
           'Turn traffic, payload, retention, and peak assumptions into useful capacity estimates.',
@@ -331,6 +414,7 @@ describe('CatalogService', () => {
       },
       {
         id: TRADEOFF_TRIGGERS_TOPIC_ID,
+        status: 'accepted',
         title: 'Trade-off triggers',
         summary:
           'Turn system requirements into explicit design choices and name the cost of each bias.',

@@ -1,7 +1,17 @@
 @if (topic(); as resolvedTopic) {
   <article class="topic-page">
     <header class="topic-page__header">
-      <h1 tabindex="-1">{{ resolvedTopic.title }}</h1>
+      <div class="topic-page__title-line">
+        <h1
+          tabindex="-1"
+          [attr.aria-describedby]="resolvedTopic.status === 'draft' ? 'topic-draft-status' : null"
+        >
+          {{ resolvedTopic.title }}
+        </h1>
+        @if (resolvedTopic.status === 'draft') {
+          <span id="topic-draft-status"><app-draft-status [status]="resolvedTopic.status" /></span>
+        }
+      </div>
 
       @if (topicPaths(); as paths) {
         @if (paths.length > 0 && paths[0].length > 1) {

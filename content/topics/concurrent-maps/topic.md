@@ -1,6 +1,7 @@
 ---
 id: 'b1273826-a36d-4b96-8c91-e20a85c191b9'
 title: 'Concurrent maps'
+status: 'accepted'
 summary: 'Choose an unordered or sorted concurrent map and update individual keys atomically.'
 iconKey: 'concurrency'
 domains:

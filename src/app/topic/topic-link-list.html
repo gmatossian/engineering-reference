@@ -14,7 +14,10 @@
           <app-topic-icon [iconKey]="topic.iconKey" />
 
           <span class="topic-link__copy">
-            <span class="topic-link__title">{{ topic.title }}</span>
+            <span
+              ><span class="topic-link__title">{{ topic.title }}</span
+              ><app-draft-status [status]="topic.status"
+            /></span>
 
             @if (presentation() === 'curated' && topic.summary !== null) {
               <span class="topic-link__summary">{{ topic.summary }}</span>

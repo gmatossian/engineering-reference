@@ -1,7 +1,7 @@
 <section class="topic-index" aria-labelledby="topic-index-heading">
   <header class="topic-index__header">
     <h1 id="topic-index-heading" tabindex="-1">All topics</h1>
-    <p>Browse the complete catalog by domain and topic type.</p>
+    <p>Browse the complete catalog by domain, topic type, and status.</p>
   </header>
 
   <div class="topic-index__controls" aria-label="Topic filters">
@@ -12,6 +12,18 @@
         @for (domain of domainOptions; track domain.key) {
           <option [value]="domain.key" [selected]="criteria().domain === domain.key">
             {{ domain.label }}
+          </option>
+        }
+      </select>
+    </div>
+
+    <div class="topic-index__filter">
+      <label for="topic-status">Status</label>
+      <select id="topic-status" (change)="changeStatus($event)">
+        <option value="" [selected]="criteria().status === null">All</option>
+        @for (status of statusOptions; track status.key) {
+          <option [value]="status.key" [selected]="criteria().status === status.key">
+            {{ status.label }}
           </option>
         }
       </select>
@@ -63,8 +75,7 @@
       {{ browseView().resultHeading ?? 'Topic results' }}
     </h2>
     <p class="topic-index__count" role="status" aria-live="polite" aria-atomic="true">
-      {{ browseView().resultCount }}
-      {{ browseView().resultCount === 1 ? 'topic' : 'topics' }}
+      {{ resultCountText() }}
     </p>
 
     @if (browseView().resultCount > 0) {

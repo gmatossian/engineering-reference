@@ -5,16 +5,20 @@ import type {
   TopicDomainKey,
   TopicIconKey,
   TopicKindKey,
+  TopicStatusKey,
 } from '../../../contracts/runtime-catalog';
 import {
   TOPIC_DOMAIN_KEYS,
   TOPIC_DOMAIN_LABELS,
   TOPIC_KIND_KEYS,
   TOPIC_KIND_LABELS,
+  TOPIC_STATUS_KEYS,
+  TOPIC_STATUS_LABELS,
 } from '../../../contracts/runtime-catalog';
 import generatedCatalog from '../../../.generated/catalog.json';
 
 export interface TopicSummary {
+  readonly status: TopicStatusKey;
   readonly id: string;
   readonly title: string;
   readonly summary: string | null;
@@ -30,6 +34,7 @@ export interface TopicBrowseCriteria {
   readonly query: string;
   readonly domain: TopicDomainKey | null;
   readonly kind: TopicKindKey | null;
+  readonly status: TopicStatusKey | null;
 }
 
 export interface TopicBrowseResult extends TopicSummary {
@@ -99,13 +104,21 @@ export class CatalogService {
     return TOPIC_KIND_KEYS.map((key) => ({ key, label: TOPIC_KIND_LABELS[key] }));
   }
 
+  getStatusOptions(): readonly CatalogOption<TopicStatusKey>[] {
+    return TOPIC_STATUS_KEYS.map((key) => ({ key, label: TOPIC_STATUS_LABELS[key] }));
+  }
+
   normalizeBrowseCriteria(criteria: {
     readonly query?: string | null;
     readonly domain?: string | null;
     readonly kind?: string | null;
+    readonly status?: string | null;
   }): TopicBrowseCriteria {
     return {
       query: criteria.query?.trim() ?? '',
+      status: TOPIC_STATUS_KEYS.includes(criteria.status as TopicStatusKey)
+        ? (criteria.status as TopicStatusKey)
+        : null,
       domain: TOPIC_DOMAIN_KEYS.includes(criteria.domain as TopicDomainKey)
         ? (criteria.domain as TopicDomainKey)
         : null,
@@ -117,7 +130,8 @@ export class CatalogService {
 
   getTopicBrowseView(criteria: TopicBrowseCriteria): TopicBrowseView {
     const matchingTopics = this.getMatchingTopics(criteria);
-    const shouldShowHierarchy = criteria.query === '' && criteria.kind === null;
+    const shouldShowHierarchy =
+      criteria.query === '' && criteria.kind === null && criteria.status === null;
 
     if (shouldShowHierarchy) {
       return {
@@ -198,6 +212,7 @@ export class CatalogService {
         (topic) =>
           (criteria.domain === null || topic.domains.some(({ key }) => key === criteria.domain)) &&
           (criteria.kind === null || topic.kind.key === criteria.kind) &&
+          (criteria.status === null || topic.status === criteria.status) &&
           (foldedQuery === '' || topic.title.toLocaleLowerCase().includes(foldedQuery)),
       )
       .sort((left, right) => {
@@ -224,7 +239,7 @@ export class CatalogService {
   }
 
   private getResultHeading(criteria: TopicBrowseCriteria): string | null {
-    if (criteria.query === '' && criteria.kind === null) {
+    if (criteria.query === '' && criteria.kind === null && criteria.status === null) {
       return null;
     }
 
@@ -232,15 +247,20 @@ export class CatalogService {
     const kindLabel = criteria.kind === null ? null : TOPIC_KIND_RESULT_LABELS[criteria.kind];
     const domainSuffix = domainLabel === null ? '' : ` in ${domainLabel}`;
 
+    const statusLabel = criteria.status === null ? null : TOPIC_STATUS_LABELS[criteria.status];
+    const statusSuffix = statusLabel === null ? '' : ` · ${statusLabel}`;
+
     if (criteria.query !== '' && kindLabel !== null) {
-      return `${kindLabel} matching “${criteria.query}”${domainSuffix}`;
+      return `${kindLabel} matching “${criteria.query}”${domainSuffix}${statusSuffix}`;
     }
 
     if (criteria.query !== '') {
-      return `Results for “${criteria.query}”${domainSuffix}`;
+      return `Results for “${criteria.query}”${domainSuffix}${statusSuffix}`;
     }
 
-    return `${kindLabel}${domainSuffix}`;
+    return kindLabel === null
+      ? `${statusLabel} topics${domainSuffix}`
+      : `${kindLabel}${domainSuffix}${statusSuffix}`;
   }
 
   private getRequiredBrowseResult(id: string): TopicBrowseResult {
@@ -372,6 +392,7 @@ export class CatalogService {
     return {
       id,
       title: topic.title,
+      status: topic.status,
       summary: topic.summary,
       iconKey: topic.iconKey,
     };

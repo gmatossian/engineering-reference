@@ -1,6 +1,7 @@
 ---
 id: '2fe75411-92f0-4e6f-bfd0-1756dc08ebe2'
 title: 'Arrays'
+status: 'accepted'
 summary: 'Initialize fixed-length Java arrays according to what is known at creation time.'
 iconKey: 'array'
 domains:

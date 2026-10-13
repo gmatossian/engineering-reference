@@ -1,6 +1,7 @@
 ---
 id: '8dd9f085-233c-4256-a012-717137df5473'
 title: 'Choosing HTTP response codes'
+status: 'accepted'
 summary: 'Match common request outcomes to response codes and required response details.'
 iconKey: 'operations'
 domains:

@@ -1,6 +1,7 @@
 ---
 id: '8cbea92a-606e-4ed3-839c-c7fff67f0909'
 title: 'Queue'
+status: 'accepted'
 iconKey: 'queue'
 domains:
   - 'java'

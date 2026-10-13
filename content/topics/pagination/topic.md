@@ -1,6 +1,7 @@
 ---
 id: '4f4a4da6-3a42-4e60-b3b3-8669ba57cf70'
 title: 'Pagination: offset vs cursor'
+status: 'accepted'
 summary: 'Choose a pagination strategy based on page navigation, dataset size, and behavior while data changes.'
 iconKey: 'architecture'
 domains:

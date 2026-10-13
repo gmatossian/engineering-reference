@@ -1,10 +1,11 @@
 import { NgTemplateOutlet } from '@angular/common';
+import { DraftStatus } from '../ui/draft-status/draft-status';
 import { Component, computed, effect, ElementRef, input, signal, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import type { TopicHierarchyNode, TopicPath } from '../catalog/catalog.service';
 
 @Component({
-  imports: [NgTemplateOutlet, RouterLink],
+  imports: [DraftStatus, NgTemplateOutlet, RouterLink],
   selector: 'app-topic-hierarchy',
   styleUrl: './topic-hierarchy.css',
   templateUrl: './topic-hierarchy.html',

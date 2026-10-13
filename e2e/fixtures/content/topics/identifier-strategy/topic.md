@@ -1,6 +1,7 @@
 ---
 id: '00000000-0000-4000-8000-00000000000e'
 title: 'Identifier strategy'
+status: 'accepted'
 summary: 'Child concept fixture.'
 iconKey: 'algorithm'
 domains:

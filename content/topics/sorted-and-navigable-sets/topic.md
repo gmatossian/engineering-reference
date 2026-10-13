@@ -1,6 +1,7 @@
 ---
 id: '1cfa160f-9b9b-4f56-855d-74b87a5f76da'
 title: 'Sorted and navigable sets'
+status: 'accepted'
 summary: 'Use ordered set interfaces for nearest matches, endpoints, and live range views.'
 iconKey: 'ordering'
 domains:

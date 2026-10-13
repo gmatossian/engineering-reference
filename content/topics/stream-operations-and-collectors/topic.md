@@ -1,6 +1,7 @@
 ---
 id: '45d1ae48-9ecf-4186-8df2-2e199ebcb4b4'
 title: 'Operations and collectors'
+status: 'accepted'
 summary: 'Choose common stream transformations, terminal operations, and collectors by the result you need.'
 iconKey: 'collection'
 domains:

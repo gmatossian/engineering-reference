@@ -77,7 +77,7 @@ Topic UUIDs:
 
 ```yaml
 landingTopicIds:
-  - "11111111-1111-4111-8111-111111111111"
+  - '11111111-1111-4111-8111-111111111111'
 ```
 
 The file does not list every Topic. Topic discovery supplies the complete
@@ -96,28 +96,35 @@ metadata accepted in this document:
 
 ```yaml
 ---
-id: "33333333-3333-4333-8333-333333333333"
-title: "Queue"
-iconKey: "queue"
+id: '33333333-3333-4333-8333-333333333333'
+title: 'Queue'
+status: 'draft'
+iconKey: 'queue'
 domains:
-  - "java"
-  - "collections"
-  - "algorithms-data-structures"
-kind: "concept"
+  - 'java'
+  - 'collections'
+  - 'algorithms-data-structures'
+kind: 'concept'
 childTopicIds:
-  - "44444444-4444-4444-8444-444444444444"
+  - '44444444-4444-4444-8444-444444444444'
 relatedTopicIds: []
 ---
 ```
 
-Six properties are required:
+Seven properties are required:
 
 - `id` is the Topic's stable UUID;
 - `title` is its non-empty, non-unique display title;
+- `status` is its explicit `draft` or `accepted` editorial state;
 - `domains` is its non-empty set of supported technical-domain keys;
 - `kind` is its single supported retrieval-oriented content-kind key;
 - `childTopicIds` is its ordered list of immediate child UUIDs; and
 - `relatedTopicIds` is its ordered list of curated lateral Topic UUIDs.
+
+`status` has no source default and is copied unchanged into every generated Topic.
+New Topics explicitly start as Draft. Only owner direction changes editorial status;
+publication into the bundle includes both states and does not imply acceptance.
+Drafts pass the same complete-catalog checks as accepted Topics.
 
 Two presentation properties are optional for a Topic generally:
 
@@ -167,15 +174,16 @@ valid only when `childTopicIds` is non-empty.
 
 ```markdown
 ---
-id: "11111111-1111-4111-8111-111111111111"
-title: "Java"
-summary: "Core language, collections, concurrency, and persistence concepts."
-iconKey: "java"
+id: '11111111-1111-4111-8111-111111111111'
+title: 'Java'
+status: 'draft'
+summary: 'Core language, collections, concurrency, and persistence concepts.'
+iconKey: 'java'
 domains:
-  - "java"
-kind: "area"
+  - 'java'
+kind: 'area'
 childTopicIds:
-  - "22222222-2222-4222-8222-222222222222"
+  - '22222222-2222-4222-8222-222222222222'
 relatedTopicIds: []
 ---
 ```
@@ -187,16 +195,17 @@ reference:
 
 ````markdown
 ---
-id: "33333333-3333-4333-8333-333333333333"
-title: "Queue"
-iconKey: "queue"
+id: '33333333-3333-4333-8333-333333333333'
+title: 'Queue'
+status: 'draft'
+iconKey: 'queue'
 domains:
-  - "java"
-  - "collections"
-  - "algorithms-data-structures"
-kind: "concept"
+  - 'java'
+  - 'collections'
+  - 'algorithms-data-structures'
+kind: 'concept'
 childTopicIds:
-  - "44444444-4444-4444-8444-444444444444"
+  - '44444444-4444-4444-8444-444444444444'
 relatedTopicIds: []
 ---
 
@@ -220,22 +229,23 @@ empty child list:
 
 ```markdown
 ---
-id: "44444444-4444-4444-8444-444444444444"
-title: "Complexity"
-iconKey: "complexity"
+id: '44444444-4444-4444-8444-444444444444'
+title: 'Complexity'
+status: 'draft'
+iconKey: 'complexity'
 domains:
-  - "collections"
-  - "algorithms-data-structures"
-kind: "concept"
+  - 'collections'
+  - 'algorithms-data-structures'
+kind: 'concept'
 childTopicIds: []
 relatedTopicIds: []
 ---
 
 | Operation | Typical complexity |
-| --- | --- |
-| `offer` | O(1) |
-| `peek` | O(1) |
-| `poll` | O(1) |
+| --------- | ------------------ |
+| `offer`   | O(1)               |
+| `peek`    | O(1)               |
+| `poll`    | O(1)               |
 ```
 
 The examples use recognizable UUIDs for readability. Production Topics receive
@@ -339,21 +349,11 @@ Its conceptual shape is:
 
 ```json
 {
-  "landingTopicIds": [
-    "11111111-1111-4111-8111-111111111111"
-  ],
-  "allTopicIds": [
-    "22222222-2222-4222-8222-222222222222",
-    "11111111-1111-4111-8111-111111111111"
-  ],
+  "landingTopicIds": ["11111111-1111-4111-8111-111111111111"],
+  "allTopicIds": ["22222222-2222-4222-8222-222222222222", "11111111-1111-4111-8111-111111111111"],
   "topicIdsByDomain": {
-    "java": [
-      "22222222-2222-4222-8222-222222222222",
-      "11111111-1111-4111-8111-111111111111"
-    ],
-    "collections": [
-      "22222222-2222-4222-8222-222222222222"
-    ],
+    "java": ["22222222-2222-4222-8222-222222222222", "11111111-1111-4111-8111-111111111111"],
+    "collections": ["22222222-2222-4222-8222-222222222222"],
     "concurrency": [],
     "persistence": [],
     "databases": [],
@@ -362,12 +362,8 @@ Its conceptual shape is:
     "algorithms-data-structures": []
   },
   "topicIdsByKind": {
-    "area": [
-      "11111111-1111-4111-8111-111111111111"
-    ],
-    "concept": [
-      "22222222-2222-4222-8222-222222222222"
-    ],
+    "area": ["11111111-1111-4111-8111-111111111111"],
+    "concept": ["22222222-2222-4222-8222-222222222222"],
     "operations": [],
     "decision-aid": [],
     "exercise": [],
@@ -375,26 +371,24 @@ Its conceptual shape is:
   },
   "parentTopicIdsById": {
     "11111111-1111-4111-8111-111111111111": [],
-    "22222222-2222-4222-8222-222222222222": [
-      "11111111-1111-4111-8111-111111111111"
-    ]
+    "22222222-2222-4222-8222-222222222222": ["11111111-1111-4111-8111-111111111111"]
   },
   "topicsById": {
     "11111111-1111-4111-8111-111111111111": {
       "title": "Java",
+      "status": "draft",
       "summary": "Core language, collections, concurrency, and persistence concepts.",
       "iconKey": "java",
       "domains": ["java"],
       "kind": "area",
       "mainContentHtml": null,
       "contentOutline": [],
-      "childTopicIds": [
-        "22222222-2222-4222-8222-222222222222"
-      ],
+      "childTopicIds": ["22222222-2222-4222-8222-222222222222"],
       "relatedTopicIds": []
     },
     "22222222-2222-4222-8222-222222222222": {
       "title": "Collections",
+      "status": "draft",
       "summary": null,
       "iconKey": "collection",
       "domains": ["java", "collections"],
@@ -421,7 +415,7 @@ supported key, including an empty array when the current catalog has no member.
 The application can intersect these indexes to produce domain-and-kind browse
 collections without an authored collection registry.
 
-Every generated Topic contains `title`, `summary`, `iconKey`,
+Every generated Topic contains `title`, `status`, `summary`, `iconKey`,
 `domains`, `kind`, `mainContentHtml`, `contentOutline`, `childTopicIds`, and
 `relatedTopicIds`.
 Optional source presentation metadata is emitted as explicit `null`, giving
@@ -474,6 +468,7 @@ Generation fails when it encounters:
 - a direct Topic directory without a `topic.md` file;
 - an invalid or duplicate UUID;
 - a missing or blank title;
+- a missing or unsupported editorial status;
 - a blank, multiline, or overlong summary;
 - an unsupported icon key;
 - a missing, empty, duplicate, or unsupported domain membership;

@@ -1,6 +1,7 @@
 ---
 id: '2ceccf27-219c-479d-96de-229d4e417e3d'
 title: 'Retrying HTTP requests'
+status: 'accepted'
 summary: 'Decide whether and how to retry from the response and operation semantics.'
 iconKey: 'operations'
 domains:

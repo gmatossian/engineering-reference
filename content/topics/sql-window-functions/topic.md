@@ -1,6 +1,7 @@
 ---
 id: 'd7d5d680-00d4-4782-8875-a0fd06dabeb9'
 title: 'SQL window functions'
+status: 'accepted'
 summary: 'Calculate ranks, running values, and comparisons across related rows without collapsing the result.'
 iconKey: 'database'
 domains:
