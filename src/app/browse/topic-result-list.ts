@@ -1,10 +1,11 @@
+import { DraftStatus } from '../ui/draft-status/draft-status';
 import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import type { TopicResultSection } from '../catalog/catalog.service';
 import { TopicIcon } from '../ui/topic-icon/topic-icon';
 
 @Component({
-  imports: [RouterLink, TopicIcon],
+  imports: [DraftStatus, RouterLink, TopicIcon],
   selector: 'app-topic-result-list',
   styleUrl: './topic-result-list.css',
   templateUrl: './topic-result-list.html',

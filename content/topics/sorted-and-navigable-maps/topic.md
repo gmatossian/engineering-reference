@@ -1,6 +1,7 @@
 ---
 id: '7ddf26ac-1481-4b56-a897-e72a8a881c84'
 title: 'Sorted and navigable maps'
+status: 'accepted'
 summary: 'Use ordered map interfaces for key ordering, closest matches, endpoints, and live range views.'
 iconKey: 'ordering'
 domains:

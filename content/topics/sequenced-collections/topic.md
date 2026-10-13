@@ -1,6 +1,7 @@
 ---
 id: 'c6d0c192-60ee-45ba-9580-745e7bf29259'
 title: 'Sequenced collections'
+status: 'accepted'
 summary: 'Use Java 21’s uniform first, last, and reversed operations on collections with encounter order.'
 iconKey: 'ordering'
 domains:

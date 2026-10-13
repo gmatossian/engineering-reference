@@ -93,7 +93,7 @@ test('navigates through bundled Topic detail with native history', async ({ page
 
   await page
     .getByRole('navigation', { name: 'Explore this topic' })
-    .getByRole('link', { name: 'Shared path', exact: true })
+    .getByRole('link', { name: 'Shared path Draft', exact: true })
     .click();
 
   await expect(page).toHaveURL(fixtureTopicPath(FIXTURE_TOPIC_IDS.sharedPath));
@@ -102,7 +102,7 @@ test('navigates through bundled Topic detail with native history', async ({ page
     page
       .locator('.topic-hierarchy-wide')
       .getByRole('navigation', { name: 'Browse surrounding topics' })
-      .getByRole('link', { name: 'Shared path', exact: true })
+      .getByRole('link', { name: 'Shared path Draft', exact: true })
       .first(),
   ).toHaveAttribute('aria-current', 'page');
   await expect(
@@ -491,7 +491,7 @@ test('restores scroll position without displacing focus on browser history navig
 
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(400);
   await page
-    .getByRole('link', { name: 'Shared path', exact: true })
+    .getByRole('link', { name: 'Shared path Draft', exact: true })
     .first()
     .evaluate((link: HTMLAnchorElement) => link.click());
 

@@ -1,6 +1,7 @@
 ---
 id: '62196430-caa5-48c7-bb68-c064209d6291'
 title: 'Dirty checking, flush, and commit'
+status: 'accepted'
 summary: 'Know when managed changes become SQL and why flushing is not the same as committing.'
 iconKey: 'persistence'
 domains:

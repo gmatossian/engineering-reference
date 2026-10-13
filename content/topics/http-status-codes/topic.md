@@ -1,6 +1,7 @@
 ---
 id: 'b97384d3-f986-4850-a6b0-a1c3b893ee86'
 title: 'HTTP status codes'
+status: 'accepted'
 summary: 'Choose common response codes and recognize their headers, redirect behavior, and retry implications.'
 iconKey: 'operations'
 domains:

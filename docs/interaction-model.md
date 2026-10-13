@@ -163,6 +163,29 @@ the destination can be copied, opened in another tab, refreshed, and reached by
 keyboard. Activating a link scrolls to and focuses its heading. The outline is
 omitted for short Topics rather than displaying one isolated destination.
 
+## Draft Presentation and Status Filtering
+
+Draft Topics remain in default discovery, including curated landing links, complete
+and domain-pruned forests, search results, hierarchy context, breadcrumbs, immediate
+children, Related Topics, and direct routes. Their canonical title carries a visible
+Draft badge in those presentations; link text exposes the state to assistive
+technology. The Topic heading is programmatically associated with its Draft label
+so focusing the heading also exposes status. Accepted Topics need no badge.
+
+`/topics` adds a labelled Status dropdown: All (default), Draft, and Accepted.
+An explicit status selection switches to a flat list and intersects existing title,
+domain, and kind constraints. Result headings, unique-topic counts, and empty-result
+explanations expose active status. Selecting All retains existing forest/flat rules.
+Status neither changes ranking nor removes drafts from unconstrained results.
+
+The URL uses `status=draft` or `status=accepted`. All omits the parameter; unsupported
+values are removed during normalization. Changes replace the current history entry,
+preserve focus and scroll, and announce only the updated count politely. Refresh
+and browser history restore the URL state. Header search on `/topics` preserves
+active status along with domain and kind; Clear all resets query and every filter.
+On narrow layouts the status control stacks in the existing filter region without
+hiding functionality or moving it into a separate navigation surface.
+
 ## Topic Navigation
 
 Selecting an immediate child replaces the current Topic view with the child's
@@ -231,18 +254,18 @@ arrow-key model of a desktop tree widget.
 contains:
 
 - one labelled title-search input in the persistent application header;
-- labelled domain and content-kind filters;
+- labelled domain, content-kind, and editorial-status filters;
 - a visible way to clear the query and filters; and
 - Topic links whose supporting context reflects the active browse or result
   state.
 
-With no title query or kind filter, the surface projects the authored child DAG
+With no title query, kind filter, or status filter, the surface projects the authored child DAG
 as a forest rather than flattening Topics into one equally weighted list. The
 unconstrained view contains every real root tree. Every root starts expanded so
 its immediate structure is visible; deeper branches start collapsed and use
 independent disclosure controls. There is no synthetic catalog root.
 
-A domain view with no query or kind filter prunes that same forest to Topics
+A domain view with no query, kind filter, or status filter prunes that same forest to Topics
 matching the selected domain and the real ancestor branches needed to reach
 them. An ancestor outside the selected domain remains visible as structural
 context but is not counted as a match. A multi-parent Topic may therefore
@@ -254,7 +277,7 @@ Because one Topic may occur under multiple parents, sibling and root counts are
 not necessarily additive. A leaf shows its friendly content-kind label instead
 of a descendant count.
 
-A kind filter, a title query, or both switch the results region to one flat
+A kind filter, a title query, a status filter, or a combination switch the results region to one flat
 result list, including any matching Area Topic. The visible results heading
 states the active intent, for example **Concepts in Java** or **Results for
 “queue”**. Flat results retain deterministic relevance and alphabetical
@@ -272,8 +295,8 @@ Non-empty search results use these deterministic relevance tiers:
 2. titles beginning with the complete query; and
 3. titles containing the query elsewhere.
 
-Results within a tier use case-insensitive title order and then UUID. Domain
-and kind filters are intersections, not additional ranking signals.
+Results within a tier use case-insensitive title order and then UUID. Domain,
+kind, and status filters are intersections, not additional ranking signals.
 
 The initial search deliberately favors predictable known-title retrieval over
 fuzzy matching, spelling correction, synonym expansion, or full-text ranking.
@@ -281,11 +304,12 @@ Observed misses can justify a later alias or search-contract change.
 
 ### Filter and result behavior
 
-The query uses `q`, domain uses `domain`, and kind uses `kind` in the `/topics`
+The query uses `q`, domain uses `domain`, kind uses `kind`, and editorial status
+uses `status` in the `/topics`
 query string. Query and filter changes update the current history entry rather
 than adding one entry per keystroke or selection. The resulting URL remains
 shareable and refreshable. The `q` value is trimmed and removed when empty;
-unsupported domain or kind values are removed during normalization. An
+unsupported domain, kind, or status values are removed during normalization. An
 unmatched but otherwise valid title query produces a normal no-results state.
 
 Changing search or filters does not move keyboard focus, scroll the page, or
@@ -326,7 +350,7 @@ not hierarchy navigation.
 ## URLs and Browser Behavior
 
 The landing view uses `/`. The complete browse surface uses `/topics` and its
-optional `q`, `domain`, and `kind` query parameters. Every Topic continues to
+optional `q`, `domain`, `kind`, and `status` query parameters. Every Topic continues to
 use `/topics/<uuid>`, where the UUID is its stable identity. Static route
 matching distinguishes `/topics` from the UUID route. This scheme supports:
 

@@ -1,6 +1,7 @@
 ---
 id: '00000000-0000-4000-8000-00000000000c'
 title: 'Decision matrix'
+status: 'accepted'
 summary: 'Related decision-aid fixture.'
 iconKey: 'architecture'
 domains:

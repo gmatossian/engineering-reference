@@ -1,6 +1,7 @@
 ---
 id: 'd1a3f0d1-92a1-4c65-87a0-ee7d8d10131e'
 title: 'persist, merge, and save'
+status: 'accepted'
 summary: 'Distinguish making a new entity managed from copying detached state into a managed instance.'
 iconKey: 'operations'
 domains:

@@ -1,6 +1,7 @@
 ---
 id: '2d23f8e8-66db-4d0a-b5bc-bfc0536d5ab8'
 title: 'Streams'
+status: 'accepted'
 summary: 'Build lazy, single-use pipelines that transform or aggregate a sequence of values.'
 iconKey: 'operations'
 domains:

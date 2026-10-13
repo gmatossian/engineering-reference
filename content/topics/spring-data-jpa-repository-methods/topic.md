@@ -1,6 +1,7 @@
 ---
 id: 'f8accec6-81ae-48da-bf60-8209557f15af'
 title: 'Spring Data repository methods'
+status: 'accepted'
 summary: 'Connect common JpaRepository methods to their usual EntityManager behavior and important return values.'
 iconKey: 'operations'
 domains:

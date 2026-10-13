@@ -3,6 +3,7 @@ import type { ParsedTopicSource } from './parse-topic-source.ts';
 import { validateTopicSource } from './validate-topic-source.ts';
 
 const requiredClassification = {
+  status: 'accepted' as const,
   domains: ['java', 'collections'],
   kind: 'concept',
   relatedTopicIds: [] as string[],
@@ -57,6 +58,8 @@ describe('validateTopicSource', () => {
     { field: 'summary', value: 'First line\nSecond line' },
     { field: 'domains', value: [] },
     { field: 'kind', value: 'tutorial' },
+    { field: 'status', value: undefined },
+    { field: 'status', value: 'published' },
     { field: 'relatedTopicIds', value: 'not-an-array' },
   ])('identifies an invalid $field in an actionable error', ({ field, value }) => {
     const sourcePath = 'content/topics/queue/topic.md';
@@ -83,6 +86,7 @@ describe('validateTopicSource', () => {
         id: '11111111-1111-4111-8111-111111111111',
         title: 'Empty Topic',
         ...requiredClassification,
+        status: 'draft',
         relatedTopicIds: ['22222222-2222-4222-8222-222222222222'],
         childTopicIds: [],
       },

@@ -1,6 +1,7 @@
 ---
 id: 'a9da2af5-7976-4bcf-abf4-0a9c1ad3458b'
 title: 'Visibility and atomicity'
+status: 'accepted'
 summary: 'Distinguish seeing the latest value from performing a compound operation indivisibly.'
 iconKey: 'operations'
 domains:

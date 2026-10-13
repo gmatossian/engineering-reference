@@ -1,6 +1,7 @@
 ---
 id: '4ca7a180-254f-46f3-9999-4f70f41957eb'
 title: 'Lambdas and method references'
+status: 'accepted'
 summary: 'Represent one-method behavior with lambda expressions and concise references to existing methods.'
 iconKey: 'operations'
 domains:

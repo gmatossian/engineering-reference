@@ -1,6 +1,7 @@
 ---
 id: '00000000-0000-4000-8000-000000000005'
 title: 'Detail table'
+status: 'accepted'
 summary: 'Leaf fixture containing a generated table.'
 iconKey: 'complexity'
 domains:

@@ -1,6 +1,7 @@
 ---
 id: '750d6258-e1be-4813-9487-18c6ba78af0a'
 title: 'Concurrency'
+status: 'accepted'
 summary: 'Protect shared state, execute tasks, and limit access to constrained resources.'
 iconKey: 'concurrency'
 domains:

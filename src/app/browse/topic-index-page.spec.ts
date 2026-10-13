@@ -39,7 +39,7 @@ describe('TopicIndexPage', () => {
         host.querySelectorAll('.domain-hierarchy__root > .domain-hierarchy__item app-topic-icon'),
       ).map((icon) => icon.getAttribute('data-icon-key')),
     ).toEqual(['java', 'architecture', 'architecture', 'database']);
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('74 topics');
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('78 topics');
   });
 
   it('renders the default System Design view as an expandable hierarchy', async () => {
@@ -65,15 +65,55 @@ describe('TopicIndexPage', () => {
       'Choosing storage for a URL shortener',
       'Trade-off triggers',
       'Pagination: offset vs cursor',
+      'Content delivery networks (CDNs)',
+      'Shared caching',
+      'Spring caching with Redis',
+      'Relational databases (SQL)',
     ]);
     expect((host.querySelector('#topic-domain') as HTMLSelectElement).value).toBe('system-design');
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('7 topics');
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('11 topics');
+  });
+
+  it('renders draft-only results once per Topic with visible badges and clears every constraint', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/topics?status=draft', TopicIndexPage);
+    await harness.fixture.whenStable();
+    const host = harness.routeNativeElement as HTMLElement;
+    expect(host.querySelector('app-domain-topic-hierarchy')).toBeNull();
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('4 draft topics');
+    expect(host.querySelectorAll('app-topic-result-list a')).toHaveLength(4);
+    expect(host.querySelectorAll('app-topic-result-list .draft-status')).toHaveLength(4);
+    expect((host.querySelector('#topic-status') as HTMLSelectElement).value).toBe('draft');
+
+    await harness.navigateByUrl(
+      '/topics?q=caching&domain=java&kind=operations&status=draft',
+      TopicIndexPage,
+    );
+    await harness.fixture.whenStable();
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('1 draft topic');
+    (host.querySelector('.topic-index__clear') as HTMLButtonElement).click();
+    await harness.fixture.whenStable();
+    expect(TestBed.inject(Router).url).toBe('/topics');
+    expect((host.querySelector('#topic-status') as HTMLSelectElement).value).toBe('');
+    expect(host.querySelector('app-domain-topic-hierarchy')).not.toBeNull();
+  });
+
+  it('names status in an empty result and normalizes unsupported status', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/topics?domain=collections&status=draft', TopicIndexPage);
+    await harness.fixture.whenStable();
+    expect(harness.routeNativeElement?.querySelector('.topic-index__empty')?.textContent).toContain(
+      'status “Draft”',
+    );
+    await harness.navigateByUrl('/topics?status=published', TopicIndexPage);
+    await harness.fixture.whenStable();
+    expect(TestBed.inject(Router).url).toBe('/topics');
   });
 
   it('normalizes unsupported query parameters into a canonical URL', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl(
-      '/topics?q=%20Queue%20&domain=unknown&kind=unknown&extra=value',
+      '/topics?q=%20Queue%20&domain=unknown&kind=unknown&status=unknown&extra=value',
       TopicIndexPage,
     );
     await harness.fixture.whenStable();
@@ -141,7 +181,7 @@ describe('TopicIndexPage', () => {
     const host = harness.routeNativeElement as HTMLElement;
 
     expect(host.querySelector('input[type="search"]')).toBeNull();
-    expect(host.querySelectorAll('select')).toHaveLength(1);
+    expect(host.querySelectorAll('select')).toHaveLength(2);
     expect(host.querySelectorAll('input[type="radio"]')).toHaveLength(7);
     expect(host.querySelector('.topic-index__empty')?.textContent).toContain(
       'No topics match the title “does-not-exist”.',

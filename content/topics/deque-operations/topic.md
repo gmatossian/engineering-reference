@@ -1,6 +1,7 @@
 ---
 id: '6fabfd5b-4700-41b4-8240-3884d533ba55'
 title: 'Deque operations'
+status: 'accepted'
 summary: 'Insert, inspect, and remove elements explicitly at either end of a deque.'
 iconKey: 'deque'
 domains:

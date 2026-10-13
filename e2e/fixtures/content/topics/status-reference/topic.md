@@ -1,6 +1,7 @@
 ---
 id: '00000000-0000-4000-8000-000000000011'
 title: 'Status reference'
+status: 'accepted'
 summary: 'Dense table fixture for wide and narrow layout tests.'
 iconKey: 'operations'
 domains:

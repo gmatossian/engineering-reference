@@ -1,6 +1,7 @@
 ---
 id: 'c3e7b0c0-b574-4edd-89ec-24f50f206522'
 title: 'Creating maps'
+status: 'accepted'
 summary: 'Choose a map construction based on mutability, copying, null handling, and duplicate keys.'
 iconKey: 'creation'
 domains:

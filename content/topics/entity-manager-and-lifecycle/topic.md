@@ -1,6 +1,7 @@
 ---
 id: '072fc2b2-2755-45ec-aabe-d8a4740fa4e9'
 title: 'EntityManager and entity lifecycle'
+status: 'accepted'
 summary: 'Recognize new, managed, detached, and removed entities and the persistence context that owns them.'
 iconKey: 'persistence'
 domains:

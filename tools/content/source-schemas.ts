@@ -3,6 +3,7 @@ import {
   TOPIC_DOMAIN_KEYS,
   TOPIC_ICON_KEYS,
   TOPIC_KIND_KEYS,
+  TOPIC_STATUS_KEYS,
 } from '../../contracts/runtime-catalog.ts';
 
 const uuidSchema = z.uuid();
@@ -28,6 +29,7 @@ export type CatalogSource = z.infer<typeof catalogSourceSchema>;
 export const topicMetadataSchema = z.strictObject({
   id: uuidSchema,
   title: z.string().trim().min(1),
+  status: z.enum(TOPIC_STATUS_KEYS),
   summary: topicSummarySchema.optional(),
   iconKey: z.enum(TOPIC_ICON_KEYS).optional(),
   domains: topicDomainsSchema,

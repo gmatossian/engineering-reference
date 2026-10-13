@@ -14,8 +14,14 @@ describe('TopicLinkList', () => {
     const fixture = TestBed.createComponent(TopicLinkList);
     fixture.componentRef.setInput('ariaLabel', 'Subtopics');
     fixture.componentRef.setInput('topics', [
-      { id: 'first-topic', title: 'First', summary: 'First summary', iconKey: 'java' },
-      { id: 'second-topic', title: 'Second', summary: null, iconKey: null },
+      {
+        id: 'first-topic',
+        title: 'First',
+        status: 'draft',
+        summary: 'First summary',
+        iconKey: 'java',
+      },
+      { id: 'second-topic', title: 'Second', status: 'accepted', summary: null, iconKey: null },
     ]);
     fixture.detectChanges();
 
@@ -24,7 +30,10 @@ describe('TopicLinkList', () => {
     const links = Array.from(host.querySelectorAll<HTMLAnchorElement>('a'));
 
     expect(navigation.getAttribute('aria-label')).toBe('Subtopics');
-    expect(links.map((link) => link.textContent?.trim())).toEqual(['First', 'Second']);
+    expect(links.map((link) => link.textContent?.replace(/\s+/gu, ' ').trim())).toEqual([
+      'First Draft',
+      'Second',
+    ]);
     expect(links.map((link) => link.getAttribute('href'))).toEqual([
       '/topics/first-topic',
       '/topics/second-topic',
@@ -45,6 +54,7 @@ describe('TopicLinkList', () => {
       {
         id: 'java-topic',
         title: 'Java',
+        status: 'draft',
         summary: 'Language and runtime concepts.',
         iconKey: 'java',
       },
@@ -56,6 +66,7 @@ describe('TopicLinkList', () => {
 
     expect(host.querySelectorAll('a')).toHaveLength(1);
     expect(link.textContent).toContain('Java');
+    expect(link.querySelector('.draft-status')?.textContent).toBe('Draft');
     expect(link.textContent).toContain('Language and runtime concepts.');
     expect(link.getAttribute('data-icon-key')).toBe('java');
     expect(link.querySelector('app-topic-icon')?.getAttribute('aria-hidden')).toBe('true');

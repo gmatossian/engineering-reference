@@ -1,6 +1,7 @@
 ---
 id: '00000000-0000-4000-8000-000000000012'
 title: 'Persistence'
+status: 'accepted'
 summary: 'Stable persistence fixture root.'
 iconKey: 'persistence'
 domains:

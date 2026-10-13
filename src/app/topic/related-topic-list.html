@@ -8,7 +8,10 @@
           <app-topic-icon [iconKey]="topic.iconKey" />
 
           <span class="related-topic__copy">
-            <span class="related-topic__title">{{ topic.title }}</span>
+            <span
+              ><span class="related-topic__title">{{ topic.title }}</span
+              ><app-draft-status [status]="topic.status"
+            /></span>
             <span class="related-topic__context">
               {{ topic.kind.label }} · {{ topic.domainLabel }}
             </span>

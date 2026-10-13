@@ -1,6 +1,7 @@
 ---
 id: '97341609-b898-4072-8f4f-2823fc366ce1'
 title: 'Sealed classes'
+status: 'accepted'
 summary: 'Define a closed set of permitted direct subtypes for a class or interface hierarchy.'
 iconKey: 'architecture'
 domains:

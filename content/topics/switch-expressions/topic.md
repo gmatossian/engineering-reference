@@ -1,6 +1,7 @@
 ---
 id: 'dad2f45c-44a0-4667-be7f-4eeda8bafdfe'
 title: 'Switch expressions'
+status: 'accepted'
 summary: 'Return a value from switch using exhaustive arrow cases without accidental fall-through.'
 iconKey: 'operations'
 domains:

@@ -1,6 +1,7 @@
 ---
 id: '00000000-0000-4000-8000-00000000000a'
 title: 'Navigator exercise'
+status: 'accepted'
 summary: 'Exercise fixture with children and directed related topics.'
 iconKey: 'architecture'
 domains:

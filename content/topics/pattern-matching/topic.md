@@ -1,6 +1,7 @@
 ---
 id: '5e30bfec-47fe-46bf-b777-88cd055cd27b'
 title: 'Pattern matching'
+status: 'accepted'
 summary: 'Test a value’s type, bind the matched value, and branch exhaustively without repeated casts.'
 iconKey: 'operations'
 domains:

@@ -86,6 +86,7 @@ export function createRuntimeCatalog(
 
     topicsById[topic.id] = {
       title: topic.title,
+      status: topic.status,
       summary: topic.summary ?? null,
       iconKey: topic.iconKey ?? null,
       domains: [...topic.domains].sort(

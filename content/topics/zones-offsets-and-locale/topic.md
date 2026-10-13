@@ -1,6 +1,7 @@
 ---
 id: '26ccdc15-718d-4924-b707-9e6969f8f326'
 title: 'Zones, offsets, and locale'
+status: 'accepted'
 iconKey: 'conversion'
 domains:
   - 'java'

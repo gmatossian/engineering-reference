@@ -1,6 +1,7 @@
 ---
 id: 'b0b3b8e7-8403-4279-8f03-2e8aa2effa69'
 title: 'Comparable vs Comparator'
+status: 'accepted'
 summary: 'Choose natural or task-specific Java ordering, and recover the essential syntax and traps.'
 iconKey: 'ordering'
 domains:

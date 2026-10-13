@@ -15,7 +15,10 @@
               <app-topic-icon [iconKey]="topic.iconKey" />
 
               <span class="result__copy">
-                <span class="result__title">{{ topic.title }}</span>
+                <span
+                  ><span class="result__title">{{ topic.title }}</span
+                  ><app-draft-status [status]="topic.status"
+                /></span>
                 <span class="result__context">
                   {{ topic.kind.label }} · {{ topic.domainLabel }}
                 </span>

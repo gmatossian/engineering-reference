@@ -1,6 +1,7 @@
 ---
 id: 'e080cdee-eecc-4c33-92d8-3a75acbf5d34'
 title: 'Equality and hash codes'
+status: 'accepted'
 summary: 'Keep hash-based set elements and map keys reliable by preserving equality, hashing, and ordering contracts.'
 iconKey: 'equality'
 domains:

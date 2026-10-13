@@ -1,6 +1,7 @@
 ---
 id: '00000000-0000-4000-8000-00000000000d'
 title: 'Pagination choice'
+status: 'accepted'
 summary: 'Second top-level decision fixture.'
 iconKey: 'architecture'
 domains:

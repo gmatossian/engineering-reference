@@ -1,6 +1,7 @@
 ---
 id: '5b36622e-a904-4891-a546-93bfe53ea51a'
 title: 'Concurrent lists'
+status: 'accepted'
 summary: 'Choose between copy-on-write reads and synchronized access when a list is shared across threads.'
 iconKey: 'concurrency'
 domains:

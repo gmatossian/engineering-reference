@@ -1,6 +1,7 @@
 ---
 id: 'eb48ad81-c168-48ec-a5ac-602901e5d284'
 title: 'Set'
+status: 'accepted'
 summary: 'Choose and use a collection that represents unique membership rather than position.'
 iconKey: 'set'
 domains:

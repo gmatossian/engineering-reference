@@ -11,6 +11,30 @@ invariants remain governed by the [content model](content-model.md), while suppo
 source syntax and validation remain governed by the
 [content-storage decision](content-storage.md).
 
+## Start new Topics as Draft
+
+Every new Topic must explicitly declare `status: draft` in its YAML front matter,
+including agent-authored and navigation-only Topics. There is no implicit status;
+missing or unsupported status fails generation. Follow the same authoring,
+classification, relationship, technical correctness, and verification requirements
+for drafts as for accepted content.
+
+```yaml
+status: draft
+```
+
+Keep drafts in normal retrieval paths so the owner can evaluate whether they can
+find the Topic, recognize its answer quickly, and use it without missing distinctions
+or excessive reading. The `/topics` Status filter provides a unique-topic inventory
+of outstanding drafts. A visual Draft label communicates editorial state rather
+than technical validation failure.
+
+Only promote to `status: accepted` on explicit owner direction informed by actual
+retrieval use. Passing checks, completing the review below, committing, or merging
+does not establish editorial acceptance. Ordinary edits preserve existing status;
+returning accepted content to Draft after substantial changes also requires explicit
+owner direction. Do not infer promotion or demotion from Git state or elapsed time.
+
 ## Write for recognition-assisted recall
 
 Assume the reader is already familiar with the subject and knows that this is the
@@ -190,15 +214,15 @@ snippets and traps.
 
 Replace these common patterns before accepting a Topic:
 
-| Drift | Reference-oriented alternative |
-| --- | --- |
-| An opening explanation of why the subject matters | Start with the answer or decision the reader came to retrieve |
-| Concepts introduced in a teaching sequence | Independently scannable operations, choices, or facts |
-| A step-by-step walkthrough intended to build understanding | A copyable example plus only the constraints needed to use it correctly |
-| Coverage of every adjacent concept | Focused child Topics for separate retrieval jobs |
-| Prose that repeats a table, example, or diagram | Keep the clearest representation and only exceptional caveats |
-| A recap or conclusion | Omit it; the useful facts should already be visible at their retrieval points |
-| A decorative visual or a diagram that restates a short list | Use the simpler representation |
+| Drift                                                       | Reference-oriented alternative                                                |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| An opening explanation of why the subject matters           | Start with the answer or decision the reader came to retrieve                 |
+| Concepts introduced in a teaching sequence                  | Independently scannable operations, choices, or facts                         |
+| A step-by-step walkthrough intended to build understanding  | A copyable example plus only the constraints needed to use it correctly       |
+| Coverage of every adjacent concept                          | Focused child Topics for separate retrieval jobs                              |
+| Prose that repeats a table, example, or diagram             | Keep the clearest representation and only exceptional caveats                 |
+| A recap or conclusion                                       | Omit it; the useful facts should already be visible at their retrieval points |
+| A decorative visual or a diagram that restates a short list | Use the simpler representation                                                |
 
 A procedural subject may legitimately contain ordered steps. The distinguishing test
 is whether the steps are a compact operation the familiar reader needs to recover or
@@ -216,7 +240,7 @@ a lesson intended to teach the subject progressively.
 
 ## Review the rendered Topic
 
-Before accepting content:
+Before presenting a draft for retrieval evaluation or reviewing a revision:
 
 1. Read it once for technical correctness.
 2. State its single retrieval job. If the content does not fit that sentence, narrow
@@ -236,3 +260,6 @@ Before accepting content:
 9. Check the rendered Topic at wide and narrow viewport sizes.
 10. Run the repository verification required by the
     [AI-assisted development profile](ai-assisted-development.md).
+
+These checks support readiness for retrieval evaluation. Editorial promotion remains
+an explicit owner decision after actual retrieval use.

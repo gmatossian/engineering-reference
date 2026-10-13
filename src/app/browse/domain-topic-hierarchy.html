@@ -35,7 +35,10 @@
           <a class="domain-hierarchy__link" [routerLink]="['/topics', node.id]">
             <app-topic-icon [iconKey]="node.iconKey" />
             <span class="domain-hierarchy__copy">
-              <span class="domain-hierarchy__title">{{ node.title }}</span>
+              <span
+                ><span class="domain-hierarchy__title">{{ node.title }}</span
+                ><app-draft-status [status]="node.status"
+              /></span>
               <span class="domain-hierarchy__context">
                 @if (hasChildren) {
                   {{ node.matchingTopicCount }}

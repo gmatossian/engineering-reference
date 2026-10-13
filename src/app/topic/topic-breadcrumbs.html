@@ -6,9 +6,13 @@
       @for (pathTopic of path; track pathTopic.id) {
         <li>
           @if (pathTopic.id === currentTopicId()) {
-            <span aria-current="page">{{ pathTopic.title }}</span>
+            <span aria-current="page"
+              >{{ pathTopic.title }}<app-draft-status [status]="pathTopic.status"
+            /></span>
           } @else {
-            <a [routerLink]="['/topics', pathTopic.id]">{{ pathTopic.title }}</a>
+            <a [routerLink]="['/topics', pathTopic.id]"
+              >{{ pathTopic.title }}<app-draft-status [status]="pathTopic.status"
+            /></a>
           }
         </li>
       }

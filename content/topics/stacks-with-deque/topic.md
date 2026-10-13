@@ -1,6 +1,7 @@
 ---
 id: 'ee84c285-fd32-4572-8ef6-ef92f421bcca'
 title: 'Stacks with Deque'
+status: 'accepted'
 summary: 'Use a deque as a LIFO stack instead of the legacy Stack class.'
 iconKey: 'deque'
 domains:

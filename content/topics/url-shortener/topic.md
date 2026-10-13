@@ -1,6 +1,7 @@
 ---
 id: 'b19de3ee-dc7d-4d9d-9b82-06d997a825e1'
 title: 'URL shortener'
+status: 'accepted'
 summary: 'Make the core identifier, storage, and scaling decisions behind a URL-shortening service.'
 iconKey: 'architecture'
 domains:

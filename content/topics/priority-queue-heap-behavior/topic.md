@@ -1,6 +1,7 @@
 ---
 id: 'c73d8532-c046-4052-9c04-b06acc618d68'
 title: 'Heap behavior'
+status: 'accepted'
 summary: 'Understand which ordering guarantees a PriorityQueue heap provides—and which it does not.'
 iconKey: 'heap'
 domains:

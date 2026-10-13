@@ -30,6 +30,7 @@ export class TopicIndexPage {
     initialValue: this.route.snapshot.queryParamMap,
   });
 
+  protected readonly statusOptions = this.catalogService.getStatusOptions();
   protected readonly domainOptions = this.catalogService.getDomainOptions();
   protected readonly kindOptions = this.catalogService
     .getKindOptions()
@@ -40,18 +41,29 @@ export class TopicIndexPage {
       query: parameters.get('q'),
       domain: parameters.get('domain'),
       kind: parameters.get('kind'),
+      status: parameters.get('status'),
     });
   });
   protected readonly browseView = computed(() =>
     this.catalogService.getTopicBrowseView(this.criteria()),
   );
+  protected readonly resultCountText = computed(() => {
+    const count = this.browseView().resultCount;
+    const status = this.criteria().status;
+    return `${count} ${status === null ? '' : status + ' '}${count === 1 ? 'topic' : 'topics'}`;
+  });
   protected readonly selectedDomainLabel = computed(() => {
     const domain = this.criteria().domain;
     return this.domainOptions.find(({ key }) => key === domain)?.label ?? 'all';
   });
   protected readonly hasConstraints = computed(() => {
     const criteria = this.criteria();
-    return criteria.query !== '' || criteria.domain !== null || criteria.kind !== null;
+    return (
+      criteria.query !== '' ||
+      criteria.domain !== null ||
+      criteria.kind !== null ||
+      criteria.status !== null
+    );
   });
   protected readonly emptyStateMessage = computed(() => {
     const criteria = this.criteria();
@@ -73,6 +85,12 @@ export class TopicIndexPage {
       );
     }
 
+    if (criteria.status !== null) {
+      constraints.push(
+        `status “${this.statusOptions.find(({ key }) => key === criteria.status)?.label}”`,
+      );
+    }
+
     return `No topics match ${constraints.join(' and ')}.`;
   });
 
@@ -84,7 +102,8 @@ export class TopicIndexPage {
         (parameters.get('q') ?? '') === normalized.query &&
         parameters.get('domain') === normalized.domain &&
         parameters.get('kind') === normalized.kind &&
-        parameters.keys.every((key) => ['q', 'domain', 'kind'].includes(key));
+        parameters.get('status') === normalized.status &&
+        parameters.keys.every((key) => ['q', 'domain', 'kind', 'status'].includes(key));
 
       if (!isCanonical) {
         this.navigateTo(normalized);
@@ -102,8 +121,13 @@ export class TopicIndexPage {
     this.navigateTo(this.catalogService.normalizeBrowseCriteria({ ...this.criteria(), kind }));
   }
 
+  protected changeStatus(event: Event): void {
+    const status = (event.currentTarget as HTMLSelectElement).value;
+    this.navigateTo(this.catalogService.normalizeBrowseCriteria({ ...this.criteria(), status }));
+  }
+
   protected clearConstraints(): void {
-    this.navigateTo({ query: '', domain: null, kind: null });
+    this.navigateTo({ query: '', domain: null, kind: null, status: null });
   }
 
   private navigateTo(criteria: TopicBrowseCriteria): void {
@@ -113,6 +137,7 @@ export class TopicIndexPage {
         q: criteria.query || null,
         domain: criteria.domain,
         kind: criteria.kind,
+        status: criteria.status,
       },
       replaceUrl: true,
     });

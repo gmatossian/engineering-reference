@@ -1,6 +1,7 @@
 ---
 id: 'cd880907-60d6-4874-b8fd-2f9eacf0e5e6'
 title: 'Scoped values'
+status: 'accepted'
 summary: 'Share immutable context down a call chain with a per-thread binding that ends automatically.'
 iconKey: 'concurrency'
 domains:

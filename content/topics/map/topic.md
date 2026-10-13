@@ -1,6 +1,7 @@
 ---
 id: 'd972ae23-879d-4f2c-9ede-5532e69ca15f'
 title: 'Map'
+status: 'accepted'
 summary: 'Associate unique keys with values and choose the required lookup and ordering behavior.'
 iconKey: 'map'
 domains:
