@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="330" viewBox="0 0 360 330" role="img" aria-labelledby="title description">
+  <title id="title">Angular and Spring Boot behind Cloudflare</title>
+  <desc id="description">All requests to the proxied app.example.com hostname go through Cloudflare. Origin requests are needed for uncached traffic, cache misses, and revalidation. Fresh cache hits are served by Cloudflare.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#52616d"/></marker>
+    <style>
+      text { font-family: 'Avenir Next', 'Segoe UI', sans-serif; fill: #1b1c19; }
+      .node { font-size: 18px; font-weight: 600; text-anchor: middle; }
+      .label { font-size: 14px; fill: #4f5054; }
+      .line { fill: none; stroke: #52616d; stroke-width: 2; marker-end: url(#arrow); }
+      .box { fill: #fff; stroke: #c6c1b6; stroke-width: 1.5; }
+    </style>
+  </defs>
+  <rect x="1" y="1" width="358" height="328" rx="12" fill="#f7f8fa"/>
+  <text class="label" x="180" y="26" text-anchor="middle">app.example.com · proxied hostname</text>
+  <rect class="box" x="100" y="44" width="160" height="43" rx="8"/>
+  <text class="node" x="180" y="72">Browser</text>
+  <path class="line" d="M153 87V139"/>
+  <text class="label" x="47" y="118">All requests</text>
+  <path class="line" d="M207 139V87"/>
+  <text class="label" x="220" y="118">Response</text>
+  <rect x="100" y="139" width="160" height="43" rx="8" fill="#eaf7ef" stroke="#2f8d5c" stroke-width="1.5"/>
+  <text class="node" x="180" y="167">Cloudflare</text>
+  <path class="line" d="M153 182V262" stroke-dasharray="5 4"/>
+  <path class="line" d="M207 262V182" stroke-dasharray="5 4"/>
+  <rect x="26" y="205" width="308" height="27" fill="#f7f8fa"/>
+  <text class="label" x="180" y="223" text-anchor="middle" font-weight="600">Uncached / miss / revalidation</text>
+  <rect class="box" x="40" y="262" width="280" height="50" rx="8"/>
+  <text class="node" x="180" y="285">Origin</text>
+  <text class="label" x="180" y="303" text-anchor="middle">Angular files + Spring Boot API</text>
+</svg>

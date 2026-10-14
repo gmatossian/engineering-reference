@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="125" viewBox="0 0 560 125" role="img" aria-labelledby="title description">
+  <title id="title">Read-through: separate loader</title>
+  <desc id="description">The application requests a value from the cache layer. Only on a miss does the cache layer call your loader, which reads the database. The cache layer stores the loaded result and returns it.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#52616d"/></marker>
+    <style>
+      text { font-family: 'Avenir Next', 'Segoe UI', sans-serif; fill: #1b1c19; font-size: 18px; text-anchor: middle; }
+      .node { font-weight: 600; }
+      .label { fill: #4f5054; }
+      .line { fill: none; stroke: #52616d; stroke-width: 2; marker-end: url(#arrow); }
+      .box { fill: #fff; stroke: #c6c1b6; stroke-width: 1.5; }
+    </style>
+  </defs>
+  <rect x="1" y="1" width="558" height="123" rx="10" fill="#f7f8fa"/>
+  <rect class="box" x="10" y="58" width="110" height="50" rx="8"/>
+  <text class="node" x="65" y="89">Application</text>
+  <path class="line" d="M120 83H160"/>
+  <rect x="160" y="58" width="110" height="50" rx="8" fill="#eaf7ef" stroke="#2f8d5c" stroke-width="1.5"/>
+  <text class="node" x="215" y="89">Cache layer</text>
+  <path class="line" d="M270 83H310"/>
+  <text class="label" x="290" y="35">Only on a miss</text>
+  <path d="M290 43V67" fill="none" stroke="#52616d" stroke-width="1.5"/>
+  <rect class="box" x="310" y="58" width="110" height="50" rx="8"/>
+  <text class="node" x="365" y="89">Loader</text>
+  <path class="line" d="M420 83H460"/>
+  <rect class="box" x="460" y="58" width="90" height="50" rx="8"/>
+  <text class="node" x="505" y="89">Database</text>
+</svg>

@@ -98,6 +98,10 @@
   max-width: 100%;
 }
 
+.topic-content > p > img:only-child {
+  margin-inline: auto;
+}
+
 .topic-content-overflow {
   background: var(--color-surface);
   border: 1px solid var(--color-hairline);

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="330" viewBox="0 0 360 330" role="img" aria-labelledby="title description">
+  <title id="title">Cache-aside: application handles the miss</title>
+  <desc id="description">The application checks the shared cache. A hit returns immediately. On a miss the application reads the database, then caches the result with a TTL and returns it.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#52616d"/></marker>
+    <style>
+      text { font-family: 'Avenir Next', 'Segoe UI', sans-serif; fill: #1b1c19; }
+      .heading { font-size: 16px; font-weight: 700; }
+      .node { font-size: 16px; font-weight: 600; text-anchor: middle; }
+      .label { font-size: 14px; fill: #4f5054; }
+      .line { fill: none; stroke: #52616d; stroke-width: 2; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect x="1" y="1" width="358" height="328" rx="10" fill="#f7f8fa"/>
+  <text class="heading" x="18" y="29">Cache-aside</text>
+  <rect x="14" y="120" width="110" height="56" rx="8" fill="#fff" stroke="#c6c1b6"/>
+  <text class="node" x="69" y="154">Application</text>
+  <rect x="224" y="49" width="120" height="56" rx="8" fill="#eaf7ef" stroke="#2f8d5c"/>
+  <text class="node" x="284" y="83">Shared cache</text>
+  <path class="line" d="M124 130L224 65"/>
+  <text class="label" x="132" y="78">1 Check</text>
+  <path class="line" d="M224 94L124 152"/>
+  <text class="label" x="165" y="153">Hit: return</text>
+  <rect x="224" y="220" width="120" height="56" rx="8" fill="#fff" stroke="#c6c1b6"/>
+  <text class="node" x="284" y="254">Database</text>
+  <path class="line" d="M124 163H178V237H224"/>
+  <text class="label" x="194" y="186">2 On miss:</text>
+  <text class="label" x="194" y="205">read DB</text>
+  <path class="line" d="M224 263H145V176H124"/>
+  <text class="label" x="156" y="285">Result</text>
+  <text class="label" x="18" y="315">3 Cache result with TTL; return to caller</text>
+</svg>

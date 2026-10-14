@@ -347,6 +347,9 @@ the generated runtime value is `null` when no specific key is authored.
 
 ### Content-bearing Topics
 
+Standalone Topic images are centered within the available content measure.
+Preserve their intrinsic size and downscale them to fit narrow screens.
+
 Main content uses the same typography, surfaces, and spacing as the surrounding
 application while retaining the semantic structure supplied by authored
 Markdown. Generic presentation may style headings, prose, lists, links, images,
