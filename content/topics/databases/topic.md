@@ -2,7 +2,7 @@
 id: '3c36c485-9222-4124-827a-f560f6819fae'
 title: 'Databases'
 status: 'accepted'
-summary: 'Use SQL window functions for ranking, running calculations, and row-to-row comparisons.'
+summary: 'Choose relational storage and recall SQL query patterns.'
 iconKey: 'database'
 domains:
   - 'databases'

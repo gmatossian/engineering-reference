@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="575" viewBox="0 0 440 575" role="img" aria-labelledby="title description">
+  <title id="title">Table partitioning versus sharding</title>
+  <desc id="description">Partitioning example: one database server holds the Orders table in August, September, and October partitions. An October query selects October and skips the other months. Sharding example: three database servers store orders for customer ranges 1–99, 100–199, and 200–299. A request for customer 150 goes to server B.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#52616d"/></marker>
+    <style>
+      text { fill: #1b1c19; font-family: 'Avenir Next', 'Segoe UI', sans-serif; }
+      .heading { font-size: 19px; font-weight: 700; }
+      .label { font-size: 17px; font-weight: 600; text-anchor: middle; }
+      .detail { font-size: 16px; text-anchor: middle; fill: #4f5054; }
+      .server { fill: #f7f8fa; stroke: #9da6ad; stroke-width: 1.5; }
+      .data { fill: #fff; stroke: #c6c1b6; stroke-width: 1.5; }
+      .selected { fill: #eaf7ef; stroke: #2f8d5c; stroke-width: 2; }
+      .query { fill: #eef4ff; stroke: #8ca2bb; stroke-width: 1.5; }
+      .arrow { fill: none; stroke: #52616d; stroke-width: 2; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <text class="heading" x="20" y="27">Partitioning: one database server</text>
+  <rect class="query" x="260" y="50" width="160" height="38" rx="7"/>
+  <text class="label" x="340" y="75">October orders</text>
+  <rect class="server" x="20" y="106" width="400" height="145" rx="9"/>
+  <text class="label" x="215" y="136">One server · Orders table</text>
+  <rect class="data" x="38" y="162" width="110" height="60" rx="7"/>
+  <text class="label" x="93" y="197">August</text>
+  <rect class="data" x="165" y="162" width="110" height="60" rx="7"/>
+  <text class="label" x="220" y="197">September</text>
+  <rect class="selected" x="292" y="162" width="110" height="60" rx="7"/>
+  <text class="label" x="347" y="197">October</text>
+  <path class="arrow" d="M347 88V162"/>
+  <text class="detail" x="220" y="276">Query skips August and September partitions</text>
+  <path d="M20 297H420" stroke="#c6c1b6" stroke-width="1"/>
+  <text class="heading" x="20" y="328">Sharding: separate database servers</text>
+  <rect class="query" x="206" y="350" width="214" height="38" rx="7"/>
+  <text class="label" x="313" y="375">customer_id = 150</text>
+  <rect class="server" x="20" y="432" width="124" height="110" rx="9"/>
+  <text class="label" x="82" y="458">Server A</text>
+  <rect class="data" x="30" y="475" width="104" height="53" rx="6"/>
+  <text class="detail" x="82" y="497">Orders</text>
+  <text class="label" x="82" y="519">1–99</text>
+  <rect class="server" x="158" y="432" width="124" height="110" rx="9"/>
+  <text class="label" x="220" y="458">Server B</text>
+  <rect class="selected" x="168" y="475" width="104" height="53" rx="6"/>
+  <text class="detail" x="220" y="497">Orders</text>
+  <text class="label" x="220" y="519">100–199</text>
+  <rect class="server" x="296" y="432" width="124" height="110" rx="9"/>
+  <text class="label" x="358" y="458">Server C</text>
+  <rect class="data" x="306" y="475" width="104" height="53" rx="6"/>
+  <text class="detail" x="358" y="497">Orders</text>
+  <text class="label" x="358" y="519">200–299</text>
+  <path class="arrow" d="M313 388V410H220V432"/>
+  <text class="detail" x="220" y="567">Each server stores a different customer range</text>
+</svg>

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="345" viewBox="0 0 440 345" role="img" aria-labelledby="title desc">
+  <title id="title">Spring cache hit and miss paths</title>
+  <desc id="desc">The caller reaches Spring, which checks Redis through RedisCache. On a hit, Spring returns the cached value without running the method. On a miss, Spring runs the service method, which reads PostgreSQL, then Spring caches the result in Redis and returns it.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#52616d"/></marker>
+    <style>
+      text { font-family: 'Avenir Next', 'Segoe UI', sans-serif; fill: #1b1c19; font-size: 14px; text-anchor: middle; }
+      .heading { font-size: 15px; font-weight: 600; text-anchor: start; }
+      .node { font-weight: 600; }
+      .label { fill: #4f5054; font-size: 12px; }
+      .line { fill: none; stroke: #52616d; stroke-width: 2; marker-end: url(#arrow); }
+      .box { fill: #fff; stroke: #c6c1b6; stroke-width: 1.5; }
+      .cache { fill: #eaf7ef; stroke: #2f8d5c; stroke-width: 1.5; }
+    </style>
+  </defs>
+  <rect x="1" y="1" width="438" height="343" rx="10" fill="#f7f8fa"/>
+  <text x="18" y="30" class="heading">Hit and miss flow</text>
+  <rect x="18" y="50" width="91" height="48" rx="8" class="box"/>
+  <text x="63.5" y="79" class="node">Caller</text>
+  <path d="M109 74H149" class="line"/>
+  <rect x="152" y="50" width="270" height="48" rx="8" class="cache"/>
+  <text x="287" y="70" class="node">Spring checks Redis</text>
+  <text x="287" y="87" class="label">through RedisCache</text>
+  <path d="M242 98V125H111V151" class="line"/>
+  <text x="143" y="145" class="label">Miss</text>
+  <path d="M332 98V151" class="line"/>
+  <text x="351" y="128" class="label">Hit</text>
+  <rect x="18" y="154" width="186" height="49" rx="8" class="box"/>
+  <text x="111" y="183" class="node">Spring runs method</text>
+  <rect x="236" y="154" width="186" height="49" rx="8" class="cache"/>
+  <text x="329" y="174" class="node">Return cached value</text>
+  <text x="329" y="191" class="label">method does not run</text>
+  <path d="M111 203V254" class="line"/>
+  <rect x="18" y="257" width="186" height="50" rx="8" class="box"/>
+  <text x="111" y="286" class="node">PostgreSQL</text>
+  <path d="M204 282H233" class="line"/>
+  <rect x="236" y="257" width="186" height="50" rx="8" class="cache"/>
+  <text x="329" y="277" class="node">Spring caches result</text>
+  <text x="329" y="294" class="label">in Redis, then returns it</text>
+</svg>

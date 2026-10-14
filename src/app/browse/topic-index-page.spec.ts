@@ -39,7 +39,7 @@ describe('TopicIndexPage', () => {
         host.querySelectorAll('.domain-hierarchy__root > .domain-hierarchy__item app-topic-icon'),
       ).map((icon) => icon.getAttribute('data-icon-key')),
     ).toEqual(['java', 'architecture', 'architecture', 'database']);
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('78 topics');
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('85 topics');
   });
 
   it('renders the default System Design view as an expandable hierarchy', async () => {
@@ -66,23 +66,30 @@ describe('TopicIndexPage', () => {
       'Trade-off triggers',
       'Pagination: offset vs cursor',
       'Content delivery networks (CDNs)',
+      'CDNs in action',
+      'CDN caching and freshness',
       'Shared caching',
+      'Cache loading and write strategies',
+      'Cache freshness and removal',
       'Spring caching with Redis',
       'Relational databases (SQL)',
+      'Scaling relational databases',
+      'Relational database implementations',
+      'Managed vs self-managed databases',
     ]);
     expect((host.querySelector('#topic-domain') as HTMLSelectElement).value).toBe('system-design');
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('11 topics');
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('18 topics');
   });
 
-  it('renders draft-only results once per Topic with visible badges and clears every constraint', async () => {
+  it('shows an empty draft inventory and clears every constraint', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/topics?status=draft', TopicIndexPage);
     await harness.fixture.whenStable();
     const host = harness.routeNativeElement as HTMLElement;
     expect(host.querySelector('app-domain-topic-hierarchy')).toBeNull();
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('4 draft topics');
-    expect(host.querySelectorAll('app-topic-result-list a')).toHaveLength(4);
-    expect(host.querySelectorAll('app-topic-result-list .draft-status')).toHaveLength(4);
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('0 draft topics');
+    expect(host.querySelectorAll('app-topic-result-list a')).toHaveLength(0);
+    expect(host.querySelector('.topic-index__empty')).not.toBeNull();
     expect((host.querySelector('#topic-status') as HTMLSelectElement).value).toBe('draft');
 
     await harness.navigateByUrl(
@@ -90,7 +97,7 @@ describe('TopicIndexPage', () => {
       TopicIndexPage,
     );
     await harness.fixture.whenStable();
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('1 draft topic');
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('0 draft topics');
     (host.querySelector('.topic-index__clear') as HTMLButtonElement).click();
     await harness.fixture.whenStable();
     expect(TestBed.inject(Router).url).toBe('/topics');

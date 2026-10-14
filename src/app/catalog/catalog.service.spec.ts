@@ -104,8 +104,8 @@ describe('CatalogService', () => {
       'system-design',
       'algorithms-data-structures',
     ]);
-    expect(service.getDomainTopicCount('system-design')).toBe(11);
-    expect(service.getDomainTopicCount('http')).toBe(6);
+    expect(service.getDomainTopicCount('system-design')).toBe(18);
+    expect(service.getDomainTopicCount('http')).toBe(8);
     expect(service.getKindOptions().map(({ key }) => key)).toEqual([
       'area',
       'concept',
@@ -126,28 +126,19 @@ describe('CatalogService', () => {
     ).toEqual({ query: 'Queue', domain: null, kind: null, status: null });
   });
 
-  it('keeps the four initial drafts discoverable and counts each UUID once', () => {
+  it('shows an empty draft inventory when all Topics are accepted', () => {
     const draftView = service.getTopicBrowseView(
       service.normalizeBrowseCriteria({ status: 'draft' }),
     );
-    const expectedDraftIds = [
-      '92179879-7f1c-49b1-8751-cf296302bb82',
-      'fa8a91df-3ad6-4a30-bba7-34ea42c9b1ac',
-      '4aa75f9e-93ce-46e3-80d7-ac13d14a77c0',
-      '0eab5dfb-d4ab-4cf8-a56c-41b4548da56c',
-    ];
     expect(draftView.mode).toBe('results');
-    expect(draftView.resultCount).toBe(4);
+    expect(draftView.resultCount).toBe(0);
     expect(draftView.resultHeading).toBe('Draft topics');
-    expect(draftView.sections[0].topics.map(({ id }) => id).sort()).toEqual(
-      expectedDraftIds.sort(),
-    );
+    expect(draftView.sections[0].topics).toEqual([]);
     const allView = service.getTopicBrowseView(service.normalizeBrowseCriteria({}));
     const occurrences = flattenHierarchy(allView.hierarchyRoots).filter(
       ({ status }) => status === 'draft',
     );
-    expect(occurrences.length).toBeGreaterThanOrEqual(4);
-    expect(new Set(occurrences.map(({ id }) => id)).size).toBe(4);
+    expect(occurrences).toEqual([]);
     const acceptedView = service.getTopicBrowseView(
       service.normalizeBrowseCriteria({ status: 'accepted' }),
     );
@@ -163,11 +154,13 @@ describe('CatalogService', () => {
       query: 'caching',
     });
     const view = service.getTopicBrowseView(criteria);
-    expect(view.sections[0].topics.map(({ title }) => title)).toEqual([
-      'Spring caching with Redis',
-    ]);
+    expect(view.sections[0].topics).toEqual([]);
     expect(view.resultHeading).toBe('Operations matching “caching” in Java · Draft');
-    expect(service.getTopicBrowseView({ ...criteria, status: 'accepted' }).resultCount).toBe(0);
+    expect(
+      service
+        .getTopicBrowseView({ ...criteria, status: 'accepted' })
+        .sections[0].topics.map(({ title }) => title),
+    ).toEqual(['Spring caching with Redis']);
     expect(service.normalizeBrowseCriteria({ status: 'published' }).status).toBeNull();
     expect(service.getStatusOptions()).toEqual([
       { key: 'draft', label: 'Draft' },
@@ -194,7 +187,7 @@ describe('CatalogService', () => {
     const view = service.getTopicBrowseView({ query: '', domain: null, kind: null, status: null });
 
     expect(view.mode).toBe('hierarchy');
-    expect(view.resultCount).toBe(78);
+    expect(view.resultCount).toBe(85);
     expect(view.sections).toEqual([]);
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
       'Java',
@@ -235,7 +228,7 @@ describe('CatalogService', () => {
       status: null,
     });
 
-    expect(view.resultCount).toBe(11);
+    expect(view.resultCount).toBe(18);
     expect(view.mode).toBe('hierarchy');
     expect(view.sections).toEqual([]);
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual(['System Design', 'Databases']);
@@ -243,7 +236,7 @@ describe('CatalogService', () => {
     expect(view.hierarchyRoots[1].children.map(({ title }) => title)).toEqual([
       'Relational databases (SQL)',
     ]);
-    expect(view.hierarchyRoots[0].matchingTopicCount).toBe(10);
+    expect(view.hierarchyRoots[0].matchingTopicCount).toBe(14);
     expect(view.hierarchyRoots[0].children.map(({ title }) => title)).toEqual([
       'Scale and estimation',
       'URL shortener',

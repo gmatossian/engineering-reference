@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="115" viewBox="0 0 440 115" role="img" aria-labelledby="title description">
+<title id="title">Write-behind</title>
+<desc id="description">The cache layer accepts the application write. The database is updated later, after success can be returned to the caller.</desc>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#52616d"/></marker>
+  <style>
+    text { font-family: 'Avenir Next', 'Segoe UI', sans-serif; fill: #1b1c19; font-size: 18px; text-anchor: middle; }
+    .node { font-weight: 600; }
+    .label { fill: #4f5054; }
+    .line { fill: none; stroke: #52616d; stroke-width: 2; marker-end: url(#arrow); }
+    .box { fill: #fff; stroke: #c6c1b6; stroke-width: 1.5; }
+  </style>
+</defs>
+<rect x="1" y="1" width="438" height="113" rx="10" fill="#f7f8fa"/>
+<rect class="box" x="10" y="49" width="110" height="50" rx="8"/>
+<text class="node" x="65" y="80">Application</text>
+<path class="line" d="M120 74H165"/>
+<rect x="165" y="49" width="110" height="50" rx="8" fill="#eaf7ef" stroke="#2f8d5c" stroke-width="1.5"/>
+<text class="node" x="220" y="80">Cache layer</text>
+<path class="line" d="M275 74H325" stroke-dasharray="5 4"/>
+<text class="label" x="300" y="29">Later</text>
+<rect class="box" x="325" y="49" width="105" height="50" rx="8"/>
+<text class="node" x="377" y="80">Database</text>
+</svg>

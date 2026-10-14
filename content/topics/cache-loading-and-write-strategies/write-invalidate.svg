@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="200" viewBox="0 0 360 200" role="img" aria-labelledby="title description">
+<title id="title">Write to source, then invalidate</title>
+<desc id="description">The application first writes to the database, then removes the old cache entry. A later cache miss reloads the data.</desc>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#52616d"/></marker>
+  <style>
+    text { font-family: 'Avenir Next', 'Segoe UI', sans-serif; fill: #1b1c19; font-size: 18px; text-anchor: middle; }
+    .node { font-weight: 600; }
+    .label { fill: #4f5054; }
+    .line { fill: none; stroke: #52616d; stroke-width: 2; marker-end: url(#arrow); }
+    .box { fill: #fff; stroke: #c6c1b6; stroke-width: 1.5; }
+  </style>
+</defs>
+<rect x="1" y="1" width="358" height="198" rx="10" fill="#f7f8fa"/>
+<rect class="box" x="10" y="74" width="110" height="50" rx="8"/>
+<text class="node" x="65" y="105">Application</text>
+<rect class="box" x="240" y="20" width="110" height="50" rx="8"/>
+<text class="node" x="295" y="51">Database</text>
+<path class="line" d="M120 86H180V45H240"/>
+<text class="label" x="155" y="29">1 Write</text>
+<rect x="240" y="125" width="110" height="50" rx="8" fill="#eaf7ef" stroke="#2f8d5c" stroke-width="1.5"/>
+<text class="node" x="295" y="156">Cache</text>
+<path class="line" d="M120 111H160V150H240"/>
+<text class="label" x="165" y="186">2 Remove old entry</text>
+</svg>

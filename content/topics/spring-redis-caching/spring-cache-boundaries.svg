@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="330" viewBox="0 0 440 330" role="img" aria-labelledby="title desc">
+  <title id="title">Spring caching component boundaries</title>
+  <desc id="desc">The Spring application contains the caching interceptor, RedisCache, and service method. RedisCache uses the separate Redis server; on a miss, the service method reads PostgreSQL.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#52616d"/></marker>
+    <style>
+      text { font-family: 'Avenir Next', 'Segoe UI', sans-serif; fill: #1b1c19; font-size: 14px; text-anchor: middle; }
+      .heading { font-size: 15px; font-weight: 600; text-anchor: start; }
+      .node { font-weight: 600; }
+      .label { fill: #4f5054; font-size: 12px; }
+      .line { fill: none; stroke: #52616d; stroke-width: 2; marker-end: url(#arrow); }
+      .box { fill: #fff; stroke: #c6c1b6; stroke-width: 1.5; }
+      .cache { fill: #eaf7ef; stroke: #2f8d5c; stroke-width: 1.5; }
+    </style>
+  </defs>
+  <rect x="1" y="1" width="438" height="328" rx="10" fill="#f7f8fa"/>
+  <rect x="17" y="16" width="406" height="214" rx="10" fill="#f0f4f6" stroke="#b4bec5" stroke-width="1.5"/>
+  <text x="32" y="42" class="heading">Spring application</text>
+  <rect x="112" y="58" width="216" height="46" rx="8" class="box"/>
+  <text x="220" y="87" class="node">Caching interceptor</text>
+  <path d="M166 104V125H112V157" class="line"/>
+  <text x="93" y="119" class="label">Cache lookup</text>
+  <path d="M274 104V125H328V157" class="line"/>
+  <text x="347" y="119" class="label">On a miss</text>
+  <rect x="32" y="160" width="160" height="49" rx="8" class="cache"/>
+  <text x="112" y="189" class="node">RedisCache</text>
+  <rect x="248" y="160" width="160" height="49" rx="8" class="box"/>
+  <text x="328" y="189" class="node">Service method</text>
+  <path d="M112 209V261" class="line"/>
+  <path d="M328 209V261" class="line"/>
+  <rect x="32" y="264" width="160" height="47" rx="8" class="box"/>
+  <text x="112" y="293" class="node">Redis server</text>
+  <rect x="248" y="264" width="160" height="47" rx="8" class="box"/>
+  <text x="328" y="293" class="node">PostgreSQL</text>
+</svg>

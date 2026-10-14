@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="330" viewBox="0 0 360 330" role="img" aria-labelledby="title description">
+  <title id="title">CDN request flow</title>
+  <desc id="description">The client requests content from the CDN and receives a response. Only on a cache miss does the CDN fetch from the origin. Dashed arrows mark this conditional trip.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#52616d"/></marker>
+    <style>
+      text { font-family: 'Avenir Next', 'Segoe UI', sans-serif; fill: #1b1c19; }
+      .node { font-size: 18px; font-weight: 600; text-anchor: middle; }
+      .label { font-size: 14px; fill: #4f5054; }
+      .line { fill: none; stroke: #52616d; stroke-width: 2; marker-end: url(#arrow); }
+      .conditional { stroke-dasharray: 5 4; }
+      .box { fill: #fff; stroke: #c6c1b6; stroke-width: 1.5; }
+    </style>
+  </defs>
+  <rect x="1" y="1" width="358" height="328" rx="12" fill="#f7f8fa"/>
+  <rect class="box" x="115" y="18" width="130" height="46" rx="8"/>
+  <text class="node" x="180" y="47">Client</text>
+  <path class="line" d="M153 64V128"/>
+  <text class="label" x="78" y="101">Request</text>
+  <path class="line" d="M207 128V64"/>
+  <text class="label" x="220" y="101">Response</text>
+  <rect x="115" y="128" width="130" height="46" rx="8" fill="#eaf7ef" stroke="#2f8d5c" stroke-width="1.5"/>
+  <text class="node" x="180" y="157">CDN</text>
+  <path class="line conditional" d="M153 174V265"/>
+  <text class="label" x="99" y="242">Fetch</text>
+  <path class="line conditional" d="M207 265V174"/>
+  <text class="label" x="220" y="242">Response</text>
+  <rect x="92" y="190" width="176" height="25" fill="#f7f8fa"/>
+  <text class="label" x="180" y="207" text-anchor="middle" font-weight="600">Only on a cache miss</text>
+  <rect class="box" x="115" y="265" width="130" height="46" rx="8"/>
+  <text class="node" x="180" y="294">Origin</text>
+</svg>
