@@ -48,5 +48,8 @@ Task next = tasks.take(); // waits while empty
 | Insert | `offer(e)`         | `put(e)` |
 | Remove | `poll()`           | `take()` |
 
+On a **bounded** queue, `offer(e)` returns `false` when full, while `put(e)` waits
+for space. An unbounded queue's `put(e)` does not wait for capacity.
+
 Use a **bounded queue** when the system needs **backpressure** instead of allowing the
 queue to grow without limit.

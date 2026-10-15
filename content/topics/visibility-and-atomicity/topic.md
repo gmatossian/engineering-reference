@@ -38,6 +38,8 @@ private final AtomicInteger count = new AtomicInteger();
 count.incrementAndGet();
 ```
 
-Unlocking a monitor happens-before a later lock of that same monitor. A write to a
-`volatile` variable happens-before a later read of that variable. These rules create
-the visibility guarantees; source-code order alone does not coordinate threads.
+Exiting a `synchronized` block releases the object's built-in lock (its
+**monitor**). Writes before that release are visible to a later block synchronized
+on the **same object**. A write to a `volatile` variable happens-before a later
+read of that variable. These rules create the visibility guarantees; source-code
+order alone does not coordinate threads.
