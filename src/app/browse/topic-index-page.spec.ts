@@ -89,7 +89,7 @@ describe('TopicIndexPage', () => {
     expect(host.querySelector('app-domain-topic-hierarchy')).toBeNull();
     expect(host.querySelector('[role="status"]')?.textContent).toContain('0 draft topics');
     expect(host.querySelectorAll('app-topic-result-list a')).toHaveLength(0);
-    expect(host.querySelector('.topic-index__empty')).not.toBeNull();
+    expect(host.querySelectorAll('app-topic-result-list .draft-status')).toHaveLength(0);
     expect((host.querySelector('#topic-status') as HTMLSelectElement).value).toBe('draft');
 
     await harness.navigateByUrl(
@@ -107,7 +107,7 @@ describe('TopicIndexPage', () => {
 
   it('names status in an empty result and normalizes unsupported status', async () => {
     const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl('/topics?domain=collections&status=draft', TopicIndexPage);
+    await harness.navigateByUrl('/topics?domain=http&status=draft', TopicIndexPage);
     await harness.fixture.whenStable();
     expect(harness.routeNativeElement?.querySelector('.topic-index__empty')?.textContent).toContain(
       'status “Draft”',

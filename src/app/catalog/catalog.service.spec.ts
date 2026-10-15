@@ -126,7 +126,7 @@ describe('CatalogService', () => {
     ).toEqual({ query: 'Queue', domain: null, kind: null, status: null });
   });
 
-  it('shows an empty draft inventory when all Topics are accepted', () => {
+  it('shows an empty draft inventory after the Java Topics are accepted', () => {
     const draftView = service.getTopicBrowseView(
       service.normalizeBrowseCriteria({ status: 'draft' }),
     );
