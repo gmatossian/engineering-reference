@@ -13,22 +13,24 @@ childTopicIds: []
 relatedTopicIds: []
 ---
 
-Choose a concurrent list only when the program genuinely requires **shared indexed
-access across threads**.
+Choose a concurrent list when threads genuinely need to share a **list's order or
+indexed access**.
 
-## Reads dominate; writes are rare
+## `CopyOnWriteArrayList` — reads dominate, writes are rare
 
 ```java
 List<Listener> listeners = new CopyOnWriteArrayList<>();
+listeners.add(listener);
 ```
 
 Each mutation creates a **new array**, so frequent writes are expensive. An iterator
 sees a **snapshot** from when it was created and does not reflect later changes.
 
-## Reads and writes are more balanced
+## `Collections.synchronizedList(...)` — one lock for access
 
 ```java
 List<String> names = Collections.synchronizedList(new ArrayList<>());
+names.add(name);
 
 synchronized (names) {
     for (String name : names) {
@@ -37,5 +39,6 @@ synchronized (names) {
 }
 ```
 
-Individual operations are synchronized, but compound actions and traversal still
-require synchronization around the complete sequence.
+- **`names.add(name)`:** one call; the wrapper synchronizes it.
+- **The `for` loop:** `synchronized (names)` protects the whole iteration. Use the
+  same pattern for related calls that must act together.

@@ -17,23 +17,46 @@ relatedTopicIds:
 Use a concurrent map when multiple threads must safely read and update shared
 mappings.
 
-| Choice                                         | Key order   | Typical cost  | Use when                             |
-| ---------------------------------------------- | ----------- | ------------- | ------------------------------------ |
-| `ConcurrentHashMap`                            | None        | O(1) expected | General concurrent key-based access  |
-| `ConcurrentSkipListMap`                        | Sorted      | O(log n)      | Concurrent navigation or ranges      |
-| `Collections.synchronizedMap(new HashMap<>())` | Backing map | One lock      | Serializing all access is acceptable |
+- **`ConcurrentHashMap`:** unordered; expected **O(1)** key access for general use.
+- **`ConcurrentSkipListMap`:** sorted; expected **O(log n)** basic key access and
+  updates; sorted range views.
+- **`Collections.synchronizedMap(new HashMap<>())`:** one lock; use when
+  serializing access is acceptable.
 
-Do not implement a conditional update as separate `get` and `put` calls. A
-`ConcurrentMap` supplies operations with **per-key atomicity**, including:
+**Range example:** for integer keys, `map.subMap(10, 20)` gives a view of entries
+with keys from 10 inclusive to 20 exclusive.
 
-- `putIfAbsent(key, value)`;
-- `remove(key, expectedValue)`;
-- `replace(key, expectedValue, newValue)`;
-- `compute...` and `merge`.
+## Update one key in one operation
 
-`ConcurrentHashMap` and `ConcurrentSkipListMap` reject **null keys and values**.
-Their iterators are **weakly consistent**: they tolerate concurrent changes but do
-not represent one frozen snapshot of the entire map.
+```java
+ConcurrentMap<String, Integer> counts =
+    new ConcurrentHashMap<>();
+int views = counts.merge("views", 1, Integer::sum);
+```
 
-For `Collections.synchronizedMap`, iteration still requires synchronizing on the
-map for the whole traversal.
+Choose **one operation** for the update:
+
+- **Insert only if absent:** `putIfAbsent(key, value)` returns the previous value,
+  or `null` if inserted.
+- **Derive from the current value, including absence:** `compute(key, fn)` returns
+  the new value; a `null` result from `fn` removes the entry.
+- **Insert or combine:** `merge(key, value, fn)` returns the new value; a `null`
+  result from `fn` removes the entry.
+
+For a conditional removal or replacement, use `remove(key, expectedValue)` or
+`replace(key, expectedValue, newValue)`. Separate `get` and `put` calls are **not**
+one conditional update.
+
+## Limits to remember
+
+- **One-key atomicity:** `ConcurrentHashMap` updates one mapping atomically. Keep
+  remapping functions **short** and avoid **external side effects**; those effects
+  are not atomic with the update.
+- **Remapping retries:** `ConcurrentSkipListMap` may invoke a remapping function
+  more than once during one `compute` or `merge` call.
+- **Nulls:** `ConcurrentHashMap` and `ConcurrentSkipListMap` reject null keys and
+  values.
+- **Weakly consistent iteration:** `ConcurrentHashMap` and `ConcurrentSkipListMap`
+  iterators tolerate concurrent changes but are **not snapshots**.
+- **Synchronized-map iteration:** with `Collections.synchronizedMap`, hold
+  `synchronized (map)` for the **whole traversal**.

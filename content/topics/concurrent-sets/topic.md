@@ -13,23 +13,45 @@ childTopicIds: []
 relatedTopicIds: []
 ---
 
-Choose according to the required **ordering** and the balance between reads and
-writes.
+| If you need…                                      | Start with                         |
+| ------------------------------------------------- | ---------------------------------- |
+| Concurrent membership; no ordering requirement    | `ConcurrentHashMap.newKeySet()`    |
+| Sorted elements; find values between bounds       | `ConcurrentSkipListSet`            |
+| A small, read-mostly set with snapshot iteration  | `CopyOnWriteArraySet`              |
+| Simple shared access where one lock is acceptable | `Collections.synchronizedSet(...)` |
 
-| Construction                                   | Ordering        | Use when                                   |
-| ---------------------------------------------- | --------------- | ------------------------------------------ |
-| `ConcurrentHashMap.<String>newKeySet()`        | No guarantee    | General-purpose concurrent membership      |
-| `new ConcurrentSkipListSet<>()`                | Sorted          | Concurrent range and navigation operations |
-| `new CopyOnWriteArraySet<>()`                  | Insertion order | A small set is read far more than modified |
-| `Collections.synchronizedSet(new HashSet<>())` | Backing set     | One lock around all access is acceptable   |
+**Range example:** `set.subSet(10, 20)` gives a view of values from 10 inclusive
+to 20 exclusive.
 
-`CopyOnWriteArraySet` copies its underlying array when modified. Its iterators see a
-**snapshot** and do not reflect later changes.
+For `ConcurrentSkipListSet`, `contains`, `add`, and `remove` have expected **O(log n)**
+cost; traversing a range still visits its elements.
+
+## Claim membership once
+
+```java
+Set<String> claimedIds =
+    ConcurrentHashMap.newKeySet();
+boolean firstClaim = claimedIds.add("job-123");
+```
+
+`newKeySet()` returns a concurrent **set** backed by a `ConcurrentHashMap`; the
+left-hand side can still be `Set<String>`. For this set, `add(id)` returns **true
+only when this call added the ID**. It makes the membership decision in one atomic
+operation. Separate `contains(id)` and `add(id)` calls leave a gap in which another
+thread can add the same ID.
+
+`add(id)` atomically claims the ID, **not the later processing**. If processing
+fails, the ID may remain claimed even though the job did not finish. Decide how
+incomplete or partially completed work can be retried.
+
+`CopyOnWriteArraySet` copies its underlying array when modified; its iterators do
+not reflect later changes.
 
 A synchronized wrapper protects individual operations, but traversal and compound
 actions still require synchronization around the complete sequence:
 
 ```java
+Set<String> set = Collections.synchronizedSet(new HashSet<>());
 synchronized (set) {
     for (String value : set) {
         use(value);
