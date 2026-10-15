@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" aria-labelledby="title description">
+  <title id="title">Priority front queues</title>
+  <desc id="description">
+    Discovered URLs enter a prioritizer and are routed to high, medium, or low priority front queues. A weighted selector chooses higher-priority queues more often, then sends the selected URLs to the hostname router.
+  </desc>
+
+  <defs>
+    <style>
+      .component { fill: #eef4ff; stroke: #2457a7; stroke-width: 2; }
+      .queue { fill: #ffffff; stroke: #c6c1b6; stroke-width: 2; }
+      .queue-line { stroke: #c6c1b6; stroke-width: 2; }
+      .flow { fill: none; stroke: #76777b; stroke-width: 2; marker-end: url(#arrow); }
+      .type { fill: #1b1c19; font: 600 24px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .detail { fill: #5f6064; font: 500 16px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .label { fill: #1b1c19; font: 600 18px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .ellipsis { fill: #5f6064; font: 700 28px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#76777b" />
+    </marker>
+  </defs>
+
+  <text class="detail" x="480" y="26">discovered URLs</text>
+  <path class="flow" d="M480 34v26" />
+  <rect class="component" x="350" y="60" width="260" height="72" rx="8" />
+  <text class="type" x="480" y="104">Prioritizer</text>
+
+  <path class="flow" d="M480 132v28H120v55h20" />
+  <path class="flow" d="M480 132v28H410v55h20" />
+  <path class="flow" d="M480 160h360v55h-20" />
+
+  <text class="label" x="190" y="187">High priority (f1)</text>
+  <rect class="queue" x="140" y="200" width="100" height="150" />
+  <path class="queue-line" d="M140 230h100M140 260h100M140 290h100M140 320h100" />
+
+  <text class="label" x="480" y="187">Medium priority (f2)</text>
+  <rect class="queue" x="430" y="200" width="100" height="150" />
+  <path class="queue-line" d="M430 230h100M430 260h100M430 290h100M430 320h100" />
+
+  <text class="ellipsis" x="625" y="282">...</text>
+
+  <text class="label" x="770" y="187">Low priority (fn)</text>
+  <rect class="queue" x="720" y="200" width="100" height="150" />
+  <path class="queue-line" d="M720 230h100M720 260h100M720 290h100M720 320h100" />
+
+  <path class="flow" d="M190 350v25h290v25" />
+  <path class="flow" d="M480 350v50" />
+  <path class="flow" d="M770 350v25H480v25" />
+
+  <rect class="component" x="350" y="400" width="260" height="72" rx="8" />
+  <text class="type" x="480" y="430">Weighted selector</text>
+  <text class="detail" x="480" y="455">higher priority = higher probability</text>
+
+  <path class="flow" d="M480 472v28" />
+  <text class="detail" x="610" y="505">to hostname router</text>
+</svg>

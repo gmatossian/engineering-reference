@@ -104,7 +104,7 @@ describe('CatalogService', () => {
       'system-design',
       'algorithms-data-structures',
     ]);
-    expect(service.getDomainTopicCount('system-design')).toBe(18);
+    expect(service.getDomainTopicCount('system-design')).toBe(21);
     expect(service.getDomainTopicCount('http')).toBe(8);
     expect(service.getKindOptions().map(({ key }) => key)).toEqual([
       'area',
@@ -126,19 +126,27 @@ describe('CatalogService', () => {
     ).toEqual({ query: 'Queue', domain: null, kind: null, status: null });
   });
 
-  it('shows an empty draft inventory after the Java Topics are accepted', () => {
+  it('lists the three crawler drafts while keeping accepted topics separate', () => {
     const draftView = service.getTopicBrowseView(
       service.normalizeBrowseCriteria({ status: 'draft' }),
     );
     expect(draftView.mode).toBe('results');
-    expect(draftView.resultCount).toBe(0);
+    expect(draftView.resultCount).toBe(3);
     expect(draftView.resultHeading).toBe('Draft topics');
-    expect(draftView.sections[0].topics).toEqual([]);
+    expect(draftView.sections[0].topics.map(({ title }) => title).sort()).toEqual([
+      'HTML Downloader',
+      'URL Frontier',
+      'Web crawler',
+    ]);
     const allView = service.getTopicBrowseView(service.normalizeBrowseCriteria({}));
     const occurrences = flattenHierarchy(allView.hierarchyRoots).filter(
       ({ status }) => status === 'draft',
     );
-    expect(occurrences).toEqual([]);
+    expect(occurrences.map(({ title }) => title).sort()).toEqual([
+      'HTML Downloader',
+      'URL Frontier',
+      'Web crawler',
+    ]);
     const acceptedView = service.getTopicBrowseView(
       service.normalizeBrowseCriteria({ status: 'accepted' }),
     );
@@ -187,7 +195,7 @@ describe('CatalogService', () => {
     const view = service.getTopicBrowseView({ query: '', domain: null, kind: null, status: null });
 
     expect(view.mode).toBe('hierarchy');
-    expect(view.resultCount).toBe(85);
+    expect(view.resultCount).toBe(88);
     expect(view.sections).toEqual([]);
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
       'Java',
@@ -228,7 +236,7 @@ describe('CatalogService', () => {
       status: null,
     });
 
-    expect(view.resultCount).toBe(18);
+    expect(view.resultCount).toBe(21);
     expect(view.mode).toBe('hierarchy');
     expect(view.sections).toEqual([]);
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual(['System Design', 'Databases']);
@@ -236,10 +244,11 @@ describe('CatalogService', () => {
     expect(view.hierarchyRoots[1].children.map(({ title }) => title)).toEqual([
       'Relational databases (SQL)',
     ]);
-    expect(view.hierarchyRoots[0].matchingTopicCount).toBe(14);
+    expect(view.hierarchyRoots[0].matchingTopicCount).toBe(17);
     expect(view.hierarchyRoots[0].children.map(({ title }) => title)).toEqual([
       'Scale and estimation',
       'URL shortener',
+      'Web crawler',
       'Trade-off triggers',
       'Pagination: offset vs cursor',
       'Content delivery networks (CDNs)',

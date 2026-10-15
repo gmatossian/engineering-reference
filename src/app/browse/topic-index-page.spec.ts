@@ -39,7 +39,7 @@ describe('TopicIndexPage', () => {
         host.querySelectorAll('.domain-hierarchy__root > .domain-hierarchy__item app-topic-icon'),
       ).map((icon) => icon.getAttribute('data-icon-key')),
     ).toEqual(['java', 'architecture', 'architecture', 'database']);
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('85 topics');
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('88 topics');
   });
 
   it('renders the default System Design view as an expandable hierarchy', async () => {
@@ -63,6 +63,9 @@ describe('TopicIndexPage', () => {
       'URL shortener',
       'Short URL identifiers',
       'Choosing storage for a URL shortener',
+      'Web crawler',
+      'URL Frontier',
+      'HTML Downloader',
       'Trade-off triggers',
       'Pagination: offset vs cursor',
       'Content delivery networks (CDNs)',
@@ -78,18 +81,18 @@ describe('TopicIndexPage', () => {
       'Managed vs self-managed databases',
     ]);
     expect((host.querySelector('#topic-domain') as HTMLSelectElement).value).toBe('system-design');
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('18 topics');
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('21 topics');
   });
 
-  it('shows an empty draft inventory and clears every constraint', async () => {
+  it('shows the crawler drafts and clears every constraint', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/topics?status=draft', TopicIndexPage);
     await harness.fixture.whenStable();
     const host = harness.routeNativeElement as HTMLElement;
     expect(host.querySelector('app-domain-topic-hierarchy')).toBeNull();
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('0 draft topics');
-    expect(host.querySelectorAll('app-topic-result-list a')).toHaveLength(0);
-    expect(host.querySelectorAll('app-topic-result-list .draft-status')).toHaveLength(0);
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('3 draft topics');
+    expect(host.querySelectorAll('app-topic-result-list a')).toHaveLength(3);
+    expect(host.querySelectorAll('app-topic-result-list .draft-status')).toHaveLength(3);
     expect((host.querySelector('#topic-status') as HTMLSelectElement).value).toBe('draft');
 
     await harness.navigateByUrl(

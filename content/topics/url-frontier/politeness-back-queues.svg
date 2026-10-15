@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650" role="img" aria-labelledby="title description">
+  <title id="title">Politeness back queues</title>
+  <desc id="description">
+    A hostname router uses a host-to-queue mapping to place URLs into separate queues for each host. Every queue records when its host is next eligible. A selector releases only ready host queues to downloader workers.
+  </desc>
+
+  <defs>
+    <style>
+      .component { fill: #eef4ff; stroke: #2457a7; stroke-width: 2; }
+      .queue { fill: #ffffff; stroke: #c6c1b6; stroke-width: 2; }
+      .queue-line { stroke: #c6c1b6; stroke-width: 2; }
+      .mapping { fill: #f5f1e8; stroke: #9a8354; stroke-width: 2; }
+      .ready { fill: #f2f7ef; stroke: #5f8656; stroke-width: 2; }
+      .worker { fill: #ffffff; stroke: #2457a7; stroke-width: 2; }
+      .flow { fill: none; stroke: #76777b; stroke-width: 2; marker-end: url(#arrow); }
+      .association { fill: none; stroke: #9a8354; stroke-width: 2; stroke-dasharray: 6 5; }
+      .type { fill: #1b1c19; font: 600 24px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .detail { fill: #5f6064; font: 500 16px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .label { fill: #1b1c19; font: 600 18px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+      .map-text { fill: #555752; font: 500 15px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; }
+      .ellipsis { fill: #5f6064; font: 700 28px 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; text-anchor: middle; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#76777b" />
+    </marker>
+  </defs>
+
+  <text class="detail" x="470" y="26">from weighted selector</text>
+  <path class="flow" d="M470 34v26" />
+  <rect class="component" x="340" y="60" width="260" height="72" rx="8" />
+  <text class="type" x="470" y="90">Hostname router</text>
+  <text class="detail" x="470" y="115">place each URL in its host queue</text>
+
+  <rect class="mapping" x="730" y="44" width="220" height="104" rx="8" />
+  <text class="label" x="840" y="70">Host -&gt; queue map</text>
+  <text class="map-text" x="755" y="96">docs.example</text>
+  <text class="map-text" x="900" y="96">b1</text>
+  <text class="map-text" x="755" y="120">news.example</text>
+  <text class="map-text" x="900" y="120">b2</text>
+  <text class="map-text" x="755" y="140">...</text>
+  <text class="map-text" x="900" y="140">bn</text>
+  <path class="association" d="M600 96h130" />
+
+  <path class="flow" d="M470 132v40H85v53h20" />
+  <path class="flow" d="M470 132v40H400v53h20" />
+  <path class="flow" d="M470 172h385v53h-20" />
+
+  <text class="label" x="155" y="197">docs.example (b1)</text>
+  <rect class="queue" x="105" y="210" width="100" height="120" />
+  <path class="queue-line" d="M105 240h100M105 270h100M105 300h100" />
+
+  <text class="label" x="470" y="197">news.example (b2)</text>
+  <rect class="queue" x="420" y="210" width="100" height="120" />
+  <path class="queue-line" d="M420 240h100M420 270h100M420 300h100" />
+
+  <text class="ellipsis" x="625" y="274">...</text>
+
+  <text class="label" x="785" y="197">shop.example (bn)</text>
+  <rect class="queue" x="735" y="210" width="100" height="120" />
+  <path class="queue-line" d="M735 240h100M735 270h100M735 300h100" />
+
+  <rect class="ready" x="80" y="348" width="150" height="42" rx="8" />
+  <text class="detail" x="155" y="375">eligible at 10:04:12</text>
+  <rect class="ready" x="395" y="348" width="150" height="42" rx="8" />
+  <text class="detail" x="470" y="375">eligible at 10:04:15</text>
+  <rect class="ready" x="710" y="348" width="150" height="42" rx="8" />
+  <text class="detail" x="785" y="375">eligible at 10:04:21</text>
+
+  <path class="flow" d="M155 390v25h315v25" />
+  <path class="flow" d="M470 390v50" />
+  <path class="flow" d="M785 390v25H470v25" />
+
+  <rect class="component" x="340" y="440" width="260" height="72" rx="8" />
+  <text class="type" x="470" y="470">Eligibility selector</text>
+  <text class="detail" x="470" y="495">release a host queue only when ready</text>
+
+  <path class="flow" d="M470 512v25H180v33" />
+  <path class="flow" d="M470 512v58" />
+  <path class="flow" d="M470 537h290v33" />
+
+  <rect class="worker" x="90" y="570" width="180" height="60" rx="8" />
+  <text class="label" x="180" y="607">Downloader 1</text>
+  <rect class="worker" x="380" y="570" width="180" height="60" rx="8" />
+  <text class="label" x="470" y="607">Downloader 2</text>
+  <rect class="worker" x="670" y="570" width="180" height="60" rx="8" />
+  <text class="label" x="760" y="607">Downloader N</text>
+</svg>
