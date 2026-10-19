@@ -131,11 +131,10 @@ describe('CatalogService', () => {
       service.normalizeBrowseCriteria({ status: 'draft' }),
     );
     expect(draftView.mode).toBe('results');
-    expect(draftView.resultCount).toBe(4);
+    expect(draftView.resultCount).toBe(3);
     expect(draftView.resultHeading).toBe('Draft topics');
     expect(draftView.sections[0].topics.map(({ title }) => title).sort()).toEqual([
       'HTML Downloader',
-      'Transactions and concurrent updates',
       'URL Frontier',
       'Web crawler',
     ]);
@@ -145,7 +144,6 @@ describe('CatalogService', () => {
     );
     expect(occurrences.map(({ title }) => title).sort()).toEqual([
       'HTML Downloader',
-      'Transactions and concurrent updates',
       'URL Frontier',
       'Web crawler',
     ]);
