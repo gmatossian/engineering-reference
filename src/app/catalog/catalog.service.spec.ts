@@ -104,7 +104,7 @@ describe('CatalogService', () => {
       'system-design',
       'algorithms-data-structures',
     ]);
-    expect(service.getDomainTopicCount('system-design')).toBe(21);
+    expect(service.getDomainTopicCount('system-design')).toBe(24);
     expect(service.getDomainTopicCount('http')).toBe(8);
     expect(service.getKindOptions().map(({ key }) => key)).toEqual([
       'area',
@@ -195,7 +195,7 @@ describe('CatalogService', () => {
     const view = service.getTopicBrowseView({ query: '', domain: null, kind: null, status: null });
 
     expect(view.mode).toBe('hierarchy');
-    expect(view.resultCount).toBe(88);
+    expect(view.resultCount).toBe(91);
     expect(view.sections).toEqual([]);
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
       'Java',
@@ -236,13 +236,15 @@ describe('CatalogService', () => {
       status: null,
     });
 
-    expect(view.resultCount).toBe(21);
+    expect(view.resultCount).toBe(24);
     expect(view.mode).toBe('hierarchy');
     expect(view.sections).toEqual([]);
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual(['System Design', 'Databases']);
     expect(view.hierarchyRoots[1].matchesDomain).toBe(false);
     expect(view.hierarchyRoots[1].children.map(({ title }) => title)).toEqual([
+      'Choosing a database',
       'Relational databases (SQL)',
+      'Managed vs self-managed databases',
     ]);
     expect(view.hierarchyRoots[0].matchingTopicCount).toBe(17);
     expect(view.hierarchyRoots[0].children.map(({ title }) => title)).toEqual([

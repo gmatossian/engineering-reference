@@ -39,7 +39,7 @@ describe('TopicIndexPage', () => {
         host.querySelectorAll('.domain-hierarchy__root > .domain-hierarchy__item app-topic-icon'),
       ).map((icon) => icon.getAttribute('data-icon-key')),
     ).toEqual(['java', 'architecture', 'architecture', 'database']);
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('88 topics');
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('91 topics');
   });
 
   it('renders the default System Design view as an expandable hierarchy', async () => {
@@ -75,13 +75,16 @@ describe('TopicIndexPage', () => {
       'Cache loading and write strategies',
       'Cache freshness and removal',
       'Spring caching with Redis',
+      'Choosing a database',
+      'Database data models',
+      'Comparing database engines',
       'Relational databases (SQL)',
       'Scaling relational databases',
       'Relational database implementations',
       'Managed vs self-managed databases',
     ]);
     expect((host.querySelector('#topic-domain') as HTMLSelectElement).value).toBe('system-design');
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('21 topics');
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('24 topics');
   });
 
   it('shows the crawler drafts and clears every constraint', async () => {

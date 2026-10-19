@@ -38,6 +38,11 @@ relatedTopicIds:
 - **AlloyDB:** a PostgreSQL-compatible service with a different underlying architecture.
 - **Oracle Database@Google Cloud:** a separate Oracle service; not a Cloud SQL engine.
 
+> **Cloud SQL vs AlloyDB:** Cloud SQL is a general-purpose managed PostgreSQL
+> option. Consider **AlloyDB** for demanding transaction, read, or reporting
+> workloads where its performance features justify the cost. **Validate the
+> benefit with your workload.**
+
 ## Engine versus hosting
 
 **The engine and its hosting are separate choices.** PostgreSQL is database
