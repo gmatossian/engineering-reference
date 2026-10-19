@@ -126,15 +126,16 @@ describe('CatalogService', () => {
     ).toEqual({ query: 'Queue', domain: null, kind: null, status: null });
   });
 
-  it('lists the three crawler drafts while keeping accepted topics separate', () => {
+  it('lists draft topics while keeping accepted topics separate', () => {
     const draftView = service.getTopicBrowseView(
       service.normalizeBrowseCriteria({ status: 'draft' }),
     );
     expect(draftView.mode).toBe('results');
-    expect(draftView.resultCount).toBe(3);
+    expect(draftView.resultCount).toBe(4);
     expect(draftView.resultHeading).toBe('Draft topics');
     expect(draftView.sections[0].topics.map(({ title }) => title).sort()).toEqual([
       'HTML Downloader',
+      'Transactions and concurrent updates',
       'URL Frontier',
       'Web crawler',
     ]);
@@ -144,6 +145,7 @@ describe('CatalogService', () => {
     );
     expect(occurrences.map(({ title }) => title).sort()).toEqual([
       'HTML Downloader',
+      'Transactions and concurrent updates',
       'URL Frontier',
       'Web crawler',
     ]);
@@ -195,7 +197,7 @@ describe('CatalogService', () => {
     const view = service.getTopicBrowseView({ query: '', domain: null, kind: null, status: null });
 
     expect(view.mode).toBe('hierarchy');
-    expect(view.resultCount).toBe(91);
+    expect(view.resultCount).toBe(92);
     expect(view.sections).toEqual([]);
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
       'Java',

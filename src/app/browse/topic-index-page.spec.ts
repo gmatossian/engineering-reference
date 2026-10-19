@@ -39,7 +39,7 @@ describe('TopicIndexPage', () => {
         host.querySelectorAll('.domain-hierarchy__root > .domain-hierarchy__item app-topic-icon'),
       ).map((icon) => icon.getAttribute('data-icon-key')),
     ).toEqual(['java', 'architecture', 'architecture', 'database']);
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('91 topics');
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('92 topics');
   });
 
   it('renders the default System Design view as an expandable hierarchy', async () => {
@@ -87,15 +87,15 @@ describe('TopicIndexPage', () => {
     expect(host.querySelector('[role="status"]')?.textContent).toContain('24 topics');
   });
 
-  it('shows the crawler drafts and clears every constraint', async () => {
+  it('shows draft topics and clears every constraint', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/topics?status=draft', TopicIndexPage);
     await harness.fixture.whenStable();
     const host = harness.routeNativeElement as HTMLElement;
     expect(host.querySelector('app-domain-topic-hierarchy')).toBeNull();
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('3 draft topics');
-    expect(host.querySelectorAll('app-topic-result-list a')).toHaveLength(3);
-    expect(host.querySelectorAll('app-topic-result-list .draft-status')).toHaveLength(3);
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('4 draft topics');
+    expect(host.querySelectorAll('app-topic-result-list a')).toHaveLength(4);
+    expect(host.querySelectorAll('app-topic-result-list .draft-status')).toHaveLength(4);
     expect((host.querySelector('#topic-status') as HTMLSelectElement).value).toBe('draft');
 
     await harness.navigateByUrl(
