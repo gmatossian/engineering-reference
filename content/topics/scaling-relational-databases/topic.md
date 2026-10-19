@@ -23,7 +23,9 @@ relatedTopicIds:
 | **Node capacity** | Vertical scaling     |
 | **Write volume**  | Tune / scale / shard |
 
-Inspect **query plans**, **connection pools**, and **contention** before adding infrastructure.
+Inspect **query plans**, **connection pools**, and **waiting or conflicts between
+concurrent updates** before adding infrastructure. Indexes can improve reads but
+add **write cost** because updates must maintain them too.
 
 ## Know the limits
 
@@ -34,10 +36,16 @@ Inspect **query plans**, **connection pools**, and **contention** before adding 
 
 ## Partitioning versus sharding
 
-**Table partitioning** splits a table into parts **within a database**. It can let queries **skip irrelevant partitions** and simplify maintenance, **without necessarily spreading writes across database nodes**.
+**Table partitioning** splits a table into smaller parts. Reads, updates, and
+deletes can **skip irrelevant partitions** when their filters match the
+partitioning scheme. It also simplifies maintenance, such as removing old data.
 
-**Sharding** distributes data **across database nodes**. Choose a key that **spreads
-load** and keeps important operations together where possible.
+> **On one server, partitions still share its CPU, memory, and disk capacity.**
+> Partitioning can reduce the work required; **sharding spreads data and workload
+> across servers**.
+
+**For sharding, choose a key that spreads load** and keeps important operations
+together where possible.
 
 ![Partitioning: August, September, and October parts of the Orders table live on one database server; an October query skips the other months. Sharding: three separate database servers hold different customer ranges; customer 150 is located on server B.](./partitioning-vs-sharding.svg)
 
