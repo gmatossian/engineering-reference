@@ -12,6 +12,7 @@ childTopicIds: []
 relatedTopicIds:
   - 'da02eee0-7185-4b6e-9cc3-3593cd5f6cff'
   - 'fa8a91df-3ad6-4a30-bba7-34ea42c9b1ac'
+  - '64c5e924-a8ca-4aca-837e-d3b84c5ea1a6'
 ---
 
 ![Database comparison: PostgreSQL and MongoDB support joins; DynamoDB requires application-side combining. PostgreSQL enforces foreign keys; MongoDB and DynamoDB require application logic. All three support multi-record transactions. DynamoDB transactions cover up to 100 distinct items, with a 4 MB total limit, within one account and Region.](./database-engines-at-a-glance.png)
