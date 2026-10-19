@@ -93,9 +93,9 @@ describe('TopicIndexPage', () => {
     await harness.fixture.whenStable();
     const host = harness.routeNativeElement as HTMLElement;
     expect(host.querySelector('app-domain-topic-hierarchy')).toBeNull();
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('4 draft topics');
-    expect(host.querySelectorAll('app-topic-result-list a')).toHaveLength(4);
-    expect(host.querySelectorAll('app-topic-result-list .draft-status')).toHaveLength(4);
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('3 draft topics');
+    expect(host.querySelectorAll('app-topic-result-list a')).toHaveLength(3);
+    expect(host.querySelectorAll('app-topic-result-list .draft-status')).toHaveLength(3);
     expect((host.querySelector('#topic-status') as HTMLSelectElement).value).toBe('draft');
 
     await harness.navigateByUrl(

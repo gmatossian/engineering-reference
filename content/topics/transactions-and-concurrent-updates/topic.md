@@ -1,7 +1,7 @@
 ---
 id: '64c5e924-a8ca-4aca-837e-d3b84c5ea1a6'
 title: 'Transactions and concurrent updates'
-status: 'draft'
+status: 'accepted'
 summary: 'See why atomic transactions can oversell and choose a lock, conditional update, or version check to protect stock.'
 iconKey: 'concurrency'
 domains:
