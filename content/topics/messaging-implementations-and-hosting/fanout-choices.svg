@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="424" viewBox="0 0 360 363" role="img" aria-labelledby="title desc">
+  <title id="title">Independent event subscribers</title>
+  <desc id="desc">SNS plus SQS gives AWS subscriber applications separate durable queues, at the cost of per-application queues and policies. GCP Pub/Sub is managed messaging with service-specific APIs and subscription policies; workers sharing one subscription can also distribute jobs.</desc>
+  <rect x="1" y="1" width="358" height="361" rx="8" fill="#ffffff" stroke="#d4dce5"/>
+  <path d="M9 1 H351 Q359 1 359 9 V42 H1 V9 Q1 1 9 1" fill="#edf3e9"/>
+  <g font-family="Arial, sans-serif" fill="#25303a">
+    <text x="16" y="28" font-size="18" font-weight="700">Independent event subscribers</text>
+    <text x="16" y="64" font-size="16" fill="#586773">AWS · durable subscriber queues</text>
+    <text x="16" y="95" font-size="24" font-weight="700" fill="#4e7547">→ SNS + SQS</text>
+    <text x="16" y="121" font-size="16">Choose: each app gets the event.</text>
+    <text x="16" y="142" font-size="16">Accept: a queue + delivery policy</text>
+    <text x="16" y="163" font-size="16">per subscriber application.</text>
+    <path d="M16 202 H344" stroke="#dce1e7"/>
+    <text x="16" y="219" font-size="16" fill="#586773">GCP · managed messaging</text>
+    <text x="16" y="250" font-size="24" font-weight="700" fill="#4e7547">→ Pub/Sub</text>
+    <text x="16" y="276" font-size="16">Choose: fan-out; share jobs within</text>
+    <text x="16" y="297" font-size="16">one subscription.</text>
+    <text x="16" y="318" font-size="16">Accept: GCP APIs + policies.</text>
+  </g>
+</svg>

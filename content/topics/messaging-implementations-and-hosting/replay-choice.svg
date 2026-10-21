@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="243" viewBox="0 0 360 208" role="img" aria-labelledby="title desc">
+  <title id="title">Retained history and replay</title>
+  <desc id="desc">Choose Apache Kafka for retained history, replay, or a partitioned log. Partitioning, retention, and consumer progress still need design with managed hosting.</desc>
+  <rect x="1" y="1" width="358" height="206" rx="8" fill="#ffffff" stroke="#d4dce5"/>
+  <path d="M9 1 H351 Q359 1 359 9 V42 H1 V9 Q1 1 9 1" fill="#f7efdf"/>
+  <g font-family="Arial, sans-serif" fill="#25303a">
+    <text x="16" y="28" font-size="18" font-weight="700">Retained history and replay</text>
+    <text x="16" y="64" font-size="16" fill="#586773">Self-managed or managed hosting</text>
+    <text x="16" y="95" font-size="24" font-weight="700" fill="#8c672c">→ Apache Kafka</text>
+    <text x="16" y="121" font-size="16">Choose: history, replay, log model.</text>
+    <text x="16" y="142" font-size="16">Accept: partitioning, retention,</text>
+    <text x="16" y="163" font-size="16">and consumer-progress design.</text>
+  </g>
+</svg>
