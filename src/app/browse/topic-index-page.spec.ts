@@ -39,7 +39,7 @@ describe('TopicIndexPage', () => {
         host.querySelectorAll('.domain-hierarchy__root > .domain-hierarchy__item app-topic-icon'),
       ).map((icon) => icon.getAttribute('data-icon-key')),
     ).toEqual(['java', 'architecture', 'architecture', 'database']);
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('92 topics');
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('98 topics');
   });
 
   it('renders the default System Design view as an expandable hierarchy', async () => {
@@ -59,6 +59,12 @@ describe('TopicIndexPage', () => {
         (link) => link.querySelector('.domain-hierarchy__title')?.textContent?.trim(),
       ),
     ).toEqual([
+      'Messaging',
+      'Message queues',
+      'Publish/subscribe',
+      'Event streams and logs',
+      'Message delivery and processing',
+      'Messaging implementations and hosting',
       'Scale and estimation',
       'URL shortener',
       'Short URL identifiers',
@@ -84,7 +90,7 @@ describe('TopicIndexPage', () => {
       'Managed vs self-managed databases',
     ]);
     expect((host.querySelector('#topic-domain') as HTMLSelectElement).value).toBe('system-design');
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('24 topics');
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('30 topics');
   });
 
   it('shows draft topics and clears every constraint', async () => {
@@ -93,9 +99,9 @@ describe('TopicIndexPage', () => {
     await harness.fixture.whenStable();
     const host = harness.routeNativeElement as HTMLElement;
     expect(host.querySelector('app-domain-topic-hierarchy')).toBeNull();
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('3 draft topics');
-    expect(host.querySelectorAll('app-topic-result-list a')).toHaveLength(3);
-    expect(host.querySelectorAll('app-topic-result-list .draft-status')).toHaveLength(3);
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('9 draft topics');
+    expect(host.querySelectorAll('app-topic-result-list a')).toHaveLength(9);
+    expect(host.querySelectorAll('app-topic-result-list .draft-status')).toHaveLength(9);
     expect((host.querySelector('#topic-status') as HTMLSelectElement).value).toBe('draft');
 
     await harness.navigateByUrl(
@@ -141,12 +147,12 @@ describe('TopicIndexPage', () => {
     const host = harness.routeNativeElement as HTMLElement;
 
     expect(TestBed.inject(Router).url).toBe('/topics?q=Queue');
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('3 topics');
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('4 topics');
     expect(
       Array.from(host.querySelectorAll('app-topic-result-list a .result__title')).map((title) =>
         title.textContent?.trim(),
       ),
-    ).toEqual(['Queue', 'Concurrent queues', 'PriorityQueue']);
+    ).toEqual(['Queue', 'Concurrent queues', 'Message queues', 'PriorityQueue']);
   });
 
   it('presents friendly Topic-type labels while preserving kind query values', async () => {

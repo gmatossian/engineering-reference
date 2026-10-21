@@ -8,6 +8,7 @@ domains:
   - 'system-design'
 kind: 'area'
 childTopicIds:
+  - '4ba18cf5-d17f-421b-b707-7c7ebca46c85'
   - '17e411bb-2c99-49e8-93ec-18b767e4a890'
   - 'b19de3ee-dc7d-4d9d-9b82-06d997a825e1'
   - '7c7a63f6-dbe5-432d-b535-0be64ecab578'
