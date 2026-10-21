@@ -104,7 +104,7 @@ describe('CatalogService', () => {
       'system-design',
       'algorithms-data-structures',
     ]);
-    expect(service.getDomainTopicCount('system-design')).toBe(24);
+    expect(service.getDomainTopicCount('system-design')).toBe(30);
     expect(service.getDomainTopicCount('http')).toBe(8);
     expect(service.getKindOptions().map(({ key }) => key)).toEqual([
       'area',
@@ -131,10 +131,16 @@ describe('CatalogService', () => {
       service.normalizeBrowseCriteria({ status: 'draft' }),
     );
     expect(draftView.mode).toBe('results');
-    expect(draftView.resultCount).toBe(3);
+    expect(draftView.resultCount).toBe(9);
     expect(draftView.resultHeading).toBe('Draft topics');
     expect(draftView.sections[0].topics.map(({ title }) => title).sort()).toEqual([
+      'Event streams and logs',
       'HTML Downloader',
+      'Message delivery and processing',
+      'Message queues',
+      'Messaging',
+      'Messaging implementations and hosting',
+      'Publish/subscribe',
       'URL Frontier',
       'Web crawler',
     ]);
@@ -143,7 +149,13 @@ describe('CatalogService', () => {
       ({ status }) => status === 'draft',
     );
     expect(occurrences.map(({ title }) => title).sort()).toEqual([
+      'Event streams and logs',
       'HTML Downloader',
+      'Message delivery and processing',
+      'Message queues',
+      'Messaging',
+      'Messaging implementations and hosting',
+      'Publish/subscribe',
       'URL Frontier',
       'Web crawler',
     ]);
@@ -187,6 +199,7 @@ describe('CatalogService', () => {
     expect(view.sections[0].topics.map(({ title }) => title)).toEqual([
       'Queue',
       'Concurrent queues',
+      'Message queues',
       'PriorityQueue',
     ]);
   });
@@ -195,7 +208,7 @@ describe('CatalogService', () => {
     const view = service.getTopicBrowseView({ query: '', domain: null, kind: null, status: null });
 
     expect(view.mode).toBe('hierarchy');
-    expect(view.resultCount).toBe(92);
+    expect(view.resultCount).toBe(98);
     expect(view.sections).toEqual([]);
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
       'Java',
@@ -236,7 +249,7 @@ describe('CatalogService', () => {
       status: null,
     });
 
-    expect(view.resultCount).toBe(24);
+    expect(view.resultCount).toBe(30);
     expect(view.mode).toBe('hierarchy');
     expect(view.sections).toEqual([]);
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual(['System Design', 'Databases']);
@@ -246,8 +259,9 @@ describe('CatalogService', () => {
       'Relational databases (SQL)',
       'Managed vs self-managed databases',
     ]);
-    expect(view.hierarchyRoots[0].matchingTopicCount).toBe(17);
+    expect(view.hierarchyRoots[0].matchingTopicCount).toBe(23);
     expect(view.hierarchyRoots[0].children.map(({ title }) => title)).toEqual([
+      'Messaging',
       'Scale and estimation',
       'URL shortener',
       'Web crawler',
