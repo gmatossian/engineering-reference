@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="150" viewBox="0 0 360 128" role="img" aria-labelledby="title desc">
+  <title id="title">Stream · retain and replay</title>
+  <desc id="desc">Events remain in a retained log and can be read again while retained. Ordering is within a defined boundary.</desc>
+  <defs><marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="#526077"/></marker></defs>
+  <rect x="1" y="1" width="358" height="126" rx="8" fill="#fafbf9" stroke="#d5dcd0"/>
+  <g font-family="Arial, sans-serif" fill="#24313d">
+    <text x="16" y="29" font-size="20" font-weight="700">Stream · retain and replay</text>
+    <rect x="16" y="48" width="328" height="34" rx="5" fill="#f8f0df"/>
+    <text x="30" y="71" font-size="16">Retained events: 1 → 2 → 3 → 4</text>
+    <path d="M325 85 V111 H35 V85" fill="none" stroke="#9b793f" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="120" y="98" width="130" height="23" fill="#fafbf9"/>
+    <text x="129" y="115" font-size="16">Read again</text>
+  </g>
+</svg>

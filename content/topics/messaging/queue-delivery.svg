@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="150" viewBox="0 0 360 128" role="img" aria-labelledby="title desc">
+  <title id="title">Queue · share jobs</title>
+  <desc id="desc">Jobs A and B are assigned to different workers; retries can repeat a job.</desc>
+  <defs><marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="#526077"/></marker></defs>
+  <rect x="1" y="1" width="358" height="126" rx="8" fill="#fafbf9" stroke="#d5dcd0"/>
+  <g font-family="Arial, sans-serif" fill="#24313d">
+    <text x="16" y="29" font-size="20" font-weight="700">Queue · share jobs</text>
+    <rect x="16" y="64" width="89" height="34" rx="5" fill="#eaf0f9"/>
+    <text x="26" y="86" font-size="16">Jobs A B</text>
+    <path d="M108 81 L170 61" fill="none" stroke="#54769e" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M108 81 L170 105" fill="none" stroke="#54769e" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="180" y="42" width="164" height="34" rx="5" fill="#eaf0f9"/>
+    <text x="190" y="64" font-size="16">Worker 1 gets A</text>
+    <rect x="180" y="85" width="164" height="34" rx="5" fill="#eaf0f9"/>
+    <text x="190" y="107" font-size="16">Worker 2 gets B</text>
+  </g>
+</svg>

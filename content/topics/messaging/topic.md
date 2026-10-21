@@ -16,39 +16,29 @@ childTopicIds:
 relatedTopicIds: []
 ---
 
-## Choose from the requirement
+![Queue: jobs A and B go to different workers.](./queue-delivery.svg)
 
-### Work queue
+- **Use:** distribute thumbnail jobs among workers.
+- **Plan for:** retries can repeat work; make effects duplicate-safe.
 
-Distribute thumbnail jobs among workers.
+![Pub/sub: billing and email each receive event E.](./pubsub-delivery.svg)
 
-**Tradeoff:** Retries can repeat work; effects must tolerate duplicates.
+- **Use:** let independent applications each react to the same event.
+- **Remember:** durable subscriptions or subscriber queues can retain messages while consumers are offline.
 
-### Publish/subscribe
+![Stream: retain events and read them again while history remains available.](./stream-delivery.svg)
 
-Let billing, email, and analytics each react to an order event.
-
-**Tradeoff:** Each subscription needs its own backlog and failure policy.
-
-### Event stream/log
-
-Retain events for replay or process an ordered sequence.
-
-**Tradeoff:** Manage retention and consumer positions; ordering has a defined boundary.
-
-## How delivery differs
-
-![A work queue distributes different jobs among workers; pub/sub sends an event to each subscription; retained-log consumer groups read at independent positions.](./delivery-shapes.svg)
-
-## Before choosing
-
-- **Pub/sub can be durable:** offline consumers do not automatically lose messages. Retention and subscription settings matter.
-- **Streams do not require multiple consumers:** retention, replay, and ordered event processing are stronger selection reasons. Ordering is commonly per partition, not global.
-- **Products overlap:** queues, pub/sub, and logs are models, not mutually exclusive product categories.
-
-A **producer** sends messages; a **consumer** processes them; a **broker** is infrastructure that routes or stores them. A **topic** names a publication destination; its delivery semantics depend on the product.
+- **Use:** retained history, replay, or ordered event processing.
+- **Plan for:** retention limits replay; ordering is commonly per partition, not global. Multiple consumers are optional.
 
 > **Database jobs can also fit.** A durable job table avoids another service, but workers need safe claiming, retries, and recovery; polling adds database load.
+
+## Terms and boundaries
+
+- **Producer / consumer:** sends / processes messages.
+- **Broker:** infrastructure that routes or stores messages.
+- **Topic:** named publication destination; delivery semantics depend on the product.
+- **Models overlap:** one product can support queues, pub/sub, and logs.
 
 ## Sources
 
