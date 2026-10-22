@@ -22,22 +22,28 @@ names.sort(null);
 // names is now [Ana, Mia, Zoe]
 ```
 
-| Required order         | Operation                                             |
-| ---------------------- | ----------------------------------------------------- |
-| Natural                | `values.sort(null)`                                   |
-| Reverse natural        | `values.sort(Comparator.reverseOrder())`              |
-| By one property        | `people.sort(Comparator.comparing(Person::lastName))` |
-| By multiple properties | Chain comparators with `thenComparing(...)`           |
+| Required order            | Operation                                             |
+| ------------------------- | ----------------------------------------------------- |
+| Natural                   | `values.sort(null)`                                   |
+| Case-insensitive strings  | `names.sort(String.CASE_INSENSITIVE_ORDER)`           |
+| Reverse natural           | `values.sort(Comparator.reverseOrder())`              |
+| By one property           | `people.sort(Comparator.comparing(Person::lastName))` |
+| Case-insensitive property | Supply the key comparator to `comparing(...)`         |
+| By multiple properties    | Chain comparators with `thenComparing(...)`           |
 
 Natural ordering requires elements that are **mutually comparable**. A supplied
 `Comparator` defines the order otherwise.
 
 ```java
 people.sort(
-    Comparator.comparing(Person::lastName)
-        .thenComparing(Person::firstName)
+    Comparator.comparing(Person::lastName, String.CASE_INSENSITIVE_ORDER)
+        .thenComparing(Person::firstName, String.CASE_INSENSITIVE_ORDER)
 );
 ```
+
+`comparing(keyExtractor, keyComparator)` chooses both the property and how to
+order it. Case-insensitive comparison can tie differently cased strings; chain a
+domain-specific comparison when those values need a secondary order.
 
 The sort is **stable**: elements that compare as equal retain their relative order.
 Use a mutable copy before sorting an unmodifiable list:

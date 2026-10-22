@@ -43,6 +43,9 @@ record Version(int major, int minor) implements Comparable<Version> {
 record Job(String owner, int priority) {}
 
 Comparator<Job> byOwner = Comparator.comparing(Job::owner);
+Comparator<Job> byOwnerIgnoringCaseThenPriority =
+    Comparator.comparing(Job::owner, String.CASE_INSENSITIVE_ORDER)
+        .thenComparingInt(Job::priority);
 Comparator<Job> byPriorityThenOwner =
     Comparator.comparingInt(Job::priority)
         .reversed()
@@ -53,8 +56,15 @@ jobs.sort(byPriorityThenOwner);
 // Bea (3), then Ada (2)
 ```
 
-`comparing(...)` extracts an object key; `comparingInt(...)` extracts a primitive
-`int` key. `thenComparing(...)` runs only when the preceding comparison ties.
+| Form                                                              | Key order              |
+| ----------------------------------------------------------------- | ---------------------- |
+| `Comparator.comparing(Job::owner)`                                | `String` natural order |
+| `Comparator.comparing(Job::owner, String.CASE_INSENSITIVE_ORDER)` | Ignore letter case     |
+
+`Job::owner` is the key extractor—**what** to compare. The optional second
+argument is the key comparator—**how** to compare it. `comparingInt(...)`
+extracts a primitive `int` key. `thenComparing(...)` runs only when the preceding
+comparison ties.
 
 ## No comparator at the call site
 
