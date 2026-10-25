@@ -11,7 +11,7 @@ describe('TopicIndexPage', () => {
     });
   });
 
-  it('renders the unconstrained catalog as four expanded root trees', async () => {
+  it('renders the unconstrained catalog as five expanded root trees', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/topics', TopicIndexPage);
     await harness.fixture.whenStable();
@@ -21,14 +21,14 @@ describe('TopicIndexPage', () => {
       Array.from(host.querySelectorAll('.domain-hierarchy__root > .domain-hierarchy__item')).map(
         (item) => item.querySelector('.domain-hierarchy__title')?.textContent?.trim(),
       ),
-    ).toEqual(['Java', 'System Design', 'HTTP', 'Databases']);
+    ).toEqual(['Java', 'System Design', 'HTTP', 'Databases', 'Idempotency keys']);
     expect(
       Array.from(
         host.querySelectorAll<HTMLButtonElement>(
           '.domain-hierarchy__root > .domain-hierarchy__item > button',
         ),
       ).map((button) => button.getAttribute('aria-expanded')),
-    ).toEqual(['true', 'true', 'true', 'true']);
+    ).toEqual(['true', 'true', 'true', 'true', 'true']);
     for (const disclosure of host.querySelectorAll<HTMLButtonElement>(
       '.domain-hierarchy__disclosure',
     )) {
@@ -38,8 +38,8 @@ describe('TopicIndexPage', () => {
       Array.from(
         host.querySelectorAll('.domain-hierarchy__root > .domain-hierarchy__item app-topic-icon'),
       ).map((icon) => icon.getAttribute('data-icon-key')),
-    ).toEqual(['java', 'architecture', 'architecture', 'database']);
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('98 topics');
+    ).toEqual(['java', 'architecture', 'architecture', 'database', 'architecture']);
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('105 topics');
   });
 
   it('renders the default System Design view as an expandable hierarchy', async () => {
@@ -88,9 +88,14 @@ describe('TopicIndexPage', () => {
       'Scaling relational databases',
       'Relational database implementations',
       'Managed vs self-managed databases',
+      'Client usage — Angular',
+      'Backend handling — Spring',
+      'Caller scope and request fingerprints',
+      'Idempotency storage choices',
+      'Atomic creation — PostgreSQL',
     ]);
     expect((host.querySelector('#topic-domain') as HTMLSelectElement).value).toBe('system-design');
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('30 topics');
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('36 topics');
   });
 
   it('shows draft topics and clears every constraint', async () => {
@@ -99,9 +104,9 @@ describe('TopicIndexPage', () => {
     await harness.fixture.whenStable();
     const host = harness.routeNativeElement as HTMLElement;
     expect(host.querySelector('app-domain-topic-hierarchy')).toBeNull();
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('9 draft topics');
-    expect(host.querySelectorAll('app-topic-result-list a')).toHaveLength(9);
-    expect(host.querySelectorAll('app-topic-result-list .draft-status')).toHaveLength(9);
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('14 draft topics');
+    expect(host.querySelectorAll('app-topic-result-list a')).toHaveLength(14);
+    expect(host.querySelectorAll('app-topic-result-list .draft-status')).toHaveLength(14);
     expect((host.querySelector('#topic-status') as HTMLSelectElement).value).toBe('draft');
 
     await harness.navigateByUrl(
@@ -119,7 +124,7 @@ describe('TopicIndexPage', () => {
 
   it('names status in an empty result and normalizes unsupported status', async () => {
     const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl('/topics?domain=http&status=draft', TopicIndexPage);
+    await harness.navigateByUrl('/topics?domain=http&kind=area&status=draft', TopicIndexPage);
     await harness.fixture.whenStable();
     expect(harness.routeNativeElement?.querySelector('.topic-index__empty')?.textContent).toContain(
       'status “Draft”',

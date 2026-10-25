@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="580" height="452" viewBox="0 0 580 452" role="img" aria-labelledby="title desc">
+<title id="title">Shared Angular idempotency responsibilities</title><desc id="desc">Ticket and order features each decide new creation or retry. Both use a shared operation helper to retain a separate key and payload for every pending operation. Feature API services know endpoints and DTOs. An optional HTTP interceptor attaches the provided key.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#52616d"/></marker></defs>
+<style>text{font-family:'Avenir Next','Segoe UI',sans-serif;fill:#1b1c19;font-size:16px}.label{font-size:17px;font-weight:600}.small{font-size:14px;fill:#4f5054}.line{stroke:#52616d;stroke-width:2;fill:none;marker-end:url(#arrow)}</style>
+<rect x="1" y="1" width="578" height="450" rx="7" fill="#f7f8fa" stroke="#e5e7eb"/>
+<rect x="20" y="18" width="258" height="68" rx="5" fill="#fff" stroke="#c6c1b6"/><text x="36" y="45" class="label">Ticket feature</text><text x="36" y="69" class="small">Decides: new creation or retry</text>
+<rect x="302" y="18" width="258" height="68" rx="5" fill="#fff" stroke="#c6c1b6"/><text x="318" y="45" class="label">Order feature</text><text x="318" y="69" class="small">Decides: new creation or retry</text>
+<path d="M149 86V108H290V124" class="line"/><path d="M431 86V108H290" stroke="#52616d" stroke-width="2" fill="none"/>
+<rect x="72" y="126" width="436" height="92" rx="5" fill="#eaf7ef" stroke="#2f8d5c" stroke-width="1.5"/><text x="92" y="154" class="label">Shared operation helper</text><text x="92" y="179">Generate key + snapshot payload</text><text x="92" y="202" class="small">Retain a separate pair per pending operation</text>
+<path d="M290 218V250" class="line"/>
+<rect x="72" y="254" width="436" height="72" rx="5" fill="#fff" stroke="#c6c1b6"/><text x="92" y="282" class="label">TicketService / OrderService</text><text x="92" y="307" class="small">Endpoint + DTOs; send the operation’s key + payload</text>
+<path d="M290 326V358" class="line"/>
+<rect x="72" y="362" width="436" height="70" rx="5" fill="#fff" stroke="#c6c1b6" stroke-dasharray="5 4"/><text x="92" y="389" class="label">Optional HTTP interceptor</text><text x="92" y="414" class="small">Add Idempotency-Key from the supplied operation key</text>
+</svg>

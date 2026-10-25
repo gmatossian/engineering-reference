@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="580" height="320" viewBox="0 0 580 320" role="img" aria-labelledby="title desc">
+  <title id="title">PostgreSQL atomic claim outcomes</title>
+  <desc id="desc">An INSERT may wait for a competing uncommitted claim. One returned row grants creation; no returned row triggers a subsequent read and fingerprint comparison. Local failure before commit rolls back both claim and writes.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#52616d"/></marker></defs>
+  <style>text{font-family:'Avenir Next','Segoe UI',sans-serif;fill:#1b1c19;font-size:16px}.label{font-size:17px;font-weight:600}.small{font-size:14px;fill:#4f5054}.mono{font-family:'SFMono-Regular',Consolas,monospace;font-size:13px}.line{stroke:#52616d;stroke-width:2;fill:none;marker-end:url(#arrow)}</style>
+  <rect x="1" y="1" width="578" height="318" rx="7" fill="#f7f8fa" stroke="#e5e7eb"/>
+  <rect x="66" y="16" width="448" height="66" rx="5" fill="#fff" stroke="#c6c1b6"/>
+  <text x="82" y="44" class="label">Unique scoped key arbitrates the claim</text>
+  <text x="82" y="69" class="small">Competing uncommitted claim? INSERT may wait.</text>
+  <path d="M210 82V100H148V122" class="line"/>
+  <path d="M370 82V100H432V122" class="line"/>
+  <rect x="16" y="126" width="264" height="114" rx="5" fill="#eaf7ef" stroke="#2f8d5c"/>
+  <text x="32" y="154" class="label">One row returned</text>
+  <text x="32" y="180" class="small">Create entity + save response</text>
+  <text x="32" y="205" class="small">Mark completed</text>
+  <text x="32" y="229" class="label">Commit together</text>
+  <rect x="300" y="126" width="264" height="114" rx="5" fill="#fff" stroke="#c6c1b6"/>
+  <text x="316" y="154" class="label">No row returned</text>
+  <text x="316" y="180" class="small">Read row; compare hash</text>
+  <text x="316" y="205" class="small">Match → replay</text>
+  <text x="316" y="229" class="small">Changed data → reject</text>
+  <rect x="16" y="262" width="548" height="42" rx="5" fill="#fff" stroke="#c6c1b6"/>
+  <text x="32" y="289" class="label">Failure before commit → roll back claim + writes</text>
+
+</svg>
