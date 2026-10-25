@@ -8,7 +8,8 @@ domains:
   - 'http'
 kind: 'decision-aid'
 childTopicIds: []
-relatedTopicIds: []
+relatedTopicIds:
+  - '548afcc9-4743-4fd9-a55f-33ee25f6a664'
 ---
 
 A status code is a **retry signal**, not the complete decision. Also consider the

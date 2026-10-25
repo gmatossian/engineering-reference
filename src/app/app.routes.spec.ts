@@ -53,7 +53,7 @@ describe('application routes', () => {
       routeElement?.querySelectorAll(
         '.domain-hierarchy__root > .domain-hierarchy__item > .domain-hierarchy__link',
       ),
-    ).toHaveLength(4);
+    ).toHaveLength(5);
     expect(TestBed.inject(Router).url).toBe('/topics');
     expect(TestBed.inject(Title).getTitle()).toBe('All topics | Engineering Reference');
   });

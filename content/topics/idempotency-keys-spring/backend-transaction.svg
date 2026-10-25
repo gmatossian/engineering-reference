@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="580" height="460" viewBox="0 0 580 460" role="img" aria-labelledby="title desc">
+  <title id="title">Backend idempotency in one local transaction</title>
+  <desc id="desc">A controller authenticates and validates, then calls a shared service. The scoped key is claimed atomically in PostgreSQL. A new claim creates and saves before commit; an existing committed key is checked for replay or rejection. Local failure rolls back the claim and writes.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#52616d"/></marker></defs>
+  <style>text{font-family:'Avenir Next','Segoe UI',sans-serif;fill:#1b1c19;font-size:16px}.label{font-size:17px;font-weight:600}.small{font-size:14px;fill:#4f5054}.mono{font-family:'SFMono-Regular',Consolas,monospace;font-size:13px}.line{stroke:#52616d;stroke-width:2;fill:none;marker-end:url(#arrow)}</style>
+  <rect x="1" y="1" width="578" height="458" rx="7" fill="#f7f8fa" stroke="#e5e7eb"/>
+  <rect x="16" y="18" width="248" height="68" rx="5" fill="#fff" stroke="#c6c1b6"/>
+  <text x="32" y="45" class="label">Controller</text>
+  <text x="32" y="69" class="small">Authenticate + validate</text>
+  <path d="M276 52H302" class="line"/>
+  <rect x="316" y="18" width="248" height="68" rx="5" fill="#fff" stroke="#c6c1b6"/>
+  <text x="332" y="45" class="label">Shared idempotency service</text>
+  <text x="332" y="69" class="small">Scope key + fingerprint</text>
+  <path d="M440 86V114" class="line"/>
+<rect x="16" y="118" width="548" height="326" rx="6" fill="#fff" stroke="#2f8d5c" stroke-width="1.5"/>
+  <text x="32" y="146" class="label">One local PostgreSQL transaction</text>
+  <rect x="160" y="166" width="260" height="52" rx="5" fill="#eaf7ef" stroke="#2f8d5c"/>
+  <text x="176" y="198" class="label">Claim scoped key atomically</text>
+  <path d="M230 218V236H154V258" class="line"/>
+  <path d="M350 218V236H426V258" class="line"/>
+  <rect x="32" y="262" width="244" height="126" rx="5" fill="#eaf7ef" stroke="#2f8d5c"/>
+  <text x="48" y="290" class="label">New claim</text>
+  <text x="48" y="317" class="small">Create entity</text>
+  <text x="48" y="341" class="small">Save response</text>
+  <text x="48" y="367" class="label">Commit together</text>
+  <rect x="304" y="262" width="244" height="126" rx="5" fill="#fff" stroke="#c6c1b6"/>
+  <text x="320" y="290" class="label">Existing committed key</text>
+  <text x="320" y="317" class="small">Compare fingerprint</text>
+  <text x="320" y="341" class="small">Match → replay response</text>
+  <text x="320" y="367" class="small">Changed data → reject</text>
+  <text x="32" y="421" class="small">Failure → roll back claim + local writes</text>
+
+</svg>

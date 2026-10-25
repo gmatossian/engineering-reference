@@ -104,8 +104,8 @@ describe('CatalogService', () => {
       'system-design',
       'algorithms-data-structures',
     ]);
-    expect(service.getDomainTopicCount('system-design')).toBe(30);
-    expect(service.getDomainTopicCount('http')).toBe(8);
+    expect(service.getDomainTopicCount('system-design')).toBe(36);
+    expect(service.getDomainTopicCount('http')).toBe(15);
     expect(service.getKindOptions().map(({ key }) => key)).toEqual([
       'area',
       'concept',
@@ -131,16 +131,21 @@ describe('CatalogService', () => {
       service.normalizeBrowseCriteria({ status: 'draft' }),
     );
     expect(draftView.mode).toBe('results');
-    expect(draftView.resultCount).toBe(9);
+    expect(draftView.resultCount).toBe(14);
     expect(draftView.resultHeading).toBe('Draft topics');
     expect(draftView.sections[0].topics.map(({ title }) => title).sort()).toEqual([
+      'Atomic creation — PostgreSQL',
+      'Backend handling — Spring',
+      'Caller scope and request fingerprints',
       'Event streams and logs',
       'HTML Downloader',
+      'Idempotency storage choices',
       'Message delivery and processing',
       'Message queues',
       'Messaging',
       'Messaging implementations and hosting',
       'Publish/subscribe',
+      'Reusable idempotency handling — Spring',
       'URL Frontier',
       'Web crawler',
     ]);
@@ -149,13 +154,18 @@ describe('CatalogService', () => {
       ({ status }) => status === 'draft',
     );
     expect(occurrences.map(({ title }) => title).sort()).toEqual([
+      'Atomic creation — PostgreSQL',
+      'Backend handling — Spring',
+      'Caller scope and request fingerprints',
       'Event streams and logs',
       'HTML Downloader',
+      'Idempotency storage choices',
       'Message delivery and processing',
       'Message queues',
       'Messaging',
       'Messaging implementations and hosting',
       'Publish/subscribe',
+      'Reusable idempotency handling — Spring',
       'URL Frontier',
       'Web crawler',
     ]);
@@ -208,13 +218,14 @@ describe('CatalogService', () => {
     const view = service.getTopicBrowseView({ query: '', domain: null, kind: null, status: null });
 
     expect(view.mode).toBe('hierarchy');
-    expect(view.resultCount).toBe(98);
+    expect(view.resultCount).toBe(105);
     expect(view.sections).toEqual([]);
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
       'Java',
       'System Design',
       'HTTP',
       'Databases',
+      'Idempotency keys',
     ]);
   });
 
@@ -249,10 +260,14 @@ describe('CatalogService', () => {
       status: null,
     });
 
-    expect(view.resultCount).toBe(30);
+    expect(view.resultCount).toBe(36);
     expect(view.mode).toBe('hierarchy');
     expect(view.sections).toEqual([]);
-    expect(view.hierarchyRoots.map(({ title }) => title)).toEqual(['System Design', 'Databases']);
+    expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
+      'System Design',
+      'Databases',
+      'Idempotency keys',
+    ]);
     expect(view.hierarchyRoots[1].matchesDomain).toBe(false);
     expect(view.hierarchyRoots[1].children.map(({ title }) => title)).toEqual([
       'Choosing a database',
@@ -281,7 +296,11 @@ describe('CatalogService', () => {
     });
 
     expect(view.mode).toBe('hierarchy');
-    expect(view.hierarchyRoots.map(({ title }) => title)).toEqual(['System Design', 'HTTP']);
+    expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
+      'System Design',
+      'HTTP',
+      'Idempotency keys',
+    ]);
     expect(view.hierarchyRoots[0].matchesDomain).toBe(false);
     expect(view.hierarchyRoots[0].children.map(({ title }) => title)).toEqual([
       'Content delivery networks (CDNs)',
@@ -460,6 +479,7 @@ describe('CatalogService', () => {
       'System Design',
       'HTTP',
       'Databases',
+      'Idempotency keys',
     ]);
   });
 

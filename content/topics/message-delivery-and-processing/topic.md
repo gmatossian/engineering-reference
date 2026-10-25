@@ -8,7 +8,8 @@ domains:
   - 'system-design'
 kind: 'decision-aid'
 childTopicIds: []
-relatedTopicIds: []
+relatedTopicIds:
+  - '548afcc9-4743-4fd9-a55f-33ee25f6a664'
 ---
 
 ## Delivery versus business effects

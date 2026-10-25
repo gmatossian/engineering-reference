@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="580" height="218" viewBox="0 0 580 218" role="img" aria-labelledby="title desc">
+  <title id="title">Stable request fingerprints</title>
+  <desc id="desc">Equivalent JSON bodies with different property ordering have the same fingerprint after stable encoding and hashing. Changed meaningful values have a different illustrative fingerprint.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#52616d"/></marker></defs>
+  <style>text{font-family:'Avenir Next','Segoe UI',sans-serif;fill:#1b1c19;font-size:16px}.label{font-size:17px;font-weight:600}.small{font-size:14px;fill:#4f5054}.mono{font-family:'SFMono-Regular',Consolas,monospace;font-size:13px}.line{stroke:#52616d;stroke-width:2;fill:none;marker-end:url(#arrow)}</style>
+  <rect x="1" y="1" width="578" height="216" rx="7" fill="#f7f8fa" stroke="#e5e7eb"/>
+  <rect x="16" y="18" width="304" height="60" rx="5" fill="#fff" stroke="#c6c1b6"/>
+  <text x="28" y="53" class="mono">{&quot;title&quot;:&quot;Deploy&quot;,&quot;priority&quot;:&quot;HIGH&quot;}</text>
+  <rect x="16" y="108" width="304" height="60" rx="5" fill="#fff" stroke="#c6c1b6"/>
+  <text x="28" y="143" class="mono">{&quot;priority&quot;:&quot;HIGH&quot;,&quot;title&quot;:&quot;Deploy&quot;}</text>
+  <path d="M320 48H332V94H344" class="line"/>
+  <path d="M320 138H332V94H344" class="line"/>
+  <rect x="348" y="48" width="216" height="104" rx="5" fill="#eaf7ef" stroke="#2f8d5c"/>
+  <text x="364" y="77" class="label">Stable encoding</text>
+  <text x="364" y="104" class="label">+ SHA-256</text>
+  <text x="364" y="132" class="small">Same fingerprint H1</text>
+  <text x="16" y="200" class="small">Changed meaningful values → H2 (illustrative hashes)</text>
+
+</svg>
