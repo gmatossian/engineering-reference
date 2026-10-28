@@ -39,7 +39,7 @@ describe('TopicIndexPage', () => {
         host.querySelectorAll('.domain-hierarchy__root > .domain-hierarchy__item app-topic-icon'),
       ).map((icon) => icon.getAttribute('data-icon-key')),
     ).toEqual(['java', 'architecture', 'architecture', 'database', 'architecture']);
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('105 topics');
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('110 topics');
   });
 
   it('renders the default System Design view as an expandable hierarchy', async () => {
@@ -81,6 +81,7 @@ describe('TopicIndexPage', () => {
       'Cache loading and write strategies',
       'Cache freshness and removal',
       'Spring caching with Redis',
+      'Where validation belongs',
       'Choosing a database',
       'Database data models',
       'Comparing database engines',
@@ -95,7 +96,7 @@ describe('TopicIndexPage', () => {
       'Atomic creation — PostgreSQL',
     ]);
     expect((host.querySelector('#topic-domain') as HTMLSelectElement).value).toBe('system-design');
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('36 topics');
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('37 topics');
   });
 
   it('shows draft topics and clears every constraint', async () => {

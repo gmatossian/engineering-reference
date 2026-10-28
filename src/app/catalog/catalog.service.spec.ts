@@ -104,8 +104,8 @@ describe('CatalogService', () => {
       'system-design',
       'algorithms-data-structures',
     ]);
-    expect(service.getDomainTopicCount('system-design')).toBe(36);
-    expect(service.getDomainTopicCount('http')).toBe(15);
+    expect(service.getDomainTopicCount('system-design')).toBe(37);
+    expect(service.getDomainTopicCount('http')).toBe(18);
     expect(service.getKindOptions().map(({ key }) => key)).toEqual([
       'area',
       'concept',
@@ -218,7 +218,7 @@ describe('CatalogService', () => {
     const view = service.getTopicBrowseView({ query: '', domain: null, kind: null, status: null });
 
     expect(view.mode).toBe('hierarchy');
-    expect(view.resultCount).toBe(105);
+    expect(view.resultCount).toBe(110);
     expect(view.sections).toEqual([]);
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
       'Java',
@@ -235,7 +235,7 @@ describe('CatalogService', () => {
 
     expect(occurrences).toHaveLength(2);
     expect(occurrences.every(({ id }) => id === STREAMS_TOPIC_ID)).toBe(true);
-    expect(roots[0].matchingTopicCount).toBe(60);
+    expect(roots[0].matchingTopicCount).toBe(64);
   });
 
   it('intersects domain and kind filters', () => {
@@ -260,7 +260,7 @@ describe('CatalogService', () => {
       status: null,
     });
 
-    expect(view.resultCount).toBe(36);
+    expect(view.resultCount).toBe(37);
     expect(view.mode).toBe('hierarchy');
     expect(view.sections).toEqual([]);
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
@@ -274,7 +274,7 @@ describe('CatalogService', () => {
       'Relational databases (SQL)',
       'Managed vs self-managed databases',
     ]);
-    expect(view.hierarchyRoots[0].matchingTopicCount).toBe(23);
+    expect(view.hierarchyRoots[0].matchingTopicCount).toBe(24);
     expect(view.hierarchyRoots[0].children.map(({ title }) => title)).toEqual([
       'Messaging',
       'Scale and estimation',
@@ -284,6 +284,7 @@ describe('CatalogService', () => {
       'Pagination: offset vs cursor',
       'Content delivery networks (CDNs)',
       'Shared caching',
+      'Where validation belongs',
     ]);
   });
 
@@ -297,15 +298,20 @@ describe('CatalogService', () => {
 
     expect(view.mode).toBe('hierarchy');
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
+      'Java',
       'System Design',
       'HTTP',
       'Idempotency keys',
     ]);
     expect(view.hierarchyRoots[0].matchesDomain).toBe(false);
     expect(view.hierarchyRoots[0].children.map(({ title }) => title)).toEqual([
-      'Content delivery networks (CDNs)',
+      'Spring and Spring Boot',
     ]);
     expect(view.hierarchyRoots[1].children.map(({ title }) => title)).toEqual([
+      'Content delivery networks (CDNs)',
+      'Where validation belongs',
+    ]);
+    expect(view.hierarchyRoots[2].children.map(({ title }) => title)).toEqual([
       'HTTP status codes',
     ]);
   });
@@ -364,6 +370,7 @@ describe('CatalogService', () => {
       '750d6258-e1be-4813-9487-18c6ba78af0a',
       '57b0dc57-7a64-4c09-9140-2a470748da38',
       '78b29290-d46f-45b2-aaba-c31597ceb6d4',
+      'de9bf772-5146-4995-a438-161b5ad229d2',
     ]);
   });
 

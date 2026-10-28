@@ -54,6 +54,7 @@ content/
     │   └── topic.md
     ├── queue/
     │   ├── topic.md
+    │   ├── sources.md
     │   └── queue-operations.svg
     └── queue-complexity/
         └── topic.md
@@ -63,6 +64,10 @@ The build inspects every direct directory under `content/topics/`, and each one
 must contain a `topic.md` file. Topic directories are peers; they do not mirror
 the navigation hierarchy because the content model permits a Topic to have
 multiple parents.
+
+An optional `sources.md` beside `topic.md` holds authoring references for future
+verification, following the [content authoring guide](content-authoring.md). It is
+not discovered as a Topic, rendered, or bundled as Topic content.
 
 Directory names are unique, human-readable storage labels. They are not Topic
 identifiers, do not appear in relationships, and do not need to change when a
@@ -139,9 +144,21 @@ Two presentation properties are optional for a Topic generally:
 The supported icon keys are `java`, `architecture`, `algorithm`, `database`,
 `array`, `collection`, `conversion`, `copy`, `creation`, `deque`, `heap`, `list`,
 `map`, `operations`, `priority`, `queue`, `set`, `complexity`, `concurrency`,
-`equality`, `ordering`, and `persistence`. Topics may reuse a key. Extending this
-closed vocabulary is a deliberate shared-contract change rather than an ordinary
-content edit.
+`equality`, `ordering`, `persistence`, `network`, and `validation`. Topics may
+reuse a key. Extending this closed vocabulary is a deliberate shared-contract
+change rather than an ordinary content edit.
+
+The subject-specific keys provide distinct recognition within a technical domain:
+
+| Key | Symbol | Typical subject |
+| --- | --- | --- |
+| `network` | Connected components | System architecture |
+| `validation` | Checklist | Validation rules |
+
+These assets use the selected Lucide 1.17.0 glyphs with the application's stroke
+width and accent colors. Their license notice ships alongside them at
+`public/icons/topics/lucide-LICENSE.txt`; the renderer loads local SVGs without a
+runtime icon-library dependency.
 
 The supported domain keys, in canonical generated and display order, are
 `java`, `collections`, `concurrency`, `persistence`, `databases`, `http`,
