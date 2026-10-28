@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="638" viewBox="0 0 420 638" role="img" aria-labelledby="title desc">
+  <title id="title">Shared validation paths for HTTP and other callers</title>
+  <desc id="desc">HTTP requests pass through controller and DTO validation. Jobs and CLI callers enter the shared application operation directly. The operation trims SKU and name before checking, constructs domain values with invariant checks, and checks current application state. Storage enforces uniqueness at the write. This is an illustrative creation flow.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0L8 4L0 8Z" fill="#52616d"/>
+    </marker>
+    <style>
+      text { font-family: 'Plus Jakarta Sans', 'Avenir Next', 'Segoe UI', sans-serif; fill: #1b1c19; font-size: 17px; text-anchor: middle; }
+      .heading { font-size: 18px; font-weight: 600; }
+      .label { fill: #46474b; font-size: 16px; }
+      .mechanism { fill: #46474b; font-size: 16px; }
+      .line { fill: none; stroke: #52616d; stroke-width: 1.6; marker-end: url(#arrow); }
+      .box { fill: #fff; stroke: #c6c1b6; stroke-width: 1.4; }
+    </style>
+  </defs>
+
+  <rect x="10" y="8" width="192" height="94" rx="8" fill="#eef4ff" stroke="#c6c1b6" stroke-width="1.4"/>
+  <text x="106" y="36" class="heading">HTTP / DTO</text>
+  <text x="106" y="62">Required · format</text>
+  <text x="106" y="87" class="mechanism">@Valid</text>
+
+  <rect x="218" y="8" width="192" height="94" rx="8" class="box"/>
+  <text x="314" y="36" class="heading">Job / CLI</text>
+  <text x="314" y="87" class="label">No controller</text>
+
+  <path d="M106 102V124H210V145" class="line"/>
+  <path d="M314 102V124H210" fill="none" stroke="#52616d" stroke-width="1.6"/>
+
+  <rect x="10" y="150" width="400" height="290" rx="10" fill="#f0f4f6" stroke="#c6c1b6" stroke-width="1.2"/>
+  <text x="26" y="178" class="heading" style="text-anchor:start">Shared application operation</text>
+  <text x="26" y="201" class="label" style="text-anchor:start">Trim SKU and name before checking</text>
+
+  <rect x="26" y="215" width="368" height="86" rx="8" class="box"/>
+  <text x="210" y="240" class="heading">Construct valid domain values</text>
+  <text x="210" y="265">Positive price · valid SKU</text>
+  <text x="210" y="287" class="mechanism">Constructor / factory</text>
+
+  <path d="M210 301V329" class="line"/>
+
+  <rect x="26" y="334" width="368" height="86" rx="8" fill="#eaf7ef" stroke="#c6c1b6" stroke-width="1.4"/>
+  <text x="210" y="359" class="heading">Check application state</text>
+  <text x="210" y="384">SKU unused · stock available</text>
+  <text x="210" y="406" class="mechanism">Service + storage lookup</text>
+
+  <path d="M210 440V473" class="line"/>
+
+  <rect x="10" y="478" width="400" height="94" rx="8" fill="#f7eee9" stroke="#c6c1b6" stroke-width="1.4"/>
+  <text x="210" y="505" class="heading">Enforce rules at the write</text>
+  <text x="210" y="530">Unique SKU across writers</text>
+  <text x="210" y="556" class="mechanism">Unique constraint / atomic write</text>
+
+  <text x="210" y="602" class="label">Illustrative create flow</text>
+  <text x="210" y="625" class="label">Reject before side effects</text>
+</svg>

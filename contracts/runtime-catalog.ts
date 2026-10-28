@@ -21,6 +21,8 @@ export const TOPIC_ICON_KEYS = [
   'equality',
   'ordering',
   'persistence',
+  'network',
+  'validation',
 ] as const;
 
 export type TopicIconKey = (typeof TOPIC_ICON_KEYS)[number];

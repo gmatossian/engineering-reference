@@ -84,6 +84,10 @@ so the destinations are easier to recognize. Color does not carry
 classification meaning by itself. A Topic icon key likewise receives a
 consistent default treatment in the UI.
 
+The network symbol provides a reusable architecture cue; the checklist symbol
+identifies validation rules. Topic icons remain semantic catalog keys rather than
+title- or hierarchy-specific renderer choices.
+
 ### Typography
 
 Typography supplies much of the interface's hierarchy:

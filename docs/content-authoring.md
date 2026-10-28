@@ -123,6 +123,26 @@ may reveal that it contains several retrieval jobs.
 - Put deeper or adjacent material in child Topics instead of expanding the current
   Topic indefinitely.
 
+## Keep verification sources in an authoring-only file
+
+For new Topics, preserve sources useful for verifying future edits in
+`content/topics/<topic>/sources.md`, alongside `topic.md`. Do not add a reader-facing
+Sources, References, or bibliography section merely to record the author's research.
+
+- Keep source titles and direct URLs. Add a short note about the supported claim,
+  section, or version only when it helps future verification.
+- Create `sources.md` only when there are useful references to retain; do not add an
+  empty file or a generic reading list.
+- Keep it separate from the Topic body and front matter. The generator discovers
+  `topic.md`; `sources.md` is not rendered in the application or bundled as Topic
+  content.
+- Include an external link in the Topic itself only when following it directly
+  serves the reader's retrieval job. Provenance alone belongs in `sources.md`.
+
+The [Bean Validation in Spring authoring sources](../content/topics/spring-bean-validation/sources.md)
+show this convention. This rule applies to new Topics; it does not require a bulk
+migration of existing source sections.
+
 ## Choose the fastest representation
 
 Use the representation that makes the information fastest to recognize:
@@ -257,8 +277,10 @@ Before presenting a draft for retrieval evaluation or reviewing a revision:
    another representation.
 8. Remove introductions, transitions, repetition, and summaries that do not make a
    specific lookup easier.
-9. Check the rendered Topic at wide and narrow viewport sizes.
-10. Run the repository verification required by the
+9. For new Topics, confirm that any retained verification references are in
+   `sources.md` and links in the Topic body serve the reader's retrieval job.
+10. Check the rendered Topic at wide and narrow viewport sizes.
+11. Run the repository verification required by the
     [AI-assisted development profile](ai-assisted-development.md).
 
 These checks support readiness for retrieval evaluation. Editorial promotion remains
