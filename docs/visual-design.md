@@ -123,6 +123,94 @@ third-party request privacy becomes a requirement.
   line length while tables, code blocks, and images may use the wider content
   measure.
 
+## Authored Topic diagrams
+
+This is the default appearance for new and substantially revised Topic diagrams.
+Use the collection diagrams' restrained tints, distinct outlines, and clear text
+hierarchy with the application's fonts and sentence-case labels. Existing diagrams
+are not a requirement to copy their layout, font fallbacks, or uppercase metadata.
+Flows, hierarchies, decisions, and timelines may use different arrangements while
+sharing these rules. The [authoring guide](content-authoring.md#author-diagrams-from-the-shared-default)
+defines the practical workflow and exception handling; the
+[SVG starter](design/diagrams/starter.svg) supplies editable text and embedded fonts.
+
+### Typography and scale
+
+Use upright Plus Jakarta Sans for ordinary text and JetBrains Mono for identifiers,
+types, methods, and other technical notation. Preserve the case of identifiers;
+use sentence case for headings and supporting labels without added letter spacing.
+Use the following starting scale rather than inventing a new one per diagram:
+
+| Role | Family | Size | Weight | Suggested baseline step for wrapped lines |
+| --- | --- | --- | --- | --- |
+| Diagram heading or main question | Plus Jakarta Sans | 23 | 700 | 30 |
+| Node heading | Plus Jakarta Sans | 19 | 700 | 26 |
+| Technical notation | JetBrains Mono | 18 | 600 | 24 |
+| Supporting label, such as Interface | Plus Jakarta Sans | 14 | 600 | 20 |
+| Supporting explanation or edge label | Plus Jakarta Sans | 14 | 500 | 20 |
+
+Sizes and spacing are SVG user units, equivalent to CSS pixels when displayed at
+the drawing's natural scale. Set explicit intrinsic dimensions and a matching
+`viewBox` from the completed drawing's bounds so that scale is unambiguous.
+**There is no standard diagram width, maximum width, or aspect ratio.** Dimensions
+describe the result; they are not a target to fit. Text and padding determine node
+sizes, relationships determine their placement, and the canvas encloses that layout.
+Do not enlarge the coordinate space around unchanged text or scale the whole
+drawing to make an arbitrary width work.
+
+Judge readability at the actual displayed size as well as in the source. Aim to
+preserve the scale above at the intended content sizes, especially 14-unit
+supporting text. If responsive image fitting makes labels too small, shorten text,
+wrap it with the suggested baseline steps, arrange the flow vertically, or split
+the visual into separately useful diagrams. The application continues to own
+responsive containment; authoring does not introduce width metadata or special
+Topic rendering.
+
+SVG images do not inherit the page's loaded fonts. A `font-family` declaration is
+not proof that the font rendered. Use the starter's embedded, licensed font faces
+and retain fallback stacks. The [starter notes](design/diagrams/README.md) cover
+font provenance, preparation, glyph coverage, and offline verification. Keep text
+editable and accessible rather than converting labels to paths.
+
+### Diagram palette
+
+Use the following bounded palette inside authored diagrams. This does not add
+authored color metadata to Topics or assign classification meaning to an accent.
+Keep repeated roles consistent within a diagram; use only the accent families
+needed to distinguish its relationships. Pair color with labels and connections.
+
+| Role | Text or outline | Surface |
+| --- | --- | --- |
+| Primary text | `#1b1c19` | Transparent canvas or `#ffffff` node |
+| Secondary text | `#46474b` | Same as primary text |
+| Neutral node or group | `#c6c1b6` | `#ffffff` |
+| Main question or neutral emphasis | `#c6c1b6` | `#f7f3ea` |
+| Blue distinction | `#4773d8` | `#eef4ff` |
+| Purple distinction | `#7157d9` | `#f0ecff` |
+| Green distinction | `#2f8d5c` | `#eef8f2` |
+| Ochre distinction | `#aa7111` | `#fff4d9` |
+| Terracotta distinction | `#9a4f32` | `#f7eee9` |
+| Connector | `#76777b` | None |
+
+Keep ordinary text near-black or secondary gray on these light surfaces; colored
+outlines do not require colored text. Avoid large saturated fills, gradients,
+shadows, and a colored enclosing card around the whole diagram. Keep labels or
+line styles sufficient to understand the image without distinguishing its colors.
+
+### Spacing, shapes, and connections
+
+Start with 16 units of canvas clearance, 16–24 units of node padding, 8 units
+between adjacent text roles, and 32–48 units between connected nodes. Use 4-unit
+increments when adjusting space. Increase node size and connector clearance for
+longer text; these are suggested spacings, not fixed node dimensions.
+
+Use 2-unit node outlines and connectors, with 1.5-unit internal dividers when
+needed. Start with an 8-unit node radius and a 12-unit grouping radius. Route
+connectors through open space, clear of labels and node interiors. Use arrowheads
+for direction; plain branches may show undirected hierarchy. Explain any dashed
+line's meaning in nearby text. Keep title/description and Markdown alternative
+text meaningful, following the [image contract](content-storage.md#images).
+
 ## Application shell
 
 The header is compact and persistent across views:
