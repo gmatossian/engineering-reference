@@ -163,6 +163,38 @@ Follow the image and alternative-text requirements in the
 [content-storage decision](content-storage.md). Do not use an image as the only
 source of information that the reader must be able to retrieve precisely.
 
+## Author diagrams from the shared default
+
+For a new or substantially revised diagram, use the
+[diagram appearance specification](visual-design.md#authored-topic-diagrams) and
+adapt the [SVG starter](design/diagrams/starter.svg). The
+[starter notes](design/diagrams/README.md) explain its embedded fonts and how to
+prepare and verify them. Authors following this guide do not need to search other
+Topics for a style reference. Existing diagrams are not migrated by this rule.
+
+1. Identify the relationship, flow, hierarchy, or decision that the diagram makes
+   faster to recognize. Choose the arrangement that serves that retrieval job.
+2. Start from the documented text roles, sizes, weights, palette, and suggested
+   spacing. Use sentence-case supporting labels and preserve identifier case.
+   Keep the starter's font definitions, copyright notices, and licenses when
+   copying it; declarations alone do not make the app fonts available to an image.
+3. Size each node from its text and padding. Place nodes and route connections,
+   then set the canvas and intrinsic dimensions from the resulting bounds. There
+   is no standard width, maximum width, or aspect ratio to fit.
+4. Replace the SVG title and description and author meaningful Markdown alternative
+   text. Store the finished SVG alongside its Topic following the
+   [image contract](content-storage.md#images). Preserve editable text and use
+   labels or connections as well as color to explain relationships.
+5. Review the SVG as an actual image at wide and narrow content sizes. Confirm the
+   intended fonts render, including with networking blocked; check displayed text
+   size, wrapping, padding, glyph coverage, and every connector. Shorten, reflow, or
+   split a crowded diagram instead of reducing fonts to meet an arbitrary width.
+
+Different layouts do not require different visual styles. If a concrete retrieval
+need justifies an exception to an appearance rule, record the rule, reason, and
+rendered evidence in the issue or PR. Keep that exception local; changing the shared
+default follows the project's normal decision process.
+
 ## Make text easy to scan
 
 - For an operation, lead with a concise, copyable example.
@@ -279,7 +311,9 @@ Before presenting a draft for retrieval evaluation or reviewing a revision:
    specific lookup easier.
 9. For new Topics, confirm that any retained verification references are in
    `sources.md` and links in the Topic body serve the reader's retrieval job.
-10. Check the rendered Topic at wide and narrow viewport sizes.
+10. Check the rendered Topic at wide and narrow viewport sizes. For new or
+    substantially revised diagrams, also perform the image/font and readability
+    review in [Author diagrams from the shared default](#author-diagrams-from-the-shared-default).
 11. Run the repository verification required by the
     [AI-assisted development profile](ai-assisted-development.md).
 
