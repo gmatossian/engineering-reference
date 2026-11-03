@@ -32,7 +32,7 @@ describe('application routes', () => {
     );
 
     expect(routeElement?.querySelector('form[role="search"]')).toBeNull();
-    expect(routeElement?.querySelectorAll('nav[aria-label="Domains"] a')).toHaveLength(8);
+    expect(routeElement?.querySelectorAll('nav[aria-label="Domains"] a')).toHaveLength(9);
     expect(topicLink?.textContent).toContain('Java');
     expect(topicLink?.textContent).toContain(
       'Core language, collections, concurrency, and persistence concepts.',
@@ -53,7 +53,7 @@ describe('application routes', () => {
       routeElement?.querySelectorAll(
         '.domain-hierarchy__root > .domain-hierarchy__item > .domain-hierarchy__link',
       ),
-    ).toHaveLength(5);
+    ).toHaveLength(6);
     expect(TestBed.inject(Router).url).toBe('/topics');
     expect(TestBed.inject(Title).getTitle()).toBe('All topics | Engineering Reference');
   });

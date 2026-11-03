@@ -275,6 +275,7 @@ describe('generateContent', () => {
       http: [],
       'system-design': [],
       'algorithms-data-structures': [complexityTopicId, queueTopicId],
+      javascript: [],
     });
     expect(parsedCatalog.topicIdsByKind).toEqual({
       area: [javaTopicId],

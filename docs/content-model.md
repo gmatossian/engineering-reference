@@ -131,6 +131,7 @@ published corpus:
 | `http`                       | HTTP                           | HTTP protocol semantics and lookup references                            |
 | `system-design`              | System Design                  | Architecture decisions, estimation, and design exercises                 |
 | `algorithms-data-structures` | Algorithms and data structures | Complexity, algorithms, and language-independent data-structure concepts |
+| `javascript` | JavaScript | JavaScript and Angular application development |
 
 These keys are a closed contract rather than author-defined tags. A Topic can
 belong to several domains, such as Java and Collections or Persistence and

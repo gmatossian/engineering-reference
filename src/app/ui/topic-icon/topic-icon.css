@@ -26,8 +26,10 @@ img {
   --topic-icon-color: var(--color-accent-forest);
 }
 
+:host([data-icon-key='javascript']),
 :host([data-icon-key='algorithm']),
-:host([data-icon-key='complexity']) {
+:host([data-icon-key='complexity']),
+:host([data-icon-key='tradeoff']) {
   --topic-icon-background: var(--color-accent-ochre-soft);
   --topic-icon-color: var(--color-accent-ochre);
 }

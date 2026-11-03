@@ -17,6 +17,7 @@ describe('runtime catalog vocabularies', () => {
       'http',
       'system-design',
       'algorithms-data-structures',
+      'javascript',
     ]);
     expect(TOPIC_DOMAIN_KEYS.map((key) => TOPIC_DOMAIN_LABELS[key])).toEqual([
       'Java',
@@ -27,6 +28,7 @@ describe('runtime catalog vocabularies', () => {
       'HTTP',
       'System Design',
       'Algorithms and data structures',
+      'JavaScript',
     ]);
   });
 

@@ -103,9 +103,10 @@ describe('CatalogService', () => {
       'http',
       'system-design',
       'algorithms-data-structures',
+      'javascript',
     ]);
     expect(service.getDomainTopicCount('system-design')).toBe(37);
-    expect(service.getDomainTopicCount('http')).toBe(18);
+    expect(service.getDomainTopicCount('http')).toBe(20);
     expect(service.getKindOptions().map(({ key }) => key)).toEqual([
       'area',
       'concept',
@@ -218,7 +219,7 @@ describe('CatalogService', () => {
     const view = service.getTopicBrowseView({ query: '', domain: null, kind: null, status: null });
 
     expect(view.mode).toBe('hierarchy');
-    expect(view.resultCount).toBe(110);
+    expect(view.resultCount).toBe(122);
     expect(view.sections).toEqual([]);
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
       'Java',
@@ -226,6 +227,7 @@ describe('CatalogService', () => {
       'HTTP',
       'Databases',
       'Idempotency keys',
+      'JavaScript',
     ]);
   });
 
@@ -302,6 +304,7 @@ describe('CatalogService', () => {
       'System Design',
       'HTTP',
       'Idempotency keys',
+      'JavaScript',
     ]);
     expect(view.hierarchyRoots[0].matchesDomain).toBe(false);
     expect(view.hierarchyRoots[0].children.map(({ title }) => title)).toEqual([
@@ -487,6 +490,7 @@ describe('CatalogService', () => {
       'HTTP',
       'Databases',
       'Idempotency keys',
+      'JavaScript',
     ]);
   });
 
