@@ -17,6 +17,7 @@ const DOMAIN_PRESENTATION: Readonly<
   http: { icon: 'http', tone: 'neutral' },
   'system-design': { icon: 'architecture', tone: 'forest' },
   'algorithms-data-structures': { icon: 'algorithm', tone: 'ochre' },
+  javascript: { icon: 'javascript', tone: 'ochre' },
 };
 
 @Component({

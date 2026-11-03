@@ -1,5 +1,6 @@
 export const TOPIC_ICON_KEYS = [
   'java',
+  'javascript',
   'architecture',
   'algorithm',
   'database',
@@ -22,6 +23,7 @@ export const TOPIC_ICON_KEYS = [
   'ordering',
   'persistence',
   'network',
+  'tradeoff',
   'validation',
 ] as const;
 
@@ -36,6 +38,7 @@ export const TOPIC_DOMAIN_KEYS = [
   'http',
   'system-design',
   'algorithms-data-structures',
+  'javascript',
 ] as const;
 
 export type TopicDomainKey = (typeof TOPIC_DOMAIN_KEYS)[number];
@@ -49,6 +52,7 @@ export const TOPIC_DOMAIN_LABELS: Readonly<Record<TopicDomainKey, string>> = {
   http: 'HTTP',
   'system-design': 'System Design',
   'algorithms-data-structures': 'Algorithms and data structures',
+  javascript: 'JavaScript',
 };
 
 export const TOPIC_KIND_KEYS = [

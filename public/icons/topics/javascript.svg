@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <g transform="scale(0.75)">
+    <rect x="2" y="2" width="28" height="28" stroke="#995900" stroke-width="1.8" />
+    <text
+      x="27"
+      y="26"
+      text-anchor="end"
+      fill="#995900"
+      font-family="Arial, sans-serif"
+      font-size="15"
+      font-weight="800"
+    >
+      JS
+    </text>
+  </g>
+</svg>

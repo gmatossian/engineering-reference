@@ -141,10 +141,10 @@ Two presentation properties are optional for a Topic generally:
   registry key rather than a filename, URL, or markup fragment. When omitted,
   the UI supplies its generic icon fallback.
 
-The supported icon keys are `java`, `architecture`, `algorithm`, `database`,
+The supported icon keys are `java`, `javascript`, `architecture`, `algorithm`, `database`,
 `array`, `collection`, `conversion`, `copy`, `creation`, `deque`, `heap`, `list`,
 `map`, `operations`, `priority`, `queue`, `set`, `complexity`, `concurrency`,
-`equality`, `ordering`, `persistence`, `network`, and `validation`. Topics may
+`equality`, `ordering`, `persistence`, `network`, `tradeoff`, and `validation`. Topics may
 reuse a key. Extending this closed vocabulary is a deliberate shared-contract
 change rather than an ordinary content edit.
 
@@ -153,6 +153,7 @@ The subject-specific keys provide distinct recognition within a technical domain
 | Key | Symbol | Typical subject |
 | --- | --- | --- |
 | `network` | Connected components | System architecture |
+| `tradeoff` | Balance scales | Trade-off decisions |
 | `validation` | Checklist | Validation rules |
 
 These assets use the selected Lucide 1.17.0 glyphs with the application's stroke
@@ -162,7 +163,7 @@ runtime icon-library dependency.
 
 The supported domain keys, in canonical generated and display order, are
 `java`, `collections`, `concurrency`, `persistence`, `databases`, `http`,
-`system-design`, and `algorithms-data-structures`. Source membership order is
+`system-design`, `algorithms-data-structures`, and `javascript`. Source membership order is
 not meaningful; generation normalizes it to this shared order. Every Topic has
 at least one domain and cannot repeat a domain key.
 
@@ -376,7 +377,8 @@ Its conceptual shape is:
     "databases": [],
     "http": [],
     "system-design": [],
-    "algorithms-data-structures": []
+    "algorithms-data-structures": [],
+    "javascript": []
   },
   "topicIdsByKind": {
     "area": ["11111111-1111-4111-8111-111111111111"],

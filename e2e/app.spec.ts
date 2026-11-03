@@ -17,11 +17,11 @@ test.describe('cross-browser smoke', { tag: '@smoke' }, () => {
     await expect(page.locator('main').getByRole('search')).toHaveCount(0);
     await expect(page.getByRole('link', { name: 'All topics' })).toHaveAttribute('href', '/topics');
     await expect(page.getByRole('navigation', { name: 'Domains' }).getByRole('link')).toHaveCount(
-      8,
+      9,
     );
     await expect(
       page.getByRole('navigation', { name: 'Domains' }).getByRole('link', {
-        name: /^Java/u,
+        name: /^Java\b/u,
       }),
     ).toHaveAttribute('href', '/topics?domain=java');
     await expect(

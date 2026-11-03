@@ -11,7 +11,7 @@ describe('TopicIndexPage', () => {
     });
   });
 
-  it('renders the unconstrained catalog as five expanded root trees', async () => {
+  it('renders the unconstrained catalog as expanded root trees', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/topics', TopicIndexPage);
     await harness.fixture.whenStable();
@@ -21,14 +21,14 @@ describe('TopicIndexPage', () => {
       Array.from(host.querySelectorAll('.domain-hierarchy__root > .domain-hierarchy__item')).map(
         (item) => item.querySelector('.domain-hierarchy__title')?.textContent?.trim(),
       ),
-    ).toEqual(['Java', 'System Design', 'HTTP', 'Databases', 'Idempotency keys']);
+    ).toEqual(['Java', 'System Design', 'HTTP', 'Databases', 'Idempotency keys', 'JavaScript']);
     expect(
       Array.from(
         host.querySelectorAll<HTMLButtonElement>(
           '.domain-hierarchy__root > .domain-hierarchy__item > button',
         ),
       ).map((button) => button.getAttribute('aria-expanded')),
-    ).toEqual(['true', 'true', 'true', 'true', 'true']);
+    ).toEqual(['true', 'true', 'true', 'true', 'true', 'true']);
     for (const disclosure of host.querySelectorAll<HTMLButtonElement>(
       '.domain-hierarchy__disclosure',
     )) {
@@ -38,8 +38,8 @@ describe('TopicIndexPage', () => {
       Array.from(
         host.querySelectorAll('.domain-hierarchy__root > .domain-hierarchy__item app-topic-icon'),
       ).map((icon) => icon.getAttribute('data-icon-key')),
-    ).toEqual(['java', 'architecture', 'architecture', 'database', 'architecture']);
-    expect(host.querySelector('[role="status"]')?.textContent).toContain('110 topics');
+    ).toEqual(['java', 'architecture', 'architecture', 'database', 'architecture', 'javascript']);
+    expect(host.querySelector('[role="status"]')?.textContent).toContain('122 topics');
   });
 
   it('renders the default System Design view as an expandable hierarchy', async () => {
