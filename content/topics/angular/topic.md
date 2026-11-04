@@ -3,7 +3,7 @@ id: 'cbbb9857-d3fa-47b8-8b47-d91b3f3dde7f'
 title: 'Angular'
 status: 'accepted'
 summary: 'Application setup, components, reactive state, services and HTTP integration.'
-iconKey: 'architecture'
+iconKey: 'angular'
 domains:
   - 'javascript'
 kind: 'area'

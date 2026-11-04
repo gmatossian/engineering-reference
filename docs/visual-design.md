@@ -88,6 +88,10 @@ The network symbol provides a reusable architecture cue; the checklist symbol
 identifies validation rules. Topic icons remain semantic catalog keys rather than
 title- or hierarchy-specific renderer choices.
 
+JavaScript's execution, event-loop, timer, Promise, async/await, and RxJS Topics
+use distinct green layers, loop arrows, timer, checked-package, pause, and broadcast
+symbols. Angular uses its official gradient logo on the same soft green surface.
+
 ### Typography
 
 Typography supplies much of the interface's hierarchy:

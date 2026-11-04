@@ -141,7 +141,9 @@ Two presentation properties are optional for a Topic generally:
   registry key rather than a filename, URL, or markup fragment. When omitted,
   the UI supplies its generic icon fallback.
 
-The supported icon keys are `java`, `javascript`, `architecture`, `algorithm`, `database`,
+The supported icon keys are `java`, `javascript`, `angular`, `execution`,
+`event-loop`, `timer`, `promise`, `async`, `observable`, `architecture`, `algorithm`,
+`database`,
 `array`, `collection`, `conversion`, `copy`, `creation`, `deque`, `heap`, `list`,
 `map`, `operations`, `priority`, `queue`, `set`, `complexity`, `concurrency`,
 `equality`, `ordering`, `persistence`, `network`, `tradeoff`, and `validation`. Topics may
@@ -155,11 +157,20 @@ The subject-specific keys provide distinct recognition within a technical domain
 | `network` | Connected components | System architecture |
 | `tradeoff` | Balance scales | Trade-off decisions |
 | `validation` | Checklist | Validation rules |
+| `execution` | Layers | Call stack and execution |
+| `event-loop` | Loop arrows | Event-loop processing |
+| `timer` | Timer | Delays and scheduling |
+| `promise` | Checked package | Eventual result |
+| `async` | Pause | Suspension and resumption |
+| `observable` | Broadcast | Emitted notifications |
+| `angular` | Angular logo | Angular framework |
 
-These assets use the selected Lucide 1.17.0 glyphs with the application's stroke
+The subject glyphs use selected Lucide 1.17.0 icons with the application's stroke
 width and accent colors. Their license notice ships alongside them at
 `public/icons/topics/lucide-LICENSE.txt`; the renderer loads local SVGs without a
-runtime icon-library dependency.
+runtime icon-library dependency. Angular uses its official gradient logo from
+the Angular repository, with attribution and CC BY 4.0 license information in
+`public/icons/topics/angular-LICENSE.txt`.
 
 The supported domain keys, in canonical generated and display order, are
 `java`, `collections`, `concurrency`, `persistence`, `databases`, `http`,
