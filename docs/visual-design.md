@@ -348,6 +348,14 @@ children starts expanded. A Topic with more than one parent therefore appears
 in more than one real branch; each occurrence is the same canonical Topic link,
 not a copy or alias, and each occurrence's disclosure operates independently.
 
+The explorer uses the **Quiet hierarchy** treatment: one navigation font family,
+slightly smaller Topic labels, stronger root labels and expanded branches, shallow
+indentation, and subtle guide lines. Every current occurrence has a quiet tinted
+row, a narrow accent rule, and stronger text. Keep long titles fully visible and
+allow wrapping; give the desktop sidebar modest additional width rather than
+shrinking deeper levels. Topic icons are omitted from this explorer so that labels
+retain the available width. Disclosure controls and title links remain independent.
+
 The forest is a navigation landmark labelled **Browse surrounding topics** and
 should read as nested navigation rather than a diagram. Use indentation, subtle
 guide rules, disclosure controls, and native linked titles. Do not use a graph
@@ -432,7 +440,7 @@ visually secondary to main content and must not resemble the primary landing
 domain grid or imply that following the hierarchy is necessary to find a
 Topic.
 
-Every Topic should display an icon when represented in navigation. Icons may
+Every Topic should display an icon in these child-navigation rows. Icons may
 be reused, and the UI must provide a generic fallback when a specific icon is
 not available. A Topic optionally selects a supported icon through `iconKey`;
 the generated runtime value is `null` when no specific key is authored.
