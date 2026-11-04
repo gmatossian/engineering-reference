@@ -43,7 +43,10 @@
       @let expanded = isExpanded(nodePath);
 
       <li>
-        <div class="topic-hierarchy__item">
+        <div
+          class="topic-hierarchy__item"
+          [class.topic-hierarchy__item--current]="node.id === currentTopicId()"
+        >
           @if (hasChildren) {
             <button
               class="topic-hierarchy__disclosure"
@@ -61,6 +64,8 @@
 
           <a
             class="topic-hierarchy__link"
+            [class.topic-hierarchy__link--root]="parentPath === ''"
+            [class.topic-hierarchy__link--branch]="hasChildren && expanded"
             [class.topic-hierarchy__link--current]="node.id === currentTopicId()"
             [attr.aria-current]="node.id === currentTopicId() ? 'page' : null"
             [routerLink]="['/topics', node.id]"
