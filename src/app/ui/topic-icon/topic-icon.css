@@ -21,6 +21,13 @@ img {
 
 :host([data-icon-key='architecture']),
 :host([data-icon-key='concurrency']),
+:host([data-icon-key='angular']),
+:host([data-icon-key='execution']),
+:host([data-icon-key='event-loop']),
+:host([data-icon-key='timer']),
+:host([data-icon-key='promise']),
+:host([data-icon-key='async']),
+:host([data-icon-key='observable']),
 :host([data-icon-key='network']) {
   --topic-icon-background: var(--color-accent-forest-soft);
   --topic-icon-color: var(--color-accent-forest);

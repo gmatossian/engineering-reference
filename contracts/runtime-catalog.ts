@@ -1,6 +1,13 @@
 export const TOPIC_ICON_KEYS = [
   'java',
   'javascript',
+  'angular',
+  'execution',
+  'event-loop',
+  'timer',
+  'promise',
+  'async',
+  'observable',
   'architecture',
   'algorithm',
   'database',

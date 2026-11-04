@@ -219,7 +219,7 @@ describe('CatalogService', () => {
     const view = service.getTopicBrowseView({ query: '', domain: null, kind: null, status: null });
 
     expect(view.mode).toBe('hierarchy');
-    expect(view.resultCount).toBe(122);
+    expect(view.resultCount).toBe(134);
     expect(view.sections).toEqual([]);
     expect(view.hierarchyRoots.map(({ title }) => title)).toEqual([
       'Java',
